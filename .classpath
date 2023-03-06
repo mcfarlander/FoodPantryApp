@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="libs/AbsoluteLayout.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/AppFramework-1.03.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/swing-layout-1.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/swing-worker-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="opencsv/deploy/opencsv-3.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/itext5-itextpdf-5.5.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/itext5-xmlworker-5.5.11.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
