@@ -1,8 +1,0 @@
-#NOI18N
-btnAdd.icon=images/accept.png
-#NOI18N
-btnCancel.icon=images/cancel.png
-Form.title=Add Or Edit Visit
-jLabel1.text=House Hold ID
-jLabel2.text=# Adults
-jLabel3.text=# Children

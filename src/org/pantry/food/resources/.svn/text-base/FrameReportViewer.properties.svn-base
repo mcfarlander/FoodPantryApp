@@ -1,8 +1,0 @@
-Form.title=Report Viewer
-#NOI18N
-Form.frameIcon=images/report.png
-#NOI18N
-btnPrint.icon=images/printer.png
-btnSave.text=Save
-#NOI18N
-btnSave.icon=images/bullet_disk.png
