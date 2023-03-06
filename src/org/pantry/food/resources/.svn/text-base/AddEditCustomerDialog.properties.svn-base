@@ -1,0 +1,7 @@
+Form.title=Add or Edit Customer
+btnOk.text=Ok
+btnCancel.text=Cancel
+#NOI18N
+btnOk.icon=images/accept.png
+#NOI18N
+btnCancel.icon=images/cancel.png

@@ -1,0 +1,8 @@
+#NOI18N
+btnAdd.icon=images/tag_blue_add.png
+#NOI18N
+btnEdit.icon=images/tag_blue_edit.png
+#NOI18N
+btnDelete.icon=images/tag_blue_delete.png
+#NOI18N
+Form.frameIcon=images/tag_blue.png

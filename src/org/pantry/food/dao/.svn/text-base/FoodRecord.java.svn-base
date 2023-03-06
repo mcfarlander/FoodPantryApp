@@ -1,0 +1,192 @@
+/*
+  Copyright 2011 Dave Johnson
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+package org.pantry.food.io;
+
+/**
+*
+* @author Dave Johnson
+*/
+public class FoodRecord {
+	
+	private int recordId;
+	private String entryDate;
+	private double pickNSave;
+	private double community;
+	private double nonTefap;
+	private double tefap;
+	private double secHarvest;
+	private double pantry;
+    private double other;
+    private double nonFood;
+    private double milk;
+
+    private String comment = "";
+	
+	public int getRecordId() {
+		return recordId;
+	}
+	public void setRecordId(int recordId) {
+		this.recordId = recordId;
+	}
+	public String getEntryDate() {
+		return entryDate;
+	}
+	public void setEntryDate(String entryDate) {
+		this.entryDate = entryDate;
+	}
+	public double getPickNSave() {
+		return pickNSave;
+	}
+	public void setPickNSave(double pickNSave) {
+		this.pickNSave = pickNSave;
+	}
+	public double getCommunity() {
+		return community;
+	}
+	public void setCommunity(double community) {
+		this.community = community;
+	}
+	public double getNonTefap() {
+		return nonTefap;
+	}
+	public void setNonTefap(double nonTefap) {
+		this.nonTefap = nonTefap;
+	}
+	public double getTefap() {
+		return tefap;
+	}
+	public void setTefap(double tefap) {
+		this.tefap = tefap;
+	}
+	public double getSecHarvest() {
+		return secHarvest;
+	}
+	public void setSecHarvest(double secHarvest) {
+		this.secHarvest = secHarvest;
+	}
+	public double getPantry() {
+		return pantry;
+	}
+	public void setPantry(double pantry) {
+		this.pantry = pantry;
+	}
+
+	public double getOther() {
+		return other;
+	}
+	public void setOther(double other) {
+		this.other = other;
+	}
+
+	public double getNonFood() {
+		return nonFood;
+	}
+	public void setNonFood(double nonfood) {
+		this.nonFood = nonfood;
+	}
+
+    public String getComment(){
+        return this.comment;
+    }
+
+    public void setComment(String comment){
+        this.comment = comment;
+    }
+    
+    public void setMilk(double milk)
+    {
+    	this.milk = milk;
+    }
+    
+    public double getMilk()
+    {
+    	return this.milk;
+    }
+	
+    /**
+     * Helper method to set a line in the csv file.
+     * @return
+     */
+    public String[] getCvsEntry(){
+
+        String[] entry = {"" + this.recordId,
+                          "" + this.entryDate,
+                          "" + this.pickNSave,
+                          "" + this.community,
+                          "" + this.nonTefap,
+                          "" + this.tefap,
+                          "" + this.secHarvest,
+                          "" + this.pantry,
+                          "" + this.other,
+                          this.comment,
+                          "" + this.nonFood,
+                          "" + this.milk
+           };
+
+        return entry;
+    }
+
+    /**
+     * Helper method to return an object to the jtable model.
+     * @return
+     */
+    public Object[] getFoodRecordObject(){
+
+        return new Object[] {this.recordId,
+			                this.entryDate,
+			                this.pickNSave,
+			                this.community,
+			                this.nonTefap,
+			                this.tefap,
+			                this.secHarvest,
+			                this.pantry,
+                            this.other,
+                            this.comment,
+                            this.nonFood,
+                            this.milk
+        };
+    }
+
+    public void addToCurrent(FoodRecord record){
+
+        this.pickNSave += record.getPickNSave();
+        this.community += record.getCommunity();
+        this.nonTefap += record.getNonTefap();
+        this.tefap += record.getTefap();
+        this.secHarvest += record.getSecHarvest();
+        this.pantry += record.getPantry();
+        this.other += record.getOther();
+        this.nonFood += record.getNonFood();
+        this.milk += record.getMilk();
+
+        if (record.getComment().length() > 0){
+            this.comment += record.getComment() + ", ";
+        }
+
+    }
+
+    public double getTotal(){
+
+        return this.pickNSave + this.community +
+                this.nonTefap + this.tefap +
+                this.secHarvest + this.pantry +
+                this.other + this.nonFood;
+    }
+
+	
+	
+
+}

@@ -1,0 +1,10 @@
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+
+Form.title=Application Settings
+#NOI18N
+Form.frameIcon=images/wrench_orange.png
+#NOI18N
+btnArchive.icon=images/table_save.png
+#NOI18N
+btnAddMonth1.icon=images/table_add.png

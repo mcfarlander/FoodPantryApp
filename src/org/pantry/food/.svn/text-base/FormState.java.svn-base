@@ -1,0 +1,107 @@
+/*
+  Copyright 2011 Dave Johnson
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+package org.pantry.food;
+
+import javax.swing.JInternalFrame;
+
+/**
+ *
+ * @author mcfarland_davej
+ */
+public class FormState {
+
+    private static FormState instance = null;
+
+    protected FormState() {
+      // Exists only to defeat instantiation.
+    }
+
+    public static FormState getInstance() {
+      if(instance == null) {
+         instance = new FormState();
+      }
+      return instance;
+    }
+
+    private boolean m_isFormOpen = false;
+
+    public boolean isFormOpen(){ return this.m_isFormOpen; }
+    public void setFormOpen(boolean isopen){ this.m_isFormOpen = isopen; }
+    public void setFormOpen(boolean isopen, JInternalFrame openForm) {
+        this.m_isFormOpen = isopen;
+        this.m_currentForm = openForm;
+    }
+
+    private JInternalFrame m_currentForm = null;
+
+    public JInternalFrame getCurrentForm() { return m_currentForm; }
+    public void setCurrentForm(JInternalFrame openForm) { this.m_currentForm = openForm; }
+
+    private boolean showInactiveVisits = false;
+
+    public boolean isShowInactiveVisits() { return this.showInactiveVisits; }
+    public void setShowInactiveVisits(boolean showInactive) { this.showInactiveVisits = showInactive; }
+
+    private boolean showAllYearVisits = false;
+
+    public boolean isShowAllYearVisits() { return this.showAllYearVisits; }
+    public void setShowAllYearVisits(boolean showAllVisits) { this.showAllYearVisits = showAllVisits; }
+    
+
+    private boolean showInactiveCustomers = false;
+
+    public boolean isShowInactiveCustomers() { return this.showInactiveCustomers; }
+    public void setShowInactiveCustomers(boolean showInactive) { this.showInactiveCustomers = showInactive; }
+
+    private String csvFileVisits = "visitors.csv";
+
+    public String getCsvFileVisits() { return this.csvFileVisits; }
+    public void setCsvFileVisits(String sfile) { this.csvFileVisits = sfile; }
+
+    private String csvFileCustomers = "customers.csv";
+
+    public String getCsvFileCustomers() { return this.csvFileCustomers; }
+    public void setCsvFileCustomers(String sfile) { this.csvFileCustomers = sfile; }
+    
+    private String csvFileFoodRecord = "foodrecords.csv";
+    
+    public String getCsvFileFoodRecord() { return this.csvFileFoodRecord; }
+    public void setCsvFileFoodRecord(String sfile) { this.csvFileFoodRecord = sfile; }
+    
+    private String cvsFileVolunteerHours = "volunteerhours.cvs";
+
+    public String getCsvFileVolunteerHours() { return this.cvsFileVolunteerHours; }
+    public void setCsvFileVolunteerHours(String sfile) { this.cvsFileVolunteerHours = sfile; }
+    
+    
+    private String cvsFileVolunteers = "volunteers.cvs";	// regular volunteers
+
+    public String getCsvFileVolunteers() { return this.cvsFileVolunteers; }
+    public void setCsvFileVolunteers(String sfile) { this.cvsFileVolunteers = sfile; }   
+    
+    private String cvsFileVolunteerEvents = "volunteerevents.cvs";	// regular volunteers hours
+
+    public String getCsvFileVolunteerEvents() { return this.cvsFileVolunteerEvents; }
+    public void setCsvFileVolunteerEvents(String sfile) { this.cvsFileVolunteerEvents = sfile; }
+    
+    private String clipboardEventName = "";
+    
+    public String getClipbardEventName() { return clipboardEventName; }
+    public void setClipbardEventName(String eventName) { clipboardEventName = eventName; }
+    
+
+
+}// end of class

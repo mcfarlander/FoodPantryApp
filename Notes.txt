@@ -1,0 +1,48 @@
+History and other notes:
+
+Version 1.0:
+    Initial release
+
+
+Version 1.1:
+    Add button on settings window to allow Sue to increment all customer
+    numbers by one because the application starts counting at 0 rather than 1.
+
+Version 1.2:
+    Changed application title to "McFarland Community Food Pantry", branding.
+
+    If a customer cannot be identified at the visit, Sue requested this be
+    bypassed. Instead, the program assigns a -1 to the account and shows the
+    entry with a red background. Add custom tablecellrenderer to do this.
+
+Version 1.3:
+    Add html export of reports, implemented the monthly report summary.
+    
+ Version 1.29
+ 	Added donation information to food records.
+ 	
+ Version 1.30
+ 	Bug fixes to food record donations.
+ 	
+ Version 1.31
+ 	Added automatic update of food record donations.
+ 	
+Version 1.32
+	Bread no longer needed on food so it's minimized
+	Search by donors added to food record donor dropdown
+	Double-click to edit added to other jtables
+	
+Version 1.36
+	Column name changes as per user requests
+	Namespace cleanup
+	HTML reports now has built in CSS
+	Added iText lib for exporting reports to PDF
+	
+Version 1.36a
+	Bug fix on adding volunteer to event
+	
+Version 1.37
+	Added food record column for second harvest produce.
+	Modified CSV and reporting for new column.
+	
+	

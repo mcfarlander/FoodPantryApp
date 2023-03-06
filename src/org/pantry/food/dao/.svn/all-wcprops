@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/mcfpmanager/code/!svn/ver/5/eFoodPantry/src/org/pantry/food/io
+END
+Customer.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/p/mcfpmanager/code/!svn/ver/8/eFoodPantry/src/org/pantry/food/io/Customer.java
+END
+VolunteerHour.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/p/mcfpmanager/code/!svn/ver/5/eFoodPantry/src/org/pantry/food/io/VolunteerHour.java
+END
+Volunteer.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/p/mcfpmanager/code/!svn/ver/15/eFoodPantry/src/org/pantry/food/io/Volunteer.java
+END
+VolunteerEvent.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/p/mcfpmanager/code/!svn/ver/15/eFoodPantry/src/org/pantry/food/io/VolunteerEvent.java
+END
+FoodRecord.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/p/mcfpmanager/code/!svn/ver/8/eFoodPantry/src/org/pantry/food/io/FoodRecord.java
+END
+VolunteerHourIO.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/p/mcfpmanager/code/!svn/ver/14/eFoodPantry/src/org/pantry/food/io/VolunteerHourIO.java
+END
+VisitorsIO.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/p/mcfpmanager/code/!svn/ver/5/eFoodPantry/src/org/pantry/food/io/VisitorsIO.java
+END
+VolunteerIO.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/p/mcfpmanager/code/!svn/ver/11/eFoodPantry/src/org/pantry/food/io/VolunteerIO.java
+END
+CustomersIO.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/p/mcfpmanager/code/!svn/ver/15/eFoodPantry/src/org/pantry/food/io/CustomersIO.java
+END
+VolunteerEventIO.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/p/mcfpmanager/code/!svn/ver/14/eFoodPantry/src/org/pantry/food/io/VolunteerEventIO.java
+END
+FoodRecordIO.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/p/mcfpmanager/code/!svn/ver/8/eFoodPantry/src/org/pantry/food/io/FoodRecordIO.java
+END
+Visit.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/p/mcfpmanager/code/!svn/ver/5/eFoodPantry/src/org/pantry/food/io/Visit.java
+END

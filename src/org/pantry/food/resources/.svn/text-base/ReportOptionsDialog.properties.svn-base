@@ -1,0 +1,11 @@
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+
+Form.title=Reporting Options
+btnOk.text=OK
+#NOI18N
+btnOk.icon=images/accept.png
+btnClose.text=Close
+#NOI18N
+btnClose.icon=images/cancel.png
+jPanel2.border.title=Report Selection

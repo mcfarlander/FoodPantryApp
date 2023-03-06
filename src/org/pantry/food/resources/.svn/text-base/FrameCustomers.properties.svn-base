@@ -1,0 +1,14 @@
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+
+#NOI18N
+Form.frameIcon=images/table_key.png
+Form.title=Customers
+btnAdd.text=Add Customer
+#NOI18N
+btnAdd.icon=images/table_add.png
+btnEdit.text=Edit Customer
+#NOI18N
+btnEdit.icon=images/table_edit.png
+#NOI18N
+btnDelete.icon=images/table_delete.png
