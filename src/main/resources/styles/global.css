@@ -1,0 +1,9 @@
+.content-header {
+	-fx-font-size: 120%;
+	-fx-font-weight: bold;
+}
+
+.button.record-action {
+	-fx-margin-left: 20;
+	-fx-min-height: 60;	
+}
