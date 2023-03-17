@@ -3,7 +3,6 @@ package org.pantry.food.actions;
 import org.pantry.food.Images;
 
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 
 /**
@@ -15,7 +14,7 @@ public class CustomersMenuItem extends MenuItem {
 	public CustomersMenuItem() {
 		setId(ACTION_ID);
         setAccelerator(KeyCombination.keyCombination("shortcut+c"));
-        setGraphic(new ImageView(Images.getIcon("table_key.png")));  
+        setGraphic(Images.getImageView("table_key.png"));
         setText("Customers");
 	}
 	

@@ -15,13 +15,16 @@
 */
 package org.pantry.food;
 
+import java.io.IOException;
 import java.util.function.Function;
 
 import javax.swing.event.DocumentEvent.EventType;
 
+import org.pantry.food.actions.AboutMenuItem;
 import org.pantry.food.actions.CustomersMenuItem;
 import org.pantry.food.actions.MenuActions;
 import org.pantry.food.actions.VisitsMenuItem;
+import org.pantry.food.ui.dialog.ModalDialog;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -36,6 +39,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -102,6 +106,8 @@ public class JfxApplication extends Application {
         for (Menu menu: mnuBar.getMenus()) {
         	if ("views".equals(menu.getId())) {
         		addViewMenuItems(menu);
+        	} else if ("help".equals(menu.getId())) {
+        		addHelpMenuItems(menu);
         	}
         }
 
@@ -114,13 +120,29 @@ public class JfxApplication extends Application {
 		item.setOnAction(new SwitchContextEventHandler(context, e -> Fxmls.load("Customers.fxml")));
 		MenuActions.add(item);
 		
-		MenuActions.add(new VisitsMenuItem());
+		item = new VisitsMenuItem();
+//		item.setOnAction(new SwitchContextEventHandler(context, e -> Fxmls.load("Visits.fxml")));
+		MenuActions.add(item);
+		
+		item = new AboutMenuItem();
+		item.setOnAction(event -> {
+			try {
+				new ModalDialog<Void, Void>().show("ui/dialog/AboutDialog.fxml");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+		MenuActions.add(item);
 	}
 	
 	protected void addViewMenuItems(Menu menu) {
 		menu.getItems().add(MenuActions.get("open.customers"));
 		menu.getItems().add(MenuActions.get("open.visits"));
-		menu.getItems().add(new MenuItem("-"));
+		menu.getItems().add(new SeparatorMenuItem());
+	}
+	
+	protected void addHelpMenuItems(Menu menu) {
+		menu.getItems().add(MenuActions.get("open.about"));
 	}
 	
 	void switchContext(Node newContext) {

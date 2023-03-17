@@ -17,7 +17,7 @@
             <MenuBar fx:id="mnuBar">
               <menus>
                 <Menu id="views" text="Views" />
-                <Menu mnemonicParsing="false" text="Help" />
+                <Menu id="help" mnemonicParsing="false" text="Help" />
               </menus>
             </MenuBar>
             <HBox fx:id="buttonBar" fillHeight="false">

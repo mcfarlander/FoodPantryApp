@@ -1,9 +1,29 @@
+/* Make panel headings a little bigger to signify importance */
 .content-header {
 	-fx-font-size: 120%;
 	-fx-font-weight: bold;
 }
 
+/* Make action buttons within the context of a data record really big so they're easy targets */
 .button.record-action {
 	-fx-margin-left: 20;
 	-fx-min-height: 60;	
+}
+
+/* Make checkboxes in dialogs bigger so they're easy targets */
+.dialog .check-box > .box,
+.dialog .check-box > .box > .mark {
+    -fx-padding: 5px;
+}
+
+/* Align dialog action buttons to the right of the dialog */ 
+.dialog-action-container {
+	-fx-alignment: center-right;
+	-fx-spacing: 20;
+}
+
+/* Make dialog action buttons bigger so they're easy targets */
+.dialog-action-container .button {
+	-fx-min-height: 40;
+	-fx-min-width: 90;
 }

@@ -17,10 +17,9 @@ package org.pantry.food.dao;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,210 +32,204 @@ import org.pantry.food.ui.common.DataFiles;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
-
 /**
- * A class to contain all the logic to map between a file of customer and the Customer class.
+ * A class to contain all the logic to map between a file of customer and the
+ * Customer class.
+ * 
  * @author mcfarland_davej
  */
-public class CustomersDao implements CsvDao 
-{
+public class CustomersDao implements CsvDao<Customer> {
 	private final static Logger log = Logger.getLogger(CustomersDao.class.getName());
-	
-    private String startDir = "";
-    
-    private ArrayList<Customer> customerList = new ArrayList<Customer>();
 
-    public ArrayList<Customer> getCustomerList(){return this.customerList;}
-    public int getCustomerCount(){return this.customerList.size();}
+	private static final int CUSTOMERID = 0;
+	private static final int HOUSEHOLDID = 1;
+	private static final int PERSONID = 2;
+	private static final int GENDER = 3;
+	private static final int BIRTHDATE = 4;
+	private static final int AGE = 5;
+	private static final int MONTHREGISTERED = 6;
+	private static final int NEWCUSTOMER = 7;
+	private static final int COMMENTS = 8;
+	private static final int ACTIVE = 9;
 
-    /**
-     * IDs of every household in the customer list
-     * @return
-     */
-    public List<String> getHouseholdIds() {
+	private static final String Col_CustomerId = "customerid";
+	private static final String Col_HouseholdId = "householdid";
+	private static final String Col_PersonId = "personid";
+	private static final String Col_Gender = "gender";
+	private static final String Col_BirthDate = "birthdate";
+	private static final String Col_Age = "age";
+	private static final String Col_MonthRegistered = "monthregistered";
+	private static final String Col_NewCustomer = "new";
+	private static final String Col_Comments = "comments";
+	private static final String Col_Active = "active";
+
+	private NumberAsStringComparator numberAsStringComparator = new NumberAsStringComparator();
+
+	private String startDir = "";
+
+	private List<Customer> customerList = new ArrayList<Customer>();
+
+	public List<Customer> getCustomerList() {
+		return this.customerList;
+	}
+
+	public int getCustomerCount() {
+		return this.customerList.size();
+	}
+
+	/**
+	 * IDs of every household in the customer list
+	 * 
+	 * @return
+	 */
+	public List<String> getHouseholdIds() {
 		return householdIds;
 	}
-    
-	public void setStartDir(String sDir){this.startDir = sDir;}
 
-    private static final int CUSTOMERID         = 0;
-    private static final int HOUSEHOLDID        = 1;
-    private static final int PERSONID           = 2;
-    private static final int GENDER             = 3;
-    private static final int BIRTHDATE          = 4;
-    private static final int AGE                = 5;
-    private static final int MONTHREGISTERED    = 6;
-    private static final int NEWCUSTOMER        = 7;
-    private static final int COMMENTS           = 8;
-    private static final int ACTIVE             = 9;
+	public void setStartDir(String sDir) {
+		this.startDir = sDir;
+	}
 
-    private static final String Col_CustomerId = "customerid";
-    private static final String Col_HouseholdId = "householdid";
-    private static final String Col_PersonId = "personid";
-    private static final String Col_Gender = "gender";
-    private static final String Col_BirthDate = "birthdate";
-    private static final String Col_Age = "age";
-    private static final String Col_MonthRegistered = "monthregistered";
-    private static final String Col_NewCustomer = "new";
-    private static final String Col_Comments = "comments";
-    private static final String Col_Active = "active";
-    
-    private List<String> householdIds = new ArrayList<>();
+	private List<String> householdIds = new ArrayList<>();
 
-    /*
-     * (non-Javadoc)
-     * @see org.pantry.food.dao.CsvDao#readCsvFile()
-     */
-    public List<Customer> readCsvFile() throws FileNotFoundException, IOException
-    {
-        log.info("CustomersDao.readCsvFile");
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pantry.food.dao.CsvDao#readCsvFile()
+	 */
+	public List<Customer> readCsvFile() throws FileNotFoundException, IOException {
+		log.info("CustomersDao.readCsvFile");
 
-        if (startDir.length() == 0){
-            startDir = new java.io.File(".").getCanonicalPath();
-        }
+		if (startDir.length() == 0) {
+			startDir = new java.io.File(".").getCanonicalPath();
+		}
 
-        File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileCustomers());
-        customerList = new ArrayList<Customer>();
+		File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileCustomers());
+		customerList = new ArrayList<Customer>();
 
-        if (file.exists())
-        {
-            System.out.println("Customers csv file found");
-            Set<String> householdIdSet = new HashSet<>();
-            
-            // read in the whole file into a list
-            FileReader fr = new FileReader(file);
-            CSVReader reader = new CSVReader(fr);
+		if (file.exists()) {
+			System.out.println("Customers csv file found");
+			Set<String> householdIdSet = new HashSet<>();
 
-            String [] nextLine;
-            boolean firstLine = true;
-            while ((nextLine = reader.readNext()) != null) 
-            {
-                // nextLine[] is an array of values from the line
-                if (!firstLine)
-                {
-                    Customer cust = new Customer();
-                    cust.setCustomerId(Integer.parseInt(nextLine[CUSTOMERID]));
-                    cust.setHouseholdId(Integer.parseInt(nextLine[HOUSEHOLDID]));
-                    cust.setPersonId(Integer.parseInt(nextLine[PERSONID]));
-                    cust.setGender(nextLine[GENDER]);
-                    cust.setBirthDate(nextLine[BIRTHDATE]);
-                    cust.setAge(Integer.parseInt(nextLine[AGE]));
-                    cust.setMonthRegistered(Integer.parseInt(nextLine[MONTHREGISTERED]));
-                    cust.setNewCustomer(Boolean.parseBoolean(nextLine[NEWCUSTOMER]));
-                    cust.setComments(nextLine[COMMENTS]);
-                    cust.setActive(Boolean.parseBoolean(nextLine[ACTIVE]));
+			// read in the whole file into a list
+			FileReader fr = new FileReader(file);
+			CSVReader reader = new CSVReader(fr);
 
-                    customerList.add(cust);
-                    householdIdSet.add(String.valueOf(cust.getHouseholdId()));
-                } 
-                else 
-                {
-                    firstLine = !firstLine;
-                }
-            }
-            
-            reader.close();
-            
-            householdIds.clear();
-            householdIds.addAll(householdIdSet);
-        } 
-        else 
-        {
-            log.info("Customers csv file NOT found");
-        }
+			String[] nextLine;
+			boolean firstLine = true;
+			while ((nextLine = reader.readNext()) != null) {
+				// nextLine[] is an array of values from the line
+				if (!firstLine) {
+					Customer cust = new Customer();
+					cust.setCustomerId(Integer.parseInt(nextLine[CUSTOMERID]));
+					cust.setHouseholdId(Integer.parseInt(nextLine[HOUSEHOLDID]));
+					cust.setPersonId(Integer.parseInt(nextLine[PERSONID]));
+					cust.setGender(nextLine[GENDER]);
+					cust.setBirthDate(nextLine[BIRTHDATE]);
+					cust.setAge(Integer.parseInt(nextLine[AGE]));
+					cust.setMonthRegistered(Integer.parseInt(nextLine[MONTHREGISTERED]));
+					cust.setNewCustomer(Boolean.parseBoolean(nextLine[NEWCUSTOMER]));
+					cust.setComments(nextLine[COMMENTS]);
+					cust.setActive(Boolean.parseBoolean(nextLine[ACTIVE]));
 
-        return customerList;
-    } // end of readCsvFile
+					customerList.add(cust);
+					householdIdSet.add(String.valueOf(cust.getHouseholdId()));
+				} else {
+					firstLine = !firstLine;
+				}
+			}
 
-    /*
-     * (non-Javadoc)
-     * @see org.pantry.food.dao.CsvDao#saveCsvFile()
-     */
-    public void saveCsvFile() throws IOException
-    {
+			reader.close();
 
-        log.info("CustomersDao.saveCsvFile");
-        
-        if (startDir.length() == 0){
-            startDir = new java.io.File(".").getCanonicalPath();
-        }
+			householdIds.clear();
+			householdIds.addAll(householdIdSet);
+			householdIds.sort(numberAsStringComparator);
+		} else {
+			log.info("Customers csv file NOT found");
+		}
 
-        File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileCustomers());
+		return customerList;
+	} // end of readCsvFile
 
-        if (file.exists()){
-            file.delete();
-        }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pantry.food.dao.CsvDao#saveCsvFile()
+	 */
+	public void saveCsvFile() throws IOException {
 
-        FileWriter fw = new FileWriter(file);
-        CSVWriter writer = new CSVWriter(fw);
+		log.info("CustomersDao.saveCsvFile");
 
-        // add the column titles
-        String[] titles = {Col_CustomerId, Col_HouseholdId,
-            Col_PersonId, Col_Gender,
-            Col_BirthDate, Col_Age,
-            Col_MonthRegistered, Col_NewCustomer,
-            Col_Comments, Col_Active
-        };
+		if (startDir.length() == 0) {
+			startDir = new java.io.File(".").getCanonicalPath();
+		}
 
-        writer.writeNext(titles);
+		File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileCustomers());
 
-    	for (Customer customer: customerList) {
-            writer.writeNext(customer.getCsvEntry());
-        }
+		if (file.exists()) {
+			file.delete();
+		}
 
-        writer.close();
-    }
+		FileWriter fw = new FileWriter(file);
+		CSVWriter writer = new CSVWriter(fw);
 
-    /*
-     * Adds a customer object to the customer list in memory.
-     */
-    public void add(Customer cust)
-    {
-        customerList.add(cust);
-    }
+		// add the column titles
+		String[] titles = { Col_CustomerId, Col_HouseholdId, Col_PersonId, Col_Gender, Col_BirthDate, Col_Age,
+				Col_MonthRegistered, Col_NewCustomer, Col_Comments, Col_Active };
 
-    /**
-     * Modifies a customer object in the list (in memory).
-     * @param cust
-     */
-    public void edit(Customer cust)
-    {
-        for (int i = 0; i < customerList.size(); i++)
-        {
-            Customer testCust = customerList.get(i);
-            if (testCust.getCustomerId() == cust.getCustomerId())
-            {
-                testCust.setHouseholdId(cust.getHouseholdId());
-                testCust.setPersonId(cust.getPersonId());
-                testCust.setGender(cust.getGender());
-                testCust.setBirthDate(cust.getBirthDate());
-                testCust.setAge(cust.getAge());
-                testCust.setMonthRegistered(cust.getMonthRegistered());
-                testCust.setNewCustomer(cust.isNewCustomer());
-                testCust.setComments(cust.getComments());
-                testCust.setActive(cust.isActive());
+		writer.writeNext(titles);
 
-                break;
-            }
-        }
+		for (Customer customer : customerList) {
+			writer.writeNext(customer.getCsvEntry());
+		}
 
-    }// end of editCustomer
+		writer.close();
+	}
 
-    /*
-     * Deletes a customer object from the list in memory.
-     */
-    public void delete(Customer cust)
-    {
-        for (int i = 0; i < customerList.size(); i++)
-        {
-            Customer testCust = customerList.get(i);
-            if (testCust.getCustomerId() == cust.getCustomerId())
-            {
-                customerList.remove(i);
-                break;
-            }
-        }
+	/*
+	 * Adds a customer object to the customer list in memory.
+	 */
+	public void add(Customer cust) {
+		customerList.add(cust);
+	}
 
-    }// end of deleteCustomer
+	/**
+	 * Modifies a customer object in the list (in memory).
+	 * 
+	 * @param cust
+	 */
+	public void edit(Customer cust) {
+		for (int i = 0; i < customerList.size(); i++) {
+			Customer testCust = customerList.get(i);
+			if (testCust.getCustomerId() == cust.getCustomerId()) {
+				testCust.setHouseholdId(cust.getHouseholdId());
+				testCust.setPersonId(cust.getPersonId());
+				testCust.setGender(cust.getGender());
+				testCust.setBirthDate(cust.getBirthDate());
+				testCust.setAge(cust.getAge());
+				testCust.setMonthRegistered(cust.getMonthRegistered());
+				testCust.setNewCustomer(cust.isNewCustomer());
+				testCust.setComments(cust.getComments());
+				testCust.setActive(cust.isActive());
+
+				break;
+			}
+		}
+
+	}// end of editCustomer
+
+	/*
+	 * Deletes a customer object from the list in memory.
+	 */
+	public void delete(Customer cust) {
+		for (int i = 0; i < customerList.size(); i++) {
+			Customer testCust = customerList.get(i);
+			if (testCust.getCustomerId() == cust.getCustomerId()) {
+				customerList.remove(i);
+				break;
+			}
+		}
+
+	}// end of deleteCustomer
 
 }// end of class

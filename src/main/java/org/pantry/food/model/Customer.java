@@ -16,92 +16,208 @@
 
 package org.pantry.food.model;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 /**
- * A POJO describing a customer.
+ * A POJO describing a customer
  * 
  * @author Dave Johnson
  */
-public class Customer 
-{
-    private int customerId;
-    private int householdId;
-    private int personId;
-    private String gender = "Female";
-    private String birthDate;
-    private int age;
-    private int monthRegistered;
-    private boolean newCustomer;
-    private String comments;
-    private boolean active = false;
+public class Customer {
+	private SimpleStringProperty customerIdProperty = new SimpleStringProperty();
+	private SimpleStringProperty householdIdProperty = new SimpleStringProperty();
+	private SimpleStringProperty personIdProperty = new SimpleStringProperty();
+	private SimpleStringProperty genderProperty = new SimpleStringProperty("Female");
+	private SimpleStringProperty birthDateProperty = new SimpleStringProperty();
+	private SimpleStringProperty ageProperty = new SimpleStringProperty();
+	private SimpleStringProperty monthRegisteredProperty = new SimpleStringProperty();
+	private SimpleBooleanProperty newCustomerProperty = new SimpleBooleanProperty();
+	private SimpleStringProperty commentsProperty = new SimpleStringProperty();
+	private SimpleBooleanProperty activeProperty = new SimpleBooleanProperty();
 
-    public int getCustomerId() { return customerId; }
-    public void setCustomerId(int custId) { this.customerId = custId; }
-    
-    public int getHouseholdId() { return householdId; }
-    public void setHouseholdId(int householdId) { this.householdId = householdId; }
+	public Customer() {
+	}
 
-    public int getPersonId() { return personId; }
-    public void setPersonId(int personId) { this.personId = personId; }
+	public Customer(Customer clone) {
+		if (null == clone) {
+			return;
+		}
+		setCustomerId(clone.getCustomerId());
+		setHouseholdId(clone.getHouseholdId());
+		setPersonId(clone.getPersonId());
+		setGender(clone.getGender());
+		setBirthDate(clone.getBirthDate());
+		setAge(clone.getAge());
+		setMonthRegistered(clone.getMonthRegistered());
+		setNewCustomer(clone.isNewCustomer());
+		setComments(clone.getComments());
+		setActive(clone.isActive());
+	}
 
-    public String getGender() { return gender; }
-    public void setGender(String gender) { this.gender = gender; }
+	public int getCustomerId() {
+		String value = customerIdProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
 
-    public String getBirthDate() { return birthDate; }
-    public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
+	public void setCustomerId(int custId) {
+		this.customerIdProperty.set(String.valueOf(custId));
+	}
 
-    public int getAge() { return age; }
-    public void setAge(int age) { this.age = age; }
+	public int getHouseholdId() {
+		String value = householdIdProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
 
-    public int getMonthRegistered() { return monthRegistered; }
-    public void setMonthRegistered(int monthRegistered) { this.monthRegistered = monthRegistered; }
+	public void setHouseholdId(int householdId) {
+		this.householdIdProperty.set(String.valueOf(householdId));
+	}
 
-    public boolean isNewCustomer() { return this.newCustomer; }
-    public void setNewCustomer(boolean newCustomer) { this.newCustomer = newCustomer; }
+	public int getPersonId() {
+		String value = personIdProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
 
-    public String getComments() { return comments; }
-    public void setComments(String comments) { this.comments = comments; }
+	public void setPersonId(int personId) {
+		this.personIdProperty.set(String.valueOf(personId));
+	}
 
-    public boolean isActive() { return this.active; }
-    public void setActive(boolean active) { this.active = active; }
+	public String getGender() {
+		return genderProperty.get();
+	}
 
-    /**
-     * Helper method to set a line in the csv file.
-     * @return
-     */
-    public String[] getCsvEntry()
-    {
-        String[] entry = {"" + this.customerId,
-                          "" + this.householdId,
-                          "" + this.personId,
-                          "" + this.gender,
-                          "" + this.birthDate,
-                          "" + this.age,
-                          "" + this.monthRegistered,
-                          "" + this.newCustomer,
-                          "" + this.comments,
-                          "" + this.active};
+	public void setGender(String gender) {
+		this.genderProperty.set(gender);
+	}
 
-        return entry;
-    }
+	public String getBirthDate() {
+		return birthDateProperty.get();
+	}
 
-    /**
-     * Helper method to return an object to the jtable model.
-     * @return
-     */
-    public Object[] getCustomerObject()
-    {
-        return new Object[] {this.customerId,
-                             this.householdId,
-                             this.personId,
-                             this.gender,
-                             this.birthDate,
-                             this.age,
-                             this.monthRegistered,
-                             this.newCustomer,
-                             this.comments,
-                             this.active
-        };
-    }
-    
+	public void setBirthDate(String birthDate) {
+		this.birthDateProperty.set(birthDate);
+	}
 
-}	// end of class
+	public int getAge() {
+		String value = ageProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
+
+	public void setAge(int age) {
+		this.ageProperty.set(String.valueOf(age));
+	}
+
+	public int getMonthRegistered() {
+		String value = monthRegisteredProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
+
+	public void setMonthRegistered(int monthRegistered) {
+		this.monthRegisteredProperty.set(String.valueOf(monthRegistered));
+	}
+
+	public boolean isNewCustomer() {
+		return newCustomerProperty.get();
+	}
+
+	public void setNewCustomer(boolean newCustomer) {
+		this.newCustomerProperty.set(newCustomer);
+	}
+
+	public String getComments() {
+		return commentsProperty.get();
+	}
+
+	public void setComments(String comments) {
+		this.commentsProperty.set(comments);
+	}
+
+	public boolean isActive() {
+		return activeProperty.get();
+	}
+
+	public void setActive(boolean active) {
+		this.activeProperty.set(active);
+	}
+
+	public SimpleStringProperty customerIdProperty() {
+		return customerIdProperty;
+	}
+
+	public SimpleStringProperty householdIdProperty() {
+		return householdIdProperty;
+	}
+
+	public SimpleStringProperty personIdProperty() {
+		return personIdProperty;
+	}
+
+	public SimpleStringProperty genderProperty() {
+		return genderProperty;
+	}
+
+	public SimpleStringProperty birthDateProperty() {
+		return birthDateProperty;
+	}
+
+	public SimpleStringProperty ageProperty() {
+		return ageProperty;
+	}
+
+	public SimpleStringProperty monthRegisteredProperty() {
+		return monthRegisteredProperty;
+	}
+
+	public SimpleBooleanProperty newCustomerProperty() {
+		return newCustomerProperty;
+	}
+
+	public SimpleStringProperty commentsProperty() {
+		return commentsProperty;
+	}
+
+	public SimpleBooleanProperty activeProperty() {
+		return activeProperty;
+	}
+
+	/**
+	 * Helper method to set a line in the csv file.
+	 * 
+	 * @return
+	 */
+	public String[] getCsvEntry() {
+		String[] entry = { "" + customerIdProperty.get(), "" + householdIdProperty.get(), "" + personIdProperty.get(),
+				"" + genderProperty.get(), "" + birthDateProperty.get(), "" + ageProperty.get(),
+				"" + monthRegisteredProperty.get(), "" + newCustomerProperty.get(), "" + commentsProperty.get(),
+				"" + activeProperty.get() };
+
+		return entry;
+	}
+
+	/**
+	 * Helper method to return an object to the jtable model.
+	 * 
+	 * @return
+	 */
+	public Object[] getCustomerObject() {
+		return new Object[] { customerIdProperty.get(), householdIdProperty.get(), personIdProperty.get(),
+				genderProperty.get(), birthDateProperty.get(), ageProperty.get(), monthRegisteredProperty.get(),
+				newCustomerProperty.get(), commentsProperty.get(), activeProperty.get() };
+	}
+
+} // end of class
