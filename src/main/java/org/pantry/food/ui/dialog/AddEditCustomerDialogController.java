@@ -15,16 +15,31 @@
 */
 package org.pantry.food.ui.dialog;
 
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.pantry.food.Images;
 import org.pantry.food.model.Customer;
+import org.pantry.food.ui.ValidStatusTracker;
+import org.pantry.food.ui.validation.ComboInputValidator;
+import org.pantry.food.ui.validation.NotBlankValidator;
+import org.pantry.food.ui.validation.NumericValidator;
+import org.pantry.food.ui.validation.RegexValidator;
+import org.pantry.food.ui.validation.TextInputFocusValidator;
+import org.pantry.food.util.DateUtil;
 import org.pantry.food.util.NumberUtil;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -32,7 +47,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.util.StringConverter;
 
-public class AddEditCustomerDialogController implements IModalDialogController<AddEditCustomerDialogInput, Void> {
+public class AddEditCustomerDialogController implements IModalDialogController<AddEditCustomerDialogInput, Customer> {
 
 	@FXML
 	private ComboBox<String> householdIdCbo;
@@ -54,8 +69,11 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 	private Button saveBtn;
 	@FXML
 	private Button cancelBtn;
-	private ModalDialog<AddEditCustomerDialogInput, Void> parent;
+	private ModalDialog<AddEditCustomerDialogInput, Customer> parent;
 	private AddEditCustomerDialogInput input;
+	private boolean isSaved = false;
+	private Customer savedCustomer = null;
+	private ValidStatusTracker validStatusTracker;
 
 	@FXML
 	private void initialize() {
@@ -78,6 +96,8 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 			}
 
 		});
+
+		validStatusTracker = new ValidStatusTracker();
 	}
 
 	@Override
@@ -91,15 +111,73 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 			householdIdCbo.getItems().addAll(input.getHouseholdIds());
 		}
 
+		// Bind all the inputs to their Customer properties
 		personIdText.textProperty().bindBidirectional(customer.personIdProperty());
 		householdIdCbo.valueProperty().bindBidirectional(customer.householdIdProperty());
 		genderCbo.valueProperty().bindBidirectional(customer.genderProperty());
 		birthdateText.textProperty().bindBidirectional(customer.birthDateProperty());
 		ageText.textProperty().bindBidirectional(customer.ageProperty());
+
+		// The Month Registered combobox displays "Jan"/"Feb"/etc but the actual value
+		// is a number, so we have to map between them
 		monthRegisteredCbo.setConverter(new MonthConverter());
 		monthRegisteredCbo.valueProperty().bindBidirectional(customer.monthRegisteredProperty());
 		newChk.selectedProperty().bindBidirectional(customer.newCustomerProperty());
 		activeChk.selectedProperty().bindBidirectional(customer.activeProperty());
+
+		// Bind the input validators
+		// Person IDs must be non-blank and numeric
+		TextInputFocusValidator textValidator = new TextInputFocusValidator(personIdText).add(new NumericValidator())
+				.add(new NotBlankValidator());
+		personIdText.focusedProperty().addListener(textValidator);
+
+		textValidator = new TextInputFocusValidator(ageText).add(new NumericValidator()).add(new NotBlankValidator());
+		ageText.focusedProperty().addListener(textValidator);
+
+		// Household IDs can be an empty string or a number
+		ComboInputValidator comboValidator = new ComboInputValidator(householdIdCbo).add(new NumericValidator());
+		householdIdCbo.getSelectionModel().selectedItemProperty().addListener(comboValidator);
+
+		// Birthdate must comply with typical date format
+		textValidator = new TextInputFocusValidator(birthdateText)
+				.add(new RegexValidator("[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}"));
+		birthdateText.focusedProperty().addListener(textValidator);
+		// Calculate the person's age when the birthdate changes
+		birthdateText.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean wasFocused, Boolean isFocused) {
+				if (wasFocused && !isFocused && DateUtil.isDate(birthdateText.getText())) {
+					try {
+						int age = calculateAge(DateUtil.toDate(birthdateText.getText()));
+						ageText.setText(String.valueOf(age));
+					} catch (ParseException e) {
+						new Alert(AlertType.WARNING, "Invalid date of birth").show();
+					}
+				}
+			}
+
+			private int calculateAge(Date birthdate) {
+				// Create a calendar object with the date of birth
+				Calendar dateOfBirth = new GregorianCalendar();
+				dateOfBirth.setTime(birthdate);
+				// Create a calendar object with today's date
+				Calendar today = Calendar.getInstance();
+				// Get age based on year
+				int age = today.get(Calendar.YEAR) - dateOfBirth.get(Calendar.YEAR);
+				// Add the tentative age to the date of birth to get this year's birthday
+				dateOfBirth.add(Calendar.YEAR, age);
+				// If this year's birthday has not happened yet, subtract one from age
+				if (today.before(dateOfBirth)) {
+					age--;
+				}
+				return age;
+			}
+		});
+
+		validStatusTracker.add(householdIdCbo, personIdText, genderCbo, birthdateText, ageText, monthRegisteredCbo,
+				newChk, activeChk);
+		saveBtn.disableProperty().bind(validStatusTracker.validProperty().not());
 	}
 
 	@Override
@@ -112,13 +190,13 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 	}
 
 	@Override
-	public Void getResponse() {
-		return null;
+	public Customer getResponse() {
+		return isSaved ? savedCustomer : null;
 	}
 
 	@Override
 	public boolean isPositiveResponse() {
-		return true;
+		return isSaved;
 	}
 
 	@Override
@@ -127,7 +205,7 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 	}
 
 	@Override
-	public void setModalDialogParent(ModalDialog<AddEditCustomerDialogInput, Void> parent) {
+	public void setModalDialogParent(ModalDialog<AddEditCustomerDialogInput, Customer> parent) {
 		this.parent = parent;
 	}
 

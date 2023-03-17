@@ -61,8 +61,8 @@ public class CustomersController {
 				try {
 					AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
 					input.setHouseholdIds(customerDao.getHouseholdIds());
-					new ModalDialog<AddEditCustomerDialogInput, Void>().show("ui/dialog/AddEditCustomerDialog.fxml",
-							input);
+					Customer newCustomer = new ModalDialog<AddEditCustomerDialogInput, Customer>()
+							.show("ui/dialog/AddEditCustomerDialog.fxml", input);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -81,8 +81,8 @@ public class CustomersController {
 					AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
 					input.setHouseholdIds(customerDao.getHouseholdIds());
 					input.setCustomer(customer);
-					new ModalDialog<AddEditCustomerDialogInput, Void>().show("ui/dialog/AddEditCustomerDialog.fxml",
-							input);
+					Customer editedCustomer = new ModalDialog<AddEditCustomerDialogInput, Customer>()
+							.show("ui/dialog/AddEditCustomerDialog.fxml", input);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

@@ -27,3 +27,9 @@
 	-fx-min-height: 40;
 	-fx-min-width: 90;
 }
+
+/* Add a red border to invalid inputs */
+.text-field.error,
+.combo-box.error {
+	-fx-border-color: red;
+}
