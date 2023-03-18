@@ -11,13 +11,14 @@ public class Images {
 	private static final Images INSTANCE = new Images();
 	// Map<image key, icon>
 	private final Map<String, Image> icons = new HashMap<>();
-	
-	private Images() {}
-	
+
+	private Images() {
+	}
+
 	public static ImageView getImageView(String key) {
 		return new ImageView(getIcon(key));
 	}
-	
+
 	public static Image getIcon(String key) {
 		if (!INSTANCE.icons.containsKey(key)) {
 			URL url = Images.class.getResource("/icons/" + key);
