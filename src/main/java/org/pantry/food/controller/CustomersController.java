@@ -3,9 +3,10 @@ package org.pantry.food.controller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.pantry.food.ApplicationContext;
 import org.pantry.food.Images;
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.model.Customer;
@@ -30,7 +31,7 @@ import javafx.scene.input.MouseEvent;
 
 public class CustomersController {
 
-	private final static Logger log = Logger.getLogger(CustomersController.class.getName());
+	private final static Logger log = LogManager.getLogger(CustomersController.class);
 
 	@FXML
 	private Button addCustomerBtn;
@@ -46,7 +47,7 @@ public class CustomersController {
 
 	private ObservableList<Customer> data = FXCollections.observableArrayList();
 
-	private CustomersDao customerDao = new CustomersDao();
+	private CustomersDao customerDao = ApplicationContext.getCustomersDao();
 
 	private Integer nextCustomerId = 0;
 
@@ -63,6 +64,9 @@ public class CustomersController {
 					input.setHouseholdIds(customerDao.getHouseholdIds());
 					Customer newCustomer = new ModalDialog<AddEditCustomerDialogInput, Customer>()
 							.show("ui/dialog/AddEditCustomerDialog.fxml", input);
+					if (null != newCustomer) {
+						loadCustomers();
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -75,7 +79,6 @@ public class CustomersController {
 
 			@Override
 			public void handle(ActionEvent event) {
-				// Invoke the Edit listener
 				try {
 					Customer customer = dataTable.getSelectionModel().getSelectedItem();
 					AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
@@ -83,6 +86,9 @@ public class CustomersController {
 					input.setCustomer(customer);
 					Customer editedCustomer = new ModalDialog<AddEditCustomerDialogInput, Customer>()
 							.show("ui/dialog/AddEditCustomerDialog.fxml", input);
+					if (null != editedCustomer) {
+						loadCustomers();
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -156,16 +162,12 @@ public class CustomersController {
 					nextCustomerId = customer.getCustomerId() + 1;
 				}
 			}
-		} catch (ArrayIndexOutOfBoundsException ex) {
-			log.log(Level.SEVERE, null, ex);
-			Alert alert = new Alert(AlertType.WARNING, "Customer file found, but it is incorrect\n" + ex.getMessage());
-			alert.show();
-		} catch (FileNotFoundException ex) {
-			log.log(Level.SEVERE, null, ex);
+		} catch (ArrayIndexOutOfBoundsException | FileNotFoundException ex) {
+			log.error(ex);
 			Alert alert = new Alert(AlertType.WARNING, "Customer file found, but it is incorrect\n" + ex.getMessage());
 			alert.show();
 		} catch (IOException ex) {
-			log.log(Level.SEVERE, null, ex);
+			log.error(ex);
 			Alert alert = new Alert(AlertType.WARNING, "Problem opening file\n" + ex.getMessage());
 			alert.show();
 		}

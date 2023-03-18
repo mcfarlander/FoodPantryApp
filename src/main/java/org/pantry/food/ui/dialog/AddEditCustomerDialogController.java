@@ -15,6 +15,7 @@
 */
 package org.pantry.food.ui.dialog;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -24,7 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.pantry.food.ApplicationContext;
 import org.pantry.food.Images;
+import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.model.Customer;
 import org.pantry.food.ui.ValidStatusTracker;
 import org.pantry.food.ui.validation.ComboInputValidator;
@@ -50,6 +55,7 @@ import javafx.scene.image.Image;
 import javafx.util.StringConverter;
 
 public class AddEditCustomerDialogController implements IModalDialogController<AddEditCustomerDialogInput, Customer> {
+	private static final Logger log = LogManager.getLogger(AddEditCustomerDialogController.class.getName());
 
 	@FXML
 	private ComboBox<String> householdIdCbo;
@@ -77,10 +83,10 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 	private ModalDialog<AddEditCustomerDialogInput, Customer> parent;
 	private AddEditCustomerDialogInput input;
 	private boolean isSaved = false;
-	private Customer savedCustomer = null;
 	private ValidStatusTracker validStatusTracker;
 	private List<String> monthNames = new ArrayList<>(
 			Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"));
+	private Customer savedCustomer = null;
 
 	@FXML
 	private void initialize() {
@@ -91,21 +97,34 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 
 		// Add icons to buttons
 		saveBtn.setGraphic(Images.getImageView("accept.png"));
-		cancelBtn.setOnAction(new EventHandler<ActionEvent>() {
+		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				// Attempt to save the new record
-//				
-//				this.customer.setHouseholdId(Integer.parseInt(this.cboHouseholdId.getSelectedItem().toString()));
-//		        this.customer.setPersonId(Integer.parseInt(this.txtPersonId.getText()));
-//		        this.customer.setGender(this.cboGender.getSelectedItem().toString());
-//		        this.customer.setBirthDate(this.txtBirthDate.getText());
-//		        this.customer.setAge(Integer.parseInt(txtAge.getText()));
-//		        this.customer.setMonthRegistered(this.cboMonthRegistered.getSelectedIndex() + 1);
-//		        this.customer.setNewCustomer(this.chkNew.isSelected());
-//		        this.customer.setComments(txtComments.getText());
-//		        this.customer.setActive(chkActive.isSelected());
+				boolean isNew = savedCustomer.getCustomerId() <= 0;
+				log.info("Attempting to save {} customer record {}", isNew ? "new" : "existing",
+						isNew ? savedCustomer.getCustomerId() : "");
+
+				// Attempt to save the record
+				// We only ever use the CustomersDao in this handler, so no reason to make it
+				// available to the rest of this class
+				CustomersDao dao = ApplicationContext.getCustomersDao();
+				if (isNew) {
+					savedCustomer.setCustomerId(dao.getNextCustomerId());
+					dao.add(savedCustomer);
+				} else {
+					dao.edit(savedCustomer);
+				}
+
+				try {
+					dao.saveCsvFile();
+					isSaved = true;
+					parent.close();
+				} catch (IOException e) {
+					String message = "Could not " + (isNew ? "add" : "edit") + " record\r\n" + e.getMessage();
+					log.error(message);
+					new Alert(AlertType.WARNING, message).show();
+				}
 			}
 
 		});
@@ -115,6 +134,7 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 
 			@Override
 			public void handle(ActionEvent event) {
+				log.info("User canceled new customer record");
 				// Close the dialog
 				parent.close();
 			}
@@ -128,7 +148,8 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 	public void setInput(AddEditCustomerDialogInput input) {
 		this.input = input;
 		boolean isNew = null == input.getCustomer();
-		Customer customer = new Customer(input.getCustomer());
+		log.info("Opening dialog to {} a customer record", isNew ? "add" : "edit");
+		savedCustomer = new Customer(input.getCustomer());
 
 		householdIdCbo.getItems().add("");
 
@@ -137,23 +158,24 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 		}
 
 		// Bind all the inputs to their Customer properties
-		personIdText.textProperty().bindBidirectional(customer.personIdProperty());
-		householdIdCbo.valueProperty().bindBidirectional(customer.householdIdProperty());
-		genderCbo.valueProperty().bindBidirectional(customer.genderProperty());
-		birthdateText.textProperty().bindBidirectional(customer.birthDateProperty());
-		ageText.textProperty().bindBidirectional(customer.ageProperty());
+		personIdText.textProperty().bindBidirectional(savedCustomer.personIdProperty());
+		householdIdCbo.valueProperty().bindBidirectional(savedCustomer.householdIdProperty());
+		genderCbo.valueProperty().bindBidirectional(savedCustomer.genderProperty());
+		birthdateText.textProperty().bindBidirectional(savedCustomer.birthDateProperty());
+		ageText.textProperty().bindBidirectional(savedCustomer.ageProperty());
 
 		// The Month Registered combobox displays "Jan"/"Feb"/etc but the actual value
 		// is a number, so we have to map between them
 		monthRegisteredCbo.setConverter(new MonthConverter(monthNames));
-		monthRegisteredCbo.valueProperty().bindBidirectional(customer.monthRegisteredProperty());
+		monthRegisteredCbo.valueProperty().bindBidirectional(savedCustomer.monthRegisteredProperty());
 
-		newChk.selectedProperty().bindBidirectional(customer.newCustomerProperty());
-		activeChk.selectedProperty().bindBidirectional(customer.activeProperty());
+		newChk.selectedProperty().bindBidirectional(savedCustomer.newCustomerProperty());
+		activeChk.selectedProperty().bindBidirectional(savedCustomer.activeProperty());
 
-		commentsText.textProperty().bindBidirectional(customer.commentsProperty());
+		commentsText.textProperty().bindBidirectional(savedCustomer.commentsProperty());
 
 		// Bind the input validators
+		log.debug("Binding input validators");
 		// Person IDs must be non-blank and numeric
 		TextInputFocusValidator textValidator = new TextInputFocusValidator(personIdText).add(new NumericValidator())
 				.add(new NotBlankValidator());
@@ -176,11 +198,15 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean wasFocused, Boolean isFocused) {
 				if (wasFocused && !isFocused && DateUtil.isDate(birthdateText.getText())) {
+					String birthdateStr = birthdateText.getText();
+					log.trace("Birthdate text focus lost, input is {}", birthdateStr);
+
 					try {
-						LocalDate birthdate = DateUtil.toDate(birthdateText.getText());
+						LocalDate birthdate = DateUtil.toDate(birthdateStr);
 						int age = calculateAge(birthdate);
 
 						if (age < 0 || age > 120) {
+							log.debug("Birthdate {} results in age {}", birthdateStr, age);
 							// Try to reconcile the date by adding 1900 to the year. If the year is
 							// presented in a 2-digit format, Java assumes it's a 2-digit representation of
 							// a year sub-100 AD. But the user probably means a year within the 20th
@@ -188,6 +214,8 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 							birthdate = birthdate.plusYears(1900);
 							age = calculateAge(birthdate);
 							if (age < 0 || age > 120) {
+								log.error("Incorrect birth year - date {} results in age {}", birthdate.toString(),
+										age);
 								new Alert(AlertType.WARNING, "Incorrect birth year").show();
 							} else {
 								ageText.setText(String.valueOf(age));
@@ -196,7 +224,8 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 							ageText.setText(String.valueOf(age));
 						}
 					} catch (ParseException e) {
-						new Alert(AlertType.WARNING, "Invalid date of birth").show();
+						log.error("Invalid birthdate - date {} could not be parsed", birthdateStr, e);
+						new Alert(AlertType.WARNING, "Invalid birthdate").show();
 					}
 				}
 			}
@@ -256,7 +285,6 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 	 * Converts a month name/abbreviation to its corresponding number
 	 */
 	class MonthConverter extends StringConverter<String> {
-
 		private Map<String, String> monthToNumber = new HashMap<>();
 
 		MonthConverter(List<String> monthNames) {
@@ -283,7 +311,5 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 			}
 			return "";
 		}
-
 	}
-
 }

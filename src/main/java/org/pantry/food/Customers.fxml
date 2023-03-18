@@ -47,16 +47,16 @@
                      <children>
                         <TableView fx:id="dataTable" focusTraversable="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
-                            <TableColumn id="customerId" editable="false" prefWidth="75.0" text="Customer ID" />
-                            <TableColumn id="householdId" editable="false" prefWidth="75.0" text="Household ID" />
-                              <TableColumn id="personId" editable="false" prefWidth="75.0" text="Person ID" />
-                              <TableColumn id="gender" editable="false" prefWidth="75.0" text="Gender" />
-                              <TableColumn id="birthDate" editable="false" prefWidth="75.0" text="Birthdate" />
-                              <TableColumn id="age" editable="false" prefWidth="75.0" text="Age" />
-                              <TableColumn id="monthRegistered" editable="false" prefWidth="75.0" text="Month Registered" />
-                              <TableColumn id="newCustomer" editable="false" prefWidth="75.0" text="New?" />
-                              <TableColumn id="comments" editable="false" prefWidth="75.0" text="Comments" />
-                              <TableColumn id="active" editable="false" prefWidth="75.0" text="Active?" />
+                            <TableColumn id="customerId" editable="false" minWidth="-1.0" prefWidth="75.0" text="Customer ID" />
+                            <TableColumn id="householdId" editable="false" minWidth="-1.0" prefWidth="100.0" text="Household ID" />
+                              <TableColumn id="personId" editable="false" minWidth="-1.0" prefWidth="75.0" text="Person ID" />
+                              <TableColumn id="gender" editable="false" minWidth="-1.0" prefWidth="75.0" text="Gender" />
+                              <TableColumn id="birthDate" editable="false" minWidth="-1.0" prefWidth="75.0" text="Birthdate" />
+                              <TableColumn id="age" editable="false" minWidth="-1.0" prefWidth="75.0" text="Age" />
+                              <TableColumn id="monthRegistered" editable="false" minWidth="-1.0" prefWidth="125.0" text="Month Registered" />
+                              <TableColumn id="newCustomer" editable="false" minWidth="-1.0" prefWidth="75.0" text="New?" />
+                              <TableColumn id="comments" editable="false" minWidth="-1.0" prefWidth="150.0" text="Comments" />
+                              <TableColumn id="active" editable="false" minWidth="-1.0" prefWidth="75.0" text="Active?" />
                           </columns>
                         </TableView>
                      </children>

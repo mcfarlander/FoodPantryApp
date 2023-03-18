@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import org.pantry.food.model.Customer;
@@ -33,8 +34,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
 /**
- * A class to contain all the logic to map between a file of customer and the
- * Customer class.
+ * Contains all the logic to map between a customer file and the Customer class.
  * 
  * @author mcfarland_davej
  */
@@ -68,6 +68,8 @@ public class CustomersDao implements CsvDao<Customer> {
 	private String startDir = "";
 
 	private List<Customer> customerList = new ArrayList<Customer>();
+
+	private final AtomicInteger lastCustomerId = new AtomicInteger();
 
 	public List<Customer> getCustomerList() {
 		return this.customerList;
@@ -134,6 +136,10 @@ public class CustomersDao implements CsvDao<Customer> {
 
 					customerList.add(cust);
 					householdIdSet.add(String.valueOf(cust.getHouseholdId()));
+
+					if (cust.getCustomerId() > lastCustomerId.get()) {
+						lastCustomerId.set(cust.getCustomerId());
+					}
 				} else {
 					firstLine = !firstLine;
 				}
@@ -199,21 +205,20 @@ public class CustomersDao implements CsvDao<Customer> {
 	 * @param cust
 	 */
 	public void edit(Customer cust) {
+		Integer foundIndex = null;
 		for (int i = 0; i < customerList.size(); i++) {
 			Customer testCust = customerList.get(i);
+			int existingId = testCust.getCustomerId();
+			int newId = cust.getCustomerId();
 			if (testCust.getCustomerId() == cust.getCustomerId()) {
-				testCust.setHouseholdId(cust.getHouseholdId());
-				testCust.setPersonId(cust.getPersonId());
-				testCust.setGender(cust.getGender());
-				testCust.setBirthDate(cust.getBirthDate());
-				testCust.setAge(cust.getAge());
-				testCust.setMonthRegistered(cust.getMonthRegistered());
-				testCust.setNewCustomer(cust.isNewCustomer());
-				testCust.setComments(cust.getComments());
-				testCust.setActive(cust.isActive());
-
+				foundIndex = i;
 				break;
 			}
+		}
+
+		// Replace in-memory customer with the updated customer
+		if (null != foundIndex) {
+			customerList.set(foundIndex, cust);
 		}
 
 	}// end of editCustomer
@@ -231,5 +236,9 @@ public class CustomersDao implements CsvDao<Customer> {
 		}
 
 	}// end of deleteCustomer
+
+	public int getNextCustomerId() {
+		return lastCustomerId.addAndGet(1);
+	}
 
 }// end of class
