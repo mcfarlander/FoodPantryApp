@@ -93,7 +93,7 @@ public class FoodRecordDao implements CsvDao<FoodRecord>
      * (non-Javadoc)
      * @see org.pantry.food.dao.CsvDao#readCsvFile()
      */
-    public List<FoodRecord> readCsvFile() throws FileNotFoundException, IOException
+    public List<FoodRecord> read() throws FileNotFoundException, IOException
     {
         log.info("FoodRecordIO.readCsvFile");
 
@@ -196,7 +196,7 @@ public class FoodRecordDao implements CsvDao<FoodRecord>
      * (non-Javadoc)
      * @see org.pantry.food.dao.CsvDao#saveCsvFile()
      */
-    public void saveCsvFile() throws IOException
+    public void persist() throws IOException
     {
 
         log.info("FoodRecordIO.saveCsvFile");

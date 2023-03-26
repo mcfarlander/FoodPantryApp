@@ -40,8 +40,15 @@ import org.pantry.food.ui.common.DataFiles;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 /**
  * Contains all the logic to map between a customer file and the Customer class.
+ * Holds the source-of-truth repository of customer records. Updates the
+ * customer records repository when the data file is changed and triggers an
+ * observable event so interested observers can refresh their display of that
+ * data.
  * 
  * @author mcfarland_davej
  */
@@ -125,7 +132,7 @@ public class CustomersDao implements CsvDao<Customer> {
 	 * 
 	 * @see org.pantry.food.dao.CsvDao#readCsvFile()
 	 */
-	public List<Customer> readCsvFile() throws FileNotFoundException, IOException {
+	public List<Customer> read() throws FileNotFoundException, IOException {
 		log.info("CustomersDao.readCsvFile");
 
 		if (startDir.length() == 0) {
@@ -133,34 +140,17 @@ public class CustomersDao implements CsvDao<Customer> {
 		}
 
 		File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileCustomers());
-		customerList = new ArrayList<Customer>();
 
 		if (file.exists()) {
 			// Watch for file changes on customers.csv and notify interested listeners
 			// The users often change the files manually and are then surprised when the
 			// program does not know about the changes.
 			if (null == fileWatcher) {
-				fileWatcher = new FileAlterationObserver(file.getParentFile(),
-						FileFilterUtils.nameFileFilter(file.getName()));
-				fileListener = new FileAlterationListenerAdaptor() {
-					public void onFileChange(File file) {
-						for (FileChangedListener listener : fileChangedListeners) {
-							listener.onFileChanged(file.getName());
-						}
-					}
-				};
-
-				fileWatcher.addListener(fileListener);
-				fileMonitor = new FileAlterationMonitor(500, fileWatcher);
-				try {
-					fileWatcher.initialize();
-					fileMonitor.start();
-				} catch (Exception e) {
-					log.error("Could not start file monitor", e);
-				}
+				startFileWatcher(file);
 			}
 
 			System.out.println("Customers csv file found");
+			List<Customer> customers = new ArrayList<>();
 			Set<String> householdIdSet = new HashSet<>();
 
 			// read in the whole file into a list
@@ -184,7 +174,7 @@ public class CustomersDao implements CsvDao<Customer> {
 					cust.setComments(nextLine[COMMENTS]);
 					cust.setActive(Boolean.parseBoolean(nextLine[ACTIVE]));
 
-					customerList.add(cust);
+					customers.add(cust);
 					householdIdSet.add(String.valueOf(cust.getHouseholdId()));
 
 					if (cust.getCustomerId() > lastCustomerId.get()) {
@@ -197,11 +187,12 @@ public class CustomersDao implements CsvDao<Customer> {
 
 			reader.close();
 
+			customerList = customers;
 			householdIds.clear();
 			householdIds.addAll(householdIdSet);
 			householdIds.sort(numberAsStringComparator);
 		} else {
-			log.info("Customers csv file NOT found");
+			log.error("Customers CSV file NOT found");
 		}
 
 		return customerList;
@@ -212,8 +203,7 @@ public class CustomersDao implements CsvDao<Customer> {
 	 * 
 	 * @see org.pantry.food.dao.CsvDao#saveCsvFile()
 	 */
-	public void saveCsvFile() throws IOException {
-
+	public void persist() throws IOException {
 		log.info("CustomersDao.saveCsvFile");
 
 		if (startDir.length() == 0) {
@@ -271,8 +261,9 @@ public class CustomersDao implements CsvDao<Customer> {
 
 	}// end of editCustomer
 
-	/*
-	 * Deletes a customer object from the list in memory.
+	/**
+	 * Deletes a customer object from the list in memory. This should typically be
+	 * followed by a call to saveCsvFile().
 	 */
 	public void delete(Customer cust) {
 		for (int i = 0; i < customerList.size(); i++) {
@@ -285,16 +276,64 @@ public class CustomersDao implements CsvDao<Customer> {
 
 	}// end of deleteCustomer
 
+	/**
+	 * @return highest existing customer ID plus 1
+	 */
 	public int getNextCustomerId() {
 		return lastCustomerId.addAndGet(1);
 	}
 
+	/**
+	 * Registers an observer to be notified when the customers data file is modified
+	 * 
+	 * @param listener
+	 */
 	public void addFileChangedListener(FileChangedListener listener) {
 		fileChangedListeners.add(listener);
 	}
 
+	/**
+	 * Unregisters a previously-registered data file change listener
+	 * 
+	 * @param listener
+	 */
 	public void removeFileChangedListener(FileChangedListener listener) {
 		fileChangedListeners.remove(listener);
+	}
+
+	/**
+	 * Starts the CSV file watcher
+	 * 
+	 * @param file file to watch for changes
+	 */
+	private void startFileWatcher(File file) {
+		fileWatcher = new FileAlterationObserver(file.getParentFile(), FileFilterUtils.nameFileFilter(file.getName()));
+		fileListener = new FileAlterationListenerAdaptor() {
+			public void onFileChange(File file) {
+				// First we update our own local in-memory data repository
+				try {
+					read();
+				} catch (IOException e) {
+					String message = "Could not read Customers file\r\n" + e.getMessage();
+					log.error(message, e);
+					new Alert(AlertType.WARNING, message).show();
+				}
+
+				// Then notify listeners
+				for (FileChangedListener listener : fileChangedListeners) {
+					listener.onFileChanged(file.getName());
+				}
+			}
+		};
+
+		fileWatcher.addListener(fileListener);
+		fileMonitor = new FileAlterationMonitor(500, fileWatcher);
+		try {
+			fileWatcher.initialize();
+			fileMonitor.start();
+		} catch (Exception e) {
+			log.error("Could not start file monitor", e);
+		}
 	}
 
 }// end of class

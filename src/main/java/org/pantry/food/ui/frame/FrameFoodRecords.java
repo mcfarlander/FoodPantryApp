@@ -330,7 +330,7 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 			anon.setDonorName("Anonymous");
 			donorRecords.add(anon);
 
-			recordIo.readCsvFile();
+			recordIo.read();
 			DefaultTableModel model = (DefaultTableModel) this.jTable1.getModel();
 			model.setRowCount(0);
 
@@ -377,7 +377,7 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 	 */
 	private void saveRecords() {
 		try {
-			recordIo.saveCsvFile();
+			recordIo.persist();
 		} catch (IOException ex) {
 			log.log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(this, "Problem saving file/n" + ex.getMessage());

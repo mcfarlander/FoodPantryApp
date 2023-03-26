@@ -62,7 +62,7 @@ public class ReportVolunteerEvents  extends ReportBase
     {
     	try 
     	{
-			volunteerIO.readCsvFile();
+			volunteerIO.read();
 		} catch (FileNotFoundException ex) 
 		{
 			Logger.getLogger(ReportVolunteerEvents.class.getName()).log(Level.SEVERE, null, ex);
@@ -155,7 +155,7 @@ public class ReportVolunteerEvents  extends ReportBase
         {
 
             VolunteerEventDao recIo = new VolunteerEventDao();
-            recIo.readCsvFile();
+            recIo.read();
             
             // create an arraylist of regular volunteers
             ArrayList<VolunteerEvent> vols = new ArrayList<VolunteerEvent>();

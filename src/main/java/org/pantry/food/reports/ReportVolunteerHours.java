@@ -123,7 +123,7 @@ public class ReportVolunteerHours  extends ReportBase
         try 
         {
             VolunteerHourDao recIo = new VolunteerHourDao();
-            recIo.readCsvFile();
+            recIo.read();
 
             // use the POJO to store the working sums
             VolunteerHour janRecord = new VolunteerHour();

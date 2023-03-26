@@ -379,7 +379,7 @@ public class FrameSettings extends javax.swing.JInternalFrame
             
             log.info("starting to add 1 to each customer's registered month.");
             CustomersDao custIO = new CustomersDao();
-            custIO.readCsvFile();
+            custIO.read();
 
             int iMonth = 0;
 
@@ -388,7 +388,7 @@ public class FrameSettings extends javax.swing.JInternalFrame
                 cust.setMonthRegistered(iMonth);
             }
 
-            custIO.saveCsvFile();
+            custIO.persist();
 
 
 

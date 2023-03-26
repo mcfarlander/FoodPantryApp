@@ -328,7 +328,7 @@ public class FrameVolunteers extends javax.swing.JInternalFrame
      */
     private void load(){
         try {
-            objIo.readCsvFile();
+            objIo.read();
 
             DefaultTableModel model = (DefaultTableModel)this.jTable1.getModel();
             model.setRowCount(0);
@@ -366,7 +366,7 @@ public class FrameVolunteers extends javax.swing.JInternalFrame
      */
     private void save(){
         try {
-            objIo.saveCsvFile();
+            objIo.persist();
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this,"Problem saving file/n" + ex.getMessage());

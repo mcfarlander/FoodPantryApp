@@ -67,7 +67,7 @@ public class VolunteerHourDao implements CsvDao<VolunteerHour>
      * (non-Javadoc)
      * @see org.pantry.food.dao.CsvDao#readCsvFile()
      */
-    public List<VolunteerHour> readCsvFile() throws FileNotFoundException, IOException
+    public List<VolunteerHour> read() throws FileNotFoundException, IOException
     {
     	log.info("VolunteerHourDao.readCsvFile");
     	
@@ -120,7 +120,7 @@ public class VolunteerHourDao implements CsvDao<VolunteerHour>
      * (non-Javadoc)
      * @see org.pantry.food.dao.CsvDao#saveCsvFile()
      */
-    public void saveCsvFile() throws IOException
+    public void persist() throws IOException
     {
     	log.info("VolunteerHourDao.saveCsvFile");
     	

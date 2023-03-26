@@ -127,7 +127,7 @@ public class ReportMonthlySummary extends ReportBase
         try 
         {
             VisitorsDao visIo = new VisitorsDao();
-            visIo.readCsvFile();
+            visIo.read();
 
             //Calendar cal = Calendar.getInstance();
             Calendar testCal = Calendar.getInstance();

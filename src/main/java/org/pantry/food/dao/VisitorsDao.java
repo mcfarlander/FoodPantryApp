@@ -79,7 +79,7 @@ public class VisitorsDao implements CsvDao<Visit>
      * (non-Javadoc)
      * @see org.pantry.food.dao.CsvDao#readCsvFile()
      */
-    public List<Visit> readCsvFile() throws FileNotFoundException, IOException
+    public List<Visit> read() throws FileNotFoundException, IOException
     {
         log.info("VisitorsDao.readCsvFile");
         
@@ -142,7 +142,7 @@ public class VisitorsDao implements CsvDao<Visit>
      * (non-Javadoc)
      * @see org.pantry.food.dao.CsvDao#saveCsvFile()
      */
-    public void saveCsvFile() throws IOException
+    public void persist() throws IOException
     {
     	log.info("VisitorsDao.saveCsvFile");
     	

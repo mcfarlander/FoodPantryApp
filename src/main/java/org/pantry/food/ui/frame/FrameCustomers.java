@@ -328,7 +328,7 @@ public class FrameCustomers extends javax.swing.JInternalFrame
     private void loadCustomers(){
 
         try {
-            custIo.readCsvFile();
+            custIo.read();
             DefaultTableModel model = (DefaultTableModel)this.jTable1.getModel();
             model.setRowCount(0);
 
@@ -370,7 +370,7 @@ public class FrameCustomers extends javax.swing.JInternalFrame
     {
         try 
         {
-            custIo.saveCsvFile();
+            custIo.persist();
         } catch (IOException ex) {
             log.log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this,"Problem saving file/n" + ex.getMessage());

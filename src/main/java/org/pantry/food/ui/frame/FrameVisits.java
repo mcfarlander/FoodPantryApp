@@ -379,7 +379,7 @@ public class FrameVisits extends javax.swing.JInternalFrame {
 	 */
 	private void loadVisits() {
 		try {
-			visIo.readCsvFile();
+			visIo.read();
 
 			DefaultTableModel model = (DefaultTableModel) this.jTable1.getModel();
 			model.setRowCount(0);
@@ -444,7 +444,7 @@ public class FrameVisits extends javax.swing.JInternalFrame {
 	 */
 	private void saveVisits() {
 		try {
-			visIo.saveCsvFile();
+			visIo.persist();
 		} catch (IOException ex) {
 			log.log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(this, "Problem saving file/n" + ex.getMessage());

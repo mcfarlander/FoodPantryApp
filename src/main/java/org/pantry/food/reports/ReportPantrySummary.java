@@ -117,7 +117,7 @@ public class ReportPantrySummary extends ReportBase
     private void getCustomerData() throws FileNotFoundException, IOException
     {
     	CustomersDao custs = new CustomersDao();
-    	custs.readCsvFile();
+    	custs.read();
     	
     	int numberCustomers = 0;
     	int numberNewAdults = 0;
@@ -246,7 +246,7 @@ public class ReportPantrySummary extends ReportBase
         Calendar mydate = new GregorianCalendar();
         
         VisitorsDao visits = new VisitorsDao();
-        visits.readCsvFile();
+        visits.read();
         
         for (int i = 0; i < visits.getVisitCount(); i++)
         {
@@ -304,10 +304,10 @@ public class ReportPantrySummary extends ReportBase
     	double totalOtherHours = 0;
     	
     	VolunteerDao volunteers = new VolunteerDao();
-    	volunteers.readCsvFile();
+    	volunteers.read();
     	
     	VolunteerEventDao events = new VolunteerEventDao();
-    	events.readCsvFile();
+    	events.read();
     	
     	Calendar mydate = new GregorianCalendar();
     	
@@ -395,7 +395,7 @@ public class ReportPantrySummary extends ReportBase
     private void getDonationData() throws FileNotFoundException, IOException, ParseException
     {
     	FoodRecordDao records = new FoodRecordDao();
-    	records.readCsvFile();
+    	records.read();
     	
     	FoodRecord totals = new FoodRecord();
     	

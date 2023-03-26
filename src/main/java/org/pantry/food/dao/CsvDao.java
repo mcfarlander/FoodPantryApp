@@ -26,13 +26,13 @@ public interface CsvDao<T>
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	List<T> readCsvFile() throws FileNotFoundException, IOException;
+	List<T> read() throws FileNotFoundException, IOException;
 	
 	/**
 	 * Save all objects contained by the DAO to a CSV file.
 	 * @throws IOException
 	 */
-	void saveCsvFile() throws IOException;
+	void persist() throws IOException;
 	
 	
 

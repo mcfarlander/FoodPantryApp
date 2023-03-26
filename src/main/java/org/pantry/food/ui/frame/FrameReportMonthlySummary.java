@@ -223,7 +223,7 @@ public class FrameReportMonthlySummary extends javax.swing.JInternalFrame
     private void loadReport() {
         try {
             VisitorsDao visIo = new VisitorsDao();
-            visIo.readCsvFile();
+            visIo.read();
 
             DefaultTableModel model = (DefaultTableModel)this.jTable1.getModel();
             model.setRowCount(0);

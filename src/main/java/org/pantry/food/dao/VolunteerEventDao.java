@@ -66,7 +66,7 @@ public class VolunteerEventDao implements CsvDao<VolunteerEvent>
      * (non-Javadoc)
      * @see org.pantry.food.dao.CsvDao#readCsvFile()
      */
-    public List<VolunteerEvent> readCsvFile() throws FileNotFoundException, IOException
+    public List<VolunteerEvent> read() throws FileNotFoundException, IOException
     {
     	log.info("VolunteerEventDao.readCsvFile");
     	
@@ -122,7 +122,7 @@ public class VolunteerEventDao implements CsvDao<VolunteerEvent>
      * (non-Javadoc)
      * @see org.pantry.food.dao.CsvDao#saveCsvFile()
      */
-    public void saveCsvFile() throws IOException
+    public void persist() throws IOException
     {
     	log.info("VolunteerEventDao.saveCsvFile");
     	

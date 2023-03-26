@@ -85,7 +85,7 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 	private boolean isSaved = false;
 	private ValidStatusTracker validStatusTracker;
 	private List<String> monthNames = new ArrayList<>(
-			Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"));
+			Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"));
 	private Customer savedCustomer = null;
 
 	@FXML
@@ -117,12 +117,12 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 				}
 
 				try {
-					dao.saveCsvFile();
+					dao.persist();
 					isSaved = true;
 					parent.close();
 				} catch (IOException e) {
 					String message = "Could not " + (isNew ? "add" : "edit") + " record\r\n" + e.getMessage();
-					log.error(message);
+					log.error(message, e);
 					new Alert(AlertType.WARNING, message).show();
 				}
 			}
@@ -287,10 +287,10 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 	class MonthConverter extends StringConverter<String> {
 		private Map<String, String> monthToNumber = new HashMap<>();
 
-		MonthConverter(List<String> monthNames) {
-			int count = 1;
-			for (String name : monthNames) {
-				monthToNumber.put(name, String.valueOf(count++));
+		MonthConverter(List<String> monthNumbers) {
+			for (String number : monthNumbers) {
+				String name = DateUtil.getMonthName(Integer.parseInt(number));
+				monthToNumber.put(name, number);
 			}
 		}
 
@@ -303,9 +303,12 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 		}
 
 		@Override
-		public String fromString(String number) {
+		public String fromString(String monthName) {
+			if (!NumberUtil.isNumeric(monthName)) {
+				return toString(monthName);
+			}
 			for (Map.Entry<String, String> entry : monthToNumber.entrySet()) {
-				if (entry.getValue().equals(number)) {
+				if (entry.getValue().equals(monthName)) {
 					return entry.getKey();
 				}
 			}

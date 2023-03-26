@@ -332,7 +332,7 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 	 */
 	private void load() {
 		try {
-			objIo.readCsvFile();
+			objIo.read();
 
 			DefaultTableModel model = (DefaultTableModel) this.jTable1.getModel();
 			model.setRowCount(0);
@@ -383,7 +383,7 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 
 		try {
 			VolunteerDao volIO = new VolunteerDao();
-			volIO.readCsvFile();
+			volIO.read();
 
 			for (int i = 0; i < volIO.getCvsCount(); i++) {
 				Volunteer obj = volIO.getCvsList().get(i);
@@ -409,7 +409,7 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 	 */
 	private void save() {
 		try {
-			objIo.saveCsvFile();
+			objIo.persist();
 		} catch (IOException ex) {
 			log.log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(this, "Problem saving file/n" + ex.getMessage());

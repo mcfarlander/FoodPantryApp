@@ -14,8 +14,10 @@ import org.pantry.food.model.Customer;
 import org.pantry.food.ui.common.FormState;
 import org.pantry.food.ui.dialog.AddEditCustomerDialogInput;
 import org.pantry.food.ui.dialog.ModalDialog;
+import org.pantry.food.util.DateUtil;
 
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -64,11 +66,11 @@ public class CustomersController {
 				try {
 					AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
 					input.setHouseholdIds(customerDao.getHouseholdIds());
-					Customer newCustomer = new ModalDialog<AddEditCustomerDialogInput, Customer>()
-							.show("ui/dialog/AddEditCustomerDialog.fxml", input);
-					if (null != newCustomer) {
-						loadCustomers();
-					}
+					new ModalDialog<AddEditCustomerDialogInput, Customer>().show("ui/dialog/AddEditCustomerDialog.fxml",
+							input);
+					// When the new customer is saved to the data file, the controller's file change
+					// listener will be invoked which will trigger a refresh of the data table - so
+					// no need to handle that here
 				} catch (IOException e) {
 					log.error("Could not add customer", e);
 					new Alert(AlertType.ERROR, "Could not add customer\r\n" + e.getMessage()).show();
@@ -105,7 +107,7 @@ public class CustomersController {
 						customer.setActive(false);
 						customerDao.edit(customer);
 						try {
-							customerDao.saveCsvFile();
+							customerDao.persist();
 						} catch (IOException e) {
 							log.error("Could not save file", e);
 							new Alert(AlertType.ERROR, "Problem saving file\r\n" + e.getMessage()).show();
@@ -139,7 +141,7 @@ public class CustomersController {
 				column.setCellFactory(col -> new CheckBoxTableCell<>());
 
 				TableColumn<Customer, Boolean> col = (TableColumn<Customer, Boolean>) column;
-				(col).setCellValueFactory(cellValue -> {
+				col.setCellValueFactory(cellValue -> {
 					boolean value = false;
 					if ("newCustomer".equals(column.getId())) {
 						value = cellValue.getValue().isNewCustomer();
@@ -148,6 +150,13 @@ public class CustomersController {
 					}
 					return new SimpleBooleanProperty(value);
 				});
+			} else if ("monthRegistered".equals(column.getId())) {
+				TableColumn<Customer, String> col = (TableColumn<Customer, String>) column;
+				col.setCellValueFactory(cellValue -> {
+					int monthId = cellValue.getValue().getMonthRegistered();
+					String monthName = DateUtil.getMonthName(monthId);
+					return new SimpleStringProperty(monthName);
+				});
 			} else {
 				column.setCellValueFactory(new PropertyValueFactory<>(column.getId()));
 			}
@@ -155,24 +164,37 @@ public class CustomersController {
 
 		dataTable.setItems(data);
 
-		loadCustomers();
-
 		customerDao.addFileChangedListener(new FileChangedListener() {
 
 			// Invoked when the underlying data file changes
 			@Override
 			public void onFileChanged(String filename) {
-				loadCustomers();
+				refreshCustomers(customerDao.getCustomerList());
 			}
 		});
+
+		try {
+			refreshCustomers(customerDao.read());
+		} catch (ArrayIndexOutOfBoundsException | FileNotFoundException ex) {
+			log.error(ex);
+			Alert alert = new Alert(AlertType.WARNING,
+					"Customer file found, but it is incorrect or missing\n" + ex.getMessage());
+			alert.show();
+		} catch (IOException ex) {
+			log.error(ex);
+			Alert alert = new Alert(AlertType.WARNING, "Problem opening file\n" + ex.getMessage());
+			alert.show();
+		}
 	}
 
 	/**
-	 * Loads customer records from the data file and adds them to the display table
+	 * Replaces the current customer list display with <code>customers</code>. This
+	 * should be called instead of <code>loadCustomers()</code>.
+	 * 
+	 * @param customers customers to display
 	 */
-	private void loadCustomers() {
+	private void refreshCustomers(List<Customer> customers) {
 		try {
-			List<Customer> customers = customerDao.readCsvFile();
 			data.clear();
 
 			for (Customer customer : customers) {
@@ -185,14 +207,10 @@ public class CustomersController {
 					nextCustomerId = customer.getCustomerId() + 1;
 				}
 			}
-		} catch (ArrayIndexOutOfBoundsException | FileNotFoundException ex) {
+		} catch (ArrayIndexOutOfBoundsException ex) {
 			log.error(ex);
 			Alert alert = new Alert(AlertType.WARNING,
 					"Customer file found, but it is incorrect or missing\n" + ex.getMessage());
-			alert.show();
-		} catch (IOException ex) {
-			log.error(ex);
-			Alert alert = new Alert(AlertType.WARNING, "Problem opening file\n" + ex.getMessage());
 			alert.show();
 		}
 	}
@@ -207,11 +225,7 @@ public class CustomersController {
 			AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
 			input.setHouseholdIds(customerDao.getHouseholdIds());
 			input.setCustomer(customer);
-			Customer editedCustomer = new ModalDialog<AddEditCustomerDialogInput, Customer>()
-					.show("ui/dialog/AddEditCustomerDialog.fxml", input);
-			if (null != editedCustomer) {
-				loadCustomers();
-			}
+			new ModalDialog<AddEditCustomerDialogInput, Customer>().show("ui/dialog/AddEditCustomerDialog.fxml", input);
 		} catch (IOException e) {
 			log.error("Could not edit customer", e);
 		}

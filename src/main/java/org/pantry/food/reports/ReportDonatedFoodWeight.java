@@ -140,7 +140,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
         try 
         {
             FoodRecordDao recIo = new FoodRecordDao();
-            recIo.readCsvFile();
+            recIo.read();
 
             // use the POJO to store the working sums
             FoodRecord janRecord = new FoodRecord();
