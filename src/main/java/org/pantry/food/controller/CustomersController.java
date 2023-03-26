@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
 import org.pantry.food.Images;
 import org.pantry.food.dao.CustomersDao;
+import org.pantry.food.dao.FileChangedListener;
 import org.pantry.food.model.Customer;
 import org.pantry.food.ui.common.FormState;
 import org.pantry.food.ui.dialog.AddEditCustomerDialogInput;
@@ -23,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -68,7 +70,8 @@ public class CustomersController {
 						loadCustomers();
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.error("Could not add customer", e);
+					new Alert(AlertType.ERROR, "Could not add customer\r\n" + e.getMessage()).show();
 				}
 			}
 
@@ -79,19 +82,8 @@ public class CustomersController {
 
 			@Override
 			public void handle(ActionEvent event) {
-				try {
-					Customer customer = dataTable.getSelectionModel().getSelectedItem();
-					AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
-					input.setHouseholdIds(customerDao.getHouseholdIds());
-					input.setCustomer(customer);
-					Customer editedCustomer = new ModalDialog<AddEditCustomerDialogInput, Customer>()
-							.show("ui/dialog/AddEditCustomerDialog.fxml", input);
-					if (null != editedCustomer) {
-						loadCustomers();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				Customer customer = dataTable.getSelectionModel().getSelectedItem();
+				editCustomer(customer);
 			}
 
 		});
@@ -101,9 +93,26 @@ public class CustomersController {
 
 			@Override
 			public void handle(ActionEvent event) {
-				// Invoke the Delete listener
+				// Double-check with the user before deactivating
+				Customer customer = dataTable.getSelectionModel().getSelectedItem();
+				if (null == customer) {
+					new Alert(AlertType.WARNING, "Please select a customer to deactivate", ButtonType.OK).show();
+				} else {
+					Alert alert = new Alert(AlertType.CONFIRMATION,
+							"Are you sure you want to deactivate this customer?", ButtonType.YES, ButtonType.NO);
+					alert.showAndWait();
+					if (ButtonType.YES == alert.getResult()) {
+						customer.setActive(false);
+						customerDao.edit(customer);
+						try {
+							customerDao.saveCsvFile();
+						} catch (IOException e) {
+							log.error("Could not save file", e);
+							new Alert(AlertType.ERROR, "Problem saving file\r\n" + e.getMessage()).show();
+						}
+					}
+				}
 			}
-
 		});
 
 		// Double-click is the same as Edit
@@ -113,6 +122,8 @@ public class CustomersController {
 			public void handle(MouseEvent event) {
 				if (event.getClickCount() == 2) {
 					// Invoke the Edit listener
+					Customer customer = dataTable.getSelectionModel().getSelectedItem();
+					editCustomer(customer);
 				}
 			}
 
@@ -145,8 +156,20 @@ public class CustomersController {
 		dataTable.setItems(data);
 
 		loadCustomers();
+
+		customerDao.addFileChangedListener(new FileChangedListener() {
+
+			// Invoked when the underlying data file changes
+			@Override
+			public void onFileChanged(String filename) {
+				loadCustomers();
+			}
+		});
 	}
 
+	/**
+	 * Loads customer records from the data file and adds them to the display table
+	 */
 	private void loadCustomers() {
 		try {
 			List<Customer> customers = customerDao.readCsvFile();
@@ -164,12 +187,33 @@ public class CustomersController {
 			}
 		} catch (ArrayIndexOutOfBoundsException | FileNotFoundException ex) {
 			log.error(ex);
-			Alert alert = new Alert(AlertType.WARNING, "Customer file found, but it is incorrect\n" + ex.getMessage());
+			Alert alert = new Alert(AlertType.WARNING,
+					"Customer file found, but it is incorrect or missing\n" + ex.getMessage());
 			alert.show();
 		} catch (IOException ex) {
 			log.error(ex);
 			Alert alert = new Alert(AlertType.WARNING, "Problem opening file\n" + ex.getMessage());
 			alert.show();
+		}
+	}
+
+	/**
+	 * Displays a dialog for modifying a given customer
+	 * 
+	 * @param customer customer record to be changed
+	 */
+	private void editCustomer(Customer customer) {
+		try {
+			AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
+			input.setHouseholdIds(customerDao.getHouseholdIds());
+			input.setCustomer(customer);
+			Customer editedCustomer = new ModalDialog<AddEditCustomerDialogInput, Customer>()
+					.show("ui/dialog/AddEditCustomerDialog.fxml", input);
+			if (null != editedCustomer) {
+				loadCustomers();
+			}
+		} catch (IOException e) {
+			log.error("Could not edit customer", e);
 		}
 	}
 }

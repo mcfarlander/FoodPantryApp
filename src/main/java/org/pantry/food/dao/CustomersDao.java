@@ -25,8 +25,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.pantry.food.ApplicationCloseListener;
+import org.pantry.food.ApplicationContext;
 import org.pantry.food.model.Customer;
 import org.pantry.food.ui.common.DataFiles;
 
@@ -39,7 +46,7 @@ import com.opencsv.CSVWriter;
  * @author mcfarland_davej
  */
 public class CustomersDao implements CsvDao<Customer> {
-	private final static Logger log = Logger.getLogger(CustomersDao.class.getName());
+	private final static Logger log = LogManager.getLogger(CustomersDao.class.getName());
 
 	private static final int CUSTOMERID = 0;
 	private static final int HOUSEHOLDID = 1;
@@ -70,6 +77,27 @@ public class CustomersDao implements CsvDao<Customer> {
 	private List<Customer> customerList = new ArrayList<Customer>();
 
 	private final AtomicInteger lastCustomerId = new AtomicInteger();
+	private FileAlterationObserver fileWatcher;
+	private FileAlterationListenerAdaptor fileListener;
+	private FileAlterationMonitor fileMonitor;
+	private List<FileChangedListener> fileChangedListeners = new ArrayList<>();
+	private List<String> householdIds = new ArrayList<>();
+
+	public CustomersDao() {
+		ApplicationContext.addApplicationCloseListener(new ApplicationCloseListener() {
+
+			@Override
+			public void onClosing() {
+				if (null != fileMonitor) {
+					try {
+						fileMonitor.stop();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+	}
 
 	public List<Customer> getCustomerList() {
 		return this.customerList;
@@ -92,8 +120,6 @@ public class CustomersDao implements CsvDao<Customer> {
 		this.startDir = sDir;
 	}
 
-	private List<String> householdIds = new ArrayList<>();
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -110,6 +136,30 @@ public class CustomersDao implements CsvDao<Customer> {
 		customerList = new ArrayList<Customer>();
 
 		if (file.exists()) {
+			// Watch for file changes on customers.csv and notify interested listeners
+			// The users often change the files manually and are then surprised when the
+			// program does not know about the changes.
+			if (null == fileWatcher) {
+				fileWatcher = new FileAlterationObserver(file.getParentFile(),
+						FileFilterUtils.nameFileFilter(file.getName()));
+				fileListener = new FileAlterationListenerAdaptor() {
+					public void onFileChange(File file) {
+						for (FileChangedListener listener : fileChangedListeners) {
+							listener.onFileChanged(file.getName());
+						}
+					}
+				};
+
+				fileWatcher.addListener(fileListener);
+				fileMonitor = new FileAlterationMonitor(500, fileWatcher);
+				try {
+					fileWatcher.initialize();
+					fileMonitor.start();
+				} catch (Exception e) {
+					log.error("Could not start file monitor", e);
+				}
+			}
+
 			System.out.println("Customers csv file found");
 			Set<String> householdIdSet = new HashSet<>();
 
@@ -208,8 +258,6 @@ public class CustomersDao implements CsvDao<Customer> {
 		Integer foundIndex = null;
 		for (int i = 0; i < customerList.size(); i++) {
 			Customer testCust = customerList.get(i);
-			int existingId = testCust.getCustomerId();
-			int newId = cust.getCustomerId();
 			if (testCust.getCustomerId() == cust.getCustomerId()) {
 				foundIndex = i;
 				break;
@@ -239,6 +287,14 @@ public class CustomersDao implements CsvDao<Customer> {
 
 	public int getNextCustomerId() {
 		return lastCustomerId.addAndGet(1);
+	}
+
+	public void addFileChangedListener(FileChangedListener listener) {
+		fileChangedListeners.add(listener);
+	}
+
+	public void removeFileChangedListener(FileChangedListener listener) {
+		fileChangedListeners.remove(listener);
 	}
 
 }// end of class

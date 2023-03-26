@@ -1,3 +1,7 @@
+.button:default {
+    -fx-base: derive(-fx-accent, 120%);
+}
+
 /* Make panel headings a little bigger to signify importance */
 .content-header {
 	-fx-font-size: 120%;

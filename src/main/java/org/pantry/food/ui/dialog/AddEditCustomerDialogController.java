@@ -134,7 +134,7 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 
 			@Override
 			public void handle(ActionEvent event) {
-				log.info("User canceled new customer record");
+				log.info("User canceled add/edit customer record");
 				// Close the dialog
 				parent.close();
 			}
