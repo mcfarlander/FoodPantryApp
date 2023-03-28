@@ -22,13 +22,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.pantry.food.model.FoodRecord;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.pantry.food.model.Food;
 import org.pantry.food.ui.common.DataFiles;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  * A class to contain all the logic to map between a file of food records and
@@ -37,14 +46,19 @@ import com.opencsv.CSVWriter;
  * @author mcfarland_davej
  *
  */
-public class FoodRecordDao implements CsvDao<FoodRecord> {
-	private final static Logger log = Logger.getLogger(FoodRecordDao.class.getName());
+public class FoodsDao implements CsvDao<Food> {
+	private final static Logger log = LogManager.getLogger(FoodsDao.class.getName());
 
+	private final AtomicInteger lastId = new AtomicInteger();
 	private String startDir = "";
+	private List<Food> foodList = new ArrayList<Food>();
 
-	private List<FoodRecord> foodList = new ArrayList<FoodRecord>();
+	private FileAlterationObserver fileWatcher;
+	private FileAlterationListenerAdaptor fileListener;
+	private FileAlterationMonitor fileMonitor;
+	private List<FileChangedListener> fileChangedListeners = new ArrayList<>();
 
-	public List<FoodRecord> getAll() {
+	public List<Food> getAll() {
 		return foodList;
 	}
 
@@ -101,18 +115,25 @@ public class FoodRecordDao implements CsvDao<FoodRecord> {
 	 * 
 	 * @see org.pantry.food.dao.CsvDao#readCsvFile()
 	 */
-	public List<FoodRecord> read() throws FileNotFoundException, IOException {
-		log.info("FoodRecordIO.readCsvFile");
+	public List<Food> read() throws FileNotFoundException, IOException {
+		log.info("FoodDao.readCsvFile");
 
 		if (startDir.length() == 0) {
 			startDir = new java.io.File(".").getCanonicalPath();
 		}
 
 		File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileFoodRecord());
-		foodList = new ArrayList<FoodRecord>();
+		foodList = new ArrayList<Food>();
 
 		if (file.exists()) {
-			log.info("FoodRecord cvs file found");
+			// Watch for file changes on foodrecords.csv and notify interested listeners
+			// The users often change the files manually and are then surprised when the
+			// program does not know about the changes.
+			if (null == fileWatcher) {
+				startFileWatcher(file);
+			}
+
+			log.info("Foods CSV file found");
 			// read in the whole file into a list
 			FileReader fr = new FileReader(file);
 			CSVReader reader = new CSVReader(fr);
@@ -123,16 +144,15 @@ public class FoodRecordDao implements CsvDao<FoodRecord> {
 			boolean hasSecHarvestProduceUpdate = false;
 
 			while ((nextLine = reader.readNext()) != null) {
-
 				if (!firstLine) {
-					FoodRecord record = new FoodRecord();
-					record.setRecordId(Integer.parseInt(nextLine[RECORDID]));
+					Food record = new Food();
+					record.setFoodId(Integer.parseInt(nextLine[RECORDID]));
 					record.setEntryDate(nextLine[ENTRYDATE]);
 					record.setPickNSave(Double.parseDouble(nextLine[PICKNSAVE]));
 					record.setCommunity(Double.parseDouble(nextLine[COMMUNITY]));
 					record.setNonTefap(Double.parseDouble(nextLine[NONTEFAP]));
 					record.setTefap(Double.parseDouble(nextLine[TEFAP]));
-					record.setSecHarvest(Double.parseDouble(nextLine[SECONDHARVEST]));
+					record.setSecondHarvest(Double.parseDouble(nextLine[SECONDHARVEST]));
 					record.setPantry(Double.parseDouble(nextLine[PANTRY]));
 					record.setOther(Double.parseDouble(nextLine[OTHER]));
 					record.setComment(nextLine[COMMENT]);
@@ -157,13 +177,12 @@ public class FoodRecordDao implements CsvDao<FoodRecord> {
 
 					// if the file has the second harvest produce column
 					if (hasSecHarvestProduceUpdate) {
-						record.setSecHarvestProduce(Double.parseDouble(nextLine[SECONDHARVEST_PRODUCE]));
+						record.setSecondHarvestProduce(Double.parseDouble(nextLine[SECONDHARVEST_PRODUCE]));
 					} else {
-						record.setSecHarvestProduce(0);
+						record.setSecondHarvestProduce(0);
 					}
 
 					foodList.add(record);
-
 				} else {
 					firstLine = !firstLine;
 
@@ -174,12 +193,10 @@ public class FoodRecordDao implements CsvDao<FoodRecord> {
 
 					if (columns >= 19)
 						hasSecHarvestProduceUpdate = true;
-
 				}
 			}
 
 			reader.close();
-
 		} else {
 			log.info("FoodRecord cvs file NOT found");
 		}
@@ -193,13 +210,12 @@ public class FoodRecordDao implements CsvDao<FoodRecord> {
 	 * @see org.pantry.food.dao.CsvDao#saveCsvFile()
 	 */
 	public void persist() throws IOException {
-
-		log.info("FoodRecordIO.saveCsvFile");
+		log.info("FoodsDao.saveCsvFile");
 		if (startDir.length() == 0) {
 			startDir = new java.io.File(".").getCanonicalPath();
 		}
 
-		log.info("Cvs Path:" + startDir + "/" + DataFiles.getInstance().getCsvFileFoodRecord());
+		log.info("CSV Path:" + startDir + "/" + DataFiles.getInstance().getCsvFileFoodRecord());
 		File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileFoodRecord());
 
 		if (file.exists()) {
@@ -218,13 +234,12 @@ public class FoodRecordDao implements CsvDao<FoodRecord> {
 		writer.writeNext(titles);
 
 		for (int i = 0; i < foodList.size(); i++) {
-			FoodRecord record = foodList.get(i);
+			Food record = foodList.get(i);
 			writer.writeNext(record.getCvsEntry());
 
 		}
 
 		writer.close();
-
 	}
 
 	/**
@@ -232,7 +247,7 @@ public class FoodRecordDao implements CsvDao<FoodRecord> {
 	 * 
 	 * @param record
 	 */
-	public void add(FoodRecord record) {
+	public void add(Food record) {
 		foodList.add(record);
 	}
 
@@ -241,20 +256,17 @@ public class FoodRecordDao implements CsvDao<FoodRecord> {
 	 * 
 	 * @param record
 	 */
-	public void edit(FoodRecord record) {
-
+	public void edit(Food record) {
 		for (int i = 0; i < foodList.size(); i++) {
-
-			FoodRecord testRecord = foodList.get(i);
-			if (testRecord.getRecordId() == record.getRecordId()) {
-
-				testRecord.setRecordId(record.getRecordId());
+			Food testRecord = foodList.get(i);
+			if (testRecord.getFoodId() == record.getFoodId()) {
+				testRecord.setFoodId(record.getFoodId());
 				testRecord.setEntryDate(record.getEntryDate());
 				testRecord.setPickNSave(record.getPickNSave());
 				testRecord.setCommunity(record.getCommunity());
 				testRecord.setNonTefap(record.getNonTefap());
 				testRecord.setTefap(record.getTefap());
-				testRecord.setSecHarvest(record.getSecHarvest());
+				testRecord.setSecondHarvest(record.getSecondHarvest());
 				testRecord.setPantry(record.getPantry());
 				testRecord.setOther(record.getOther());
 				testRecord.setComment(record.getComment());
@@ -266,24 +278,22 @@ public class FoodRecordDao implements CsvDao<FoodRecord> {
 				testRecord.setDonorName(record.getDonorName());
 				testRecord.setDonorAddress(record.getDonorAddress());
 				testRecord.setDonorEmail(record.getDonorEmail());
-				testRecord.setSecHarvestProduce(record.getSecHarvestProduce());
+				testRecord.setSecondHarvestProduce(record.getSecondHarvestProduce());
 
 				break;
 			}
 		}
-
 	}
 
 	/**
-	 * Deletes a foodrecords object from the list in memory.
+	 * Deletes a food object from the list in memory
 	 * 
 	 * @param record
 	 */
-	public void deactivate(FoodRecord record) {
+	public void deactivate(Food record) {
 		for (int i = 0; i < foodList.size(); i++) {
-
-			FoodRecord testRecord = foodList.get(i);
-			if (testRecord.getRecordId() == record.getRecordId()) {
+			Food testRecord = foodList.get(i);
+			if (testRecord.getFoodId() == record.getFoodId()) {
 				foodList.remove(i);
 				break;
 			}
@@ -292,13 +302,61 @@ public class FoodRecordDao implements CsvDao<FoodRecord> {
 
 	@Override
 	public int getNextId() {
-		return -1;
+		return lastId.addAndGet(1);
 	}
 
+	/**
+	 * Registers an observer to be notified when the customers data file is modified
+	 * 
+	 * @param listener
+	 */
 	@Override
 	public void addFileChangedListener(FileChangedListener listener) {
-		// TODO Auto-generated method stub
+		fileChangedListeners.add(listener);
+	}
 
+	/**
+	 * Unregisters a previously-registered data file change listener
+	 * 
+	 * @param listener
+	 */
+	public void removeFileChangedListener(FileChangedListener listener) {
+		fileChangedListeners.remove(listener);
+	}
+
+	/**
+	 * Starts the CSV file watcher
+	 * 
+	 * @param file file to watch for changes
+	 */
+	private void startFileWatcher(File file) {
+		fileWatcher = new FileAlterationObserver(file.getParentFile(), FileFilterUtils.nameFileFilter(file.getName()));
+		fileListener = new FileAlterationListenerAdaptor() {
+			public void onFileChange(File file) {
+				// First we update our own local in-memory data repository
+				try {
+					read();
+				} catch (IOException e) {
+					String message = "Could not read Foods file\r\n" + e.getMessage();
+					log.error(message, e);
+					new Alert(AlertType.WARNING, message).show();
+				}
+
+				// Then notify listeners
+				for (FileChangedListener listener : fileChangedListeners) {
+					listener.onFileChanged(file.getName());
+				}
+			}
+		};
+
+		fileWatcher.addListener(fileListener);
+		fileMonitor = new FileAlterationMonitor(500, fileWatcher);
+		try {
+			fileWatcher.initialize();
+			fileMonitor.start();
+		} catch (Exception e) {
+			log.error("Could not start file monitor", e);
+		}
 	}
 
 }

@@ -1,6 +1,9 @@
 package org.pantry.food.actions;
 
+import org.pantry.food.Fxmls;
 import org.pantry.food.Images;
+import org.pantry.food.SwitchContextEventHandler;
+import org.pantry.food.UiMainContext;
 
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCombination;
@@ -16,6 +19,11 @@ public class CustomersMenuItem extends MenuItem {
 		setAccelerator(KeyCombination.keyCombination("shortcut+1"));
 		setGraphic(Images.getImageView("table_key.png"));
 		setText("Customers");
+	}
+
+	public CustomersMenuItem(UiMainContext context) {
+		this();
+		setOnAction(new SwitchContextEventHandler(context, e -> Fxmls.loadCached("Customers.fxml")));
 	}
 
 }

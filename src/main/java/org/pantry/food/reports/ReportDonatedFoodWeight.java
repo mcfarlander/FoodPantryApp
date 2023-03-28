@@ -27,8 +27,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.pantry.food.dao.FoodRecordDao;
-import org.pantry.food.model.FoodRecord;
+import org.pantry.food.dao.FoodsDao;
+import org.pantry.food.model.Food;
 
 /**
  * Create a report based on the donations of food and other misc items.
@@ -139,34 +139,34 @@ public class ReportDonatedFoodWeight extends ReportBase {
     {
         try 
         {
-            FoodRecordDao recIo = new FoodRecordDao();
+            FoodsDao recIo = new FoodsDao();
             recIo.read();
 
             // use the POJO to store the working sums
-            FoodRecord janRecord = new FoodRecord();
-            FoodRecord febRecord = new FoodRecord();
-            FoodRecord marRecord = new FoodRecord();
-            FoodRecord aprRecord = new FoodRecord();
-            FoodRecord mayRecord = new FoodRecord();
-            FoodRecord junRecord = new FoodRecord();
-            FoodRecord julRecord = new FoodRecord();
-            FoodRecord augRecord = new FoodRecord();
-            FoodRecord sepRecord = new FoodRecord();
-            FoodRecord octRecord = new FoodRecord();
-            FoodRecord novRecord = new FoodRecord();
-            FoodRecord decRecord = new FoodRecord();
+            Food janRecord = new Food();
+            Food febRecord = new Food();
+            Food marRecord = new Food();
+            Food aprRecord = new Food();
+            Food mayRecord = new Food();
+            Food junRecord = new Food();
+            Food julRecord = new Food();
+            Food augRecord = new Food();
+            Food sepRecord = new Food();
+            Food octRecord = new Food();
+            Food novRecord = new Food();
+            Food decRecord = new Food();
 
-            FoodRecord q1Record = new FoodRecord();
-            FoodRecord q2Record = new FoodRecord();
-            FoodRecord q3Record = new FoodRecord();
-            FoodRecord q4Record = new FoodRecord();
-            FoodRecord yrRecord = new FoodRecord();
+            Food q1Record = new Food();
+            Food q2Record = new Food();
+            Food q3Record = new Food();
+            Food q4Record = new Food();
+            Food yrRecord = new Food();
 
             Calendar cal = Calendar.getInstance();
 
              for (int i = 0; i < recIo.getRecordCount(); i++)
              {
-                FoodRecord record = recIo.getAll().get(i);
+                Food record = recIo.getAll().get(i);
 
                 Date testDate = dateFormat.parse(record.getEntryDate());
                 cal.setTime(testDate);
@@ -233,7 +233,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("January", nf.format(janRecord.getTotal()),
                    nf.format(janRecord.getPickNSave()), nf.format(janRecord.getCommunity()),
                    nf.format(janRecord.getNonTefap()), nf.format(janRecord.getTefap()),
-                   nf.format(janRecord.getSecHarvest()),  nf.format(janRecord.getSecHarvestProduce()), 
+                   nf.format(janRecord.getSecondHarvest()),  nf.format(janRecord.getSecondHarvestProduce()), 
                    nf.format(janRecord.getPantry()),
                    nf.format(janRecord.getOther()), nf.format(janRecord.getNonFood()), 
                    nf.format(janRecord.getMilk()), 
@@ -243,7 +243,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("Febuary", nf.format(febRecord.getTotal()),
                    nf.format(febRecord.getPickNSave()), nf.format(febRecord.getCommunity()),
                    nf.format(febRecord.getNonTefap()), nf.format(febRecord.getTefap()),
-                   nf.format(febRecord.getSecHarvest()), nf.format(febRecord.getSecHarvestProduce()),
+                   nf.format(febRecord.getSecondHarvest()), nf.format(febRecord.getSecondHarvestProduce()),
                    nf.format(febRecord.getPantry()),
                    nf.format(febRecord.getOther()),nf.format(febRecord.getNonFood()), 
                    nf.format(febRecord.getMilk()), 
@@ -253,7 +253,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("March", nf.format(marRecord.getTotal()),
                    nf.format(marRecord.getPickNSave()), nf.format(marRecord.getCommunity()),
                    nf.format(marRecord.getNonTefap()), nf.format(marRecord.getTefap()),
-                   nf.format(marRecord.getSecHarvest()), nf.format(marRecord.getSecHarvestProduce()),
+                   nf.format(marRecord.getSecondHarvest()), nf.format(marRecord.getSecondHarvestProduce()),
                    nf.format(marRecord.getPantry()),
                    nf.format(marRecord.getOther()), nf.format(marRecord.getNonFood()), 
                    nf.format(marRecord.getMilk()), 
@@ -263,7 +263,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("QUARTER 1", nf.format(q1Record.getTotal()),
                    nf.format(q1Record.getPickNSave()), nf.format(q1Record.getCommunity()),
                    nf.format(q1Record.getNonTefap()), nf.format(q1Record.getTefap()),
-                   nf.format(q1Record.getSecHarvest()), nf.format(q1Record.getSecHarvestProduce()),
+                   nf.format(q1Record.getSecondHarvest()), nf.format(q1Record.getSecondHarvestProduce()),
                    nf.format(q1Record.getPantry()),
                    nf.format(q1Record.getOther()), nf.format(q1Record.getNonFood()), 
                    nf.format(q1Record.getMilk()), 
@@ -274,7 +274,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("April", nf.format(aprRecord.getTotal()),
                    nf.format(aprRecord.getPickNSave()), nf.format(aprRecord.getCommunity()),
                    nf.format(aprRecord.getNonTefap()), nf.format(aprRecord.getTefap()),
-                   nf.format(aprRecord.getSecHarvest()), nf.format(aprRecord.getSecHarvestProduce()),
+                   nf.format(aprRecord.getSecondHarvest()), nf.format(aprRecord.getSecondHarvestProduce()),
                    nf.format(aprRecord.getPantry()),
                    nf.format(aprRecord.getOther()), nf.format(aprRecord.getNonFood()), 
                    nf.format(aprRecord.getMilk()), 
@@ -284,7 +284,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("May", nf.format(mayRecord.getTotal()),
                    nf.format(mayRecord.getPickNSave()), nf.format(mayRecord.getCommunity()),
                    nf.format(mayRecord.getNonTefap()), nf.format(mayRecord.getTefap()),
-                   nf.format(mayRecord.getSecHarvest()), nf.format(mayRecord.getSecHarvestProduce()),
+                   nf.format(mayRecord.getSecondHarvest()), nf.format(mayRecord.getSecondHarvestProduce()),
                    nf.format(mayRecord.getPantry()),
                    nf.format(mayRecord.getOther()), nf.format(mayRecord.getNonFood()), 
                    nf.format(mayRecord.getMilk()), 
@@ -294,7 +294,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("June", nf.format(junRecord.getTotal()),
                    nf.format(junRecord.getPickNSave()), nf.format(junRecord.getCommunity()),
                    nf.format(junRecord.getNonTefap()), nf.format(junRecord.getTefap()),
-                   nf.format(junRecord.getSecHarvest()), nf.format(junRecord.getSecHarvestProduce()),
+                   nf.format(junRecord.getSecondHarvest()), nf.format(junRecord.getSecondHarvestProduce()),
                    nf.format(junRecord.getPantry()),
                    nf.format(junRecord.getOther()), nf.format(junRecord.getNonFood()), 
                    nf.format(junRecord.getMilk()), 
@@ -304,7 +304,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("QUARTER 2", nf.format(q2Record.getTotal()),
                    nf.format(q2Record.getPickNSave()), nf.format(q2Record.getCommunity()),
                    nf.format(q2Record.getNonTefap()), nf.format(q2Record.getTefap()),
-                   nf.format(q2Record.getSecHarvest()), nf.format(q2Record.getSecHarvestProduce()),
+                   nf.format(q2Record.getSecondHarvest()), nf.format(q2Record.getSecondHarvestProduce()),
                    nf.format(q2Record.getPantry()),
                    nf.format(q2Record.getOther()), nf.format(q2Record.getNonFood()), 
                    nf.format(q2Record.getMilk()), 
@@ -315,7 +315,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("July", nf.format(julRecord.getTotal()),
                    nf.format(julRecord.getPickNSave()), nf.format(julRecord.getCommunity()),
                    nf.format(julRecord.getNonTefap()), nf.format(julRecord.getTefap()),
-                   nf.format(julRecord.getSecHarvest()), nf.format(julRecord.getSecHarvestProduce()),
+                   nf.format(julRecord.getSecondHarvest()), nf.format(julRecord.getSecondHarvestProduce()),
                    nf.format(julRecord.getPantry()),
                    nf.format(julRecord.getOther()), nf.format(julRecord.getNonFood()), 
                    nf.format(julRecord.getMilk()), 
@@ -325,7 +325,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("August", nf.format(augRecord.getTotal()),
                    nf.format(augRecord.getPickNSave()), nf.format(augRecord.getCommunity()),
                    nf.format(augRecord.getNonTefap()), nf.format(augRecord.getTefap()),
-                   nf.format(augRecord.getSecHarvest()), nf.format(augRecord.getSecHarvestProduce()),
+                   nf.format(augRecord.getSecondHarvest()), nf.format(augRecord.getSecondHarvestProduce()),
                    nf.format(augRecord.getPantry()),
                    nf.format(augRecord.getOther()), nf.format(augRecord.getNonFood()), 
                    nf.format(augRecord.getMilk()), 
@@ -335,7 +335,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("September", nf.format(sepRecord.getTotal()),
                    nf.format(sepRecord.getPickNSave()), nf.format(sepRecord.getCommunity()),
                    nf.format(sepRecord.getNonTefap()), nf.format(sepRecord.getTefap()),
-                   nf.format(sepRecord.getSecHarvest()), nf.format(sepRecord.getSecHarvestProduce()),
+                   nf.format(sepRecord.getSecondHarvest()), nf.format(sepRecord.getSecondHarvestProduce()),
                    nf.format(sepRecord.getPantry()),
                    nf.format(sepRecord.getOther()), nf.format(sepRecord.getNonFood()), 
                    nf.format(sepRecord.getMilk()), 
@@ -345,7 +345,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("QUARTER 3", nf.format(q3Record.getTotal()),
                    nf.format(q3Record.getPickNSave()), nf.format(q3Record.getCommunity()),
                    nf.format(q3Record.getNonTefap()), nf.format(q3Record.getTefap()),
-                   nf.format(q3Record.getSecHarvest()), nf.format(q3Record.getSecHarvestProduce()),
+                   nf.format(q3Record.getSecondHarvest()), nf.format(q3Record.getSecondHarvestProduce()),
                    nf.format(q3Record.getPantry()),
                    nf.format(q3Record.getOther()), nf.format(q3Record.getNonFood()), 
                    nf.format(q3Record.getMilk()), 
@@ -356,7 +356,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("October", nf.format(octRecord.getTotal()),
                    nf.format(octRecord.getPickNSave()), nf.format(octRecord.getCommunity()),
                    nf.format(octRecord.getNonTefap()), nf.format(octRecord.getTefap()),
-                   nf.format(octRecord.getSecHarvest()), nf.format(octRecord.getSecHarvestProduce()),
+                   nf.format(octRecord.getSecondHarvest()), nf.format(octRecord.getSecondHarvestProduce()),
                    nf.format(octRecord.getPantry()),
                    nf.format(octRecord.getOther()), nf.format(octRecord.getNonFood()), 
                    nf.format(octRecord.getMilk()), 
@@ -366,7 +366,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("November", nf.format(novRecord.getTotal()),
                    nf.format(novRecord.getPickNSave()), nf.format(novRecord.getCommunity()),
                    nf.format(novRecord.getNonTefap()), nf.format(novRecord.getTefap()),
-                   nf.format(novRecord.getSecHarvest()), nf.format(novRecord.getSecHarvestProduce()),
+                   nf.format(novRecord.getSecondHarvest()), nf.format(novRecord.getSecondHarvestProduce()),
                    nf.format(novRecord.getPantry()),
                    nf.format(novRecord.getOther()), nf.format(novRecord.getNonFood()), 
                    nf.format(novRecord.getMilk()), 
@@ -376,7 +376,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("December", nf.format(decRecord.getTotal()),
                    nf.format(decRecord.getPickNSave()), nf.format(decRecord.getCommunity()),
                    nf.format(decRecord.getNonTefap()), nf.format(decRecord.getTefap()),
-                   nf.format(decRecord.getSecHarvest()), nf.format(decRecord.getSecHarvestProduce()),
+                   nf.format(decRecord.getSecondHarvest()), nf.format(decRecord.getSecondHarvestProduce()),
                    nf.format(decRecord.getPantry()),
                    nf.format(decRecord.getOther()), nf.format(decRecord.getNonFood()), 
                    nf.format(decRecord.getMilk()), 
@@ -386,7 +386,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("QUARTER 4", nf.format(q4Record.getTotal()),
                    nf.format(q4Record.getPickNSave()), nf.format(q4Record.getCommunity()),
                    nf.format(q4Record.getNonTefap()), nf.format(q4Record.getTefap()),
-                   nf.format(q4Record.getSecHarvest()), nf.format(q4Record.getSecHarvestProduce()),
+                   nf.format(q4Record.getSecondHarvest()), nf.format(q4Record.getSecondHarvestProduce()),
                    nf.format(q4Record.getPantry()),
                    nf.format(q4Record.getOther()), nf.format(q4Record.getNonFood()), 
                    nf.format(q4Record.getMilk()), 
@@ -398,7 +398,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
            createRow("YEAR", nf.format(yrRecord.getTotal()),
                    nf.format(yrRecord.getPickNSave()), nf.format(yrRecord.getCommunity()),
                    nf.format(yrRecord.getNonTefap()), nf.format(yrRecord.getTefap()),
-                   nf.format(yrRecord.getSecHarvest()), nf.format(yrRecord.getSecHarvestProduce()),
+                   nf.format(yrRecord.getSecondHarvest()), nf.format(yrRecord.getSecondHarvestProduce()),
                    nf.format(yrRecord.getPantry()),
                    nf.format(yrRecord.getOther()), nf.format(yrRecord.getNonFood()), 
                    nf.format(yrRecord.getMilk()), 

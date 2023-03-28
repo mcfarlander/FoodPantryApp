@@ -76,3 +76,15 @@
 #deleteVisitBtn {
  	-fx-graphic: url(../icons/cart_delete.png);
 }
+
+#addFoodBtn {
+ 	-fx-graphic: url(../icons/tag_blue_add.png);
+}
+
+#editFoodBtn {
+ 	-fx-graphic: url(../icons/tag_blue_edit.png);
+}
+
+#deleteFoodBtn {
+ 	-fx-graphic: url(../icons/tag_blue_delete.png);
+}

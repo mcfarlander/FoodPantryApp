@@ -31,8 +31,8 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
-import org.pantry.food.dao.FoodRecordDao;
-import org.pantry.food.model.FoodRecord;
+import org.pantry.food.dao.FoodsDao;
+import org.pantry.food.model.Food;
 import org.pantry.food.ui.common.FormState;
 import org.pantry.food.ui.dialog.AddEditFoodRecord;
 import org.pantry.food.util.DateUtil;
@@ -67,13 +67,13 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 	private JToolBar jToolBar1;
 
 	/** The record io. */
-	private FoodRecordDao recordIo = new FoodRecordDao();
+	private FoodsDao recordIo = new FoodsDao();
 
 	/** The next record id. */
 	private int nextRecordId = 0;
 
 	/** The donor records. */
-	private ArrayList<FoodRecord> donorRecords = new ArrayList<FoodRecord>();
+	private ArrayList<Food> donorRecords = new ArrayList<Food>();
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -232,8 +232,8 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 	private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {
 
 		AddEditFoodRecord dial = new AddEditFoodRecord(null, true, donorRecords);
-		FoodRecord record = new FoodRecord();
-		record.setRecordId(this.nextRecordId);
+		Food record = new Food();
+		record.setFoodId(this.nextRecordId);
 		record.setEntryDate(DateUtil.getCurrentDateString());
 		dial.setNewRecord(record);
 		dial.setLocationRelativeTo(this);
@@ -261,7 +261,7 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 	 */
 	private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {
 
-		FoodRecord record = getSelectedRecord();
+		Food record = getSelectedRecord();
 
 		if (record != null) {
 			AddEditFoodRecord dial = new AddEditFoodRecord(null, true, donorRecords);
@@ -288,7 +288,7 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 	 */
 	private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {
 
-		FoodRecord record = getSelectedRecord();
+		Food record = getSelectedRecord();
 
 		if (record != null) {
 
@@ -326,7 +326,7 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 			// clear out donors and add anonymous to the top of the list
 			donorRecords.clear();
 
-			FoodRecord anon = new FoodRecord();
+			Food anon = new Food();
 			anon.setDonorName("Anonymous");
 			donorRecords.add(anon);
 
@@ -335,18 +335,18 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 			model.setRowCount(0);
 
 			for (int i = 0; i < recordIo.getRecordCount(); i++) {
-				FoodRecord record = recordIo.getAll().get(i);
+				Food record = recordIo.getAll().get(i);
 
 				model.addRow(record.getFoodRecordObject());
 
-				if (record.getRecordId() >= nextRecordId) {
-					nextRecordId = record.getRecordId() + 1;
+				if (record.getFoodId() >= nextRecordId) {
+					nextRecordId = record.getFoodId() + 1;
 				}
 
 				if (record.isDonation() && record.getDonorName() != null && record.getDonorName().length() > 0) {
 					boolean found = false;
 					for (int j = 0; j < donorRecords.size(); j++) {
-						FoodRecord donorRecord = donorRecords.get(j);
+						Food donorRecord = donorRecords.get(j);
 
 						if (donorRecord.getDonorName().equals(record.getDonorName())) {
 							found = true;
@@ -382,7 +382,6 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 			log.log(Level.SEVERE, null, ex);
 			JOptionPane.showMessageDialog(this, "Problem saving file/n" + ex.getMessage());
 		}
-
 	}
 
 	/**
@@ -390,9 +389,9 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 	 *
 	 * @return the selected record
 	 */
-	private FoodRecord getSelectedRecord() {
+	private Food getSelectedRecord() {
 
-		FoodRecord rec = null;
+		Food rec = null;
 
 		int irow = this.jTable1.getSelectedRow();
 
@@ -400,8 +399,8 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 			int iId = Integer.parseInt(this.jTable1.getModel().getValueAt(irow, 0).toString());
 
 			for (int i = 0; i < this.recordIo.getRecordCount(); i++) {
-				FoodRecord record = this.recordIo.getAll().get(i);
-				if (record.getRecordId() == iId) {
+				Food record = this.recordIo.getAll().get(i);
+				if (record.getFoodId() == iId) {
 					rec = record;
 					break;
 				}

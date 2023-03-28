@@ -33,7 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.text.JTextComponent;
 
-import org.pantry.food.model.FoodRecord;
+import org.pantry.food.model.Food;
 import org.pantry.food.ui.common.JComboBoxAutoCompletador;
 
 import javax.swing.JCheckBox;
@@ -81,7 +81,7 @@ public class AddEditFoodRecord extends JDialog {
     private JLabel lblEmail;
     private JTextField txtDonorEmail;
     
-    private ArrayList<FoodRecord> records = new ArrayList<FoodRecord>();
+    private ArrayList<Food> records = new ArrayList<Food>();
     
     private boolean formLoaded = false;
 
@@ -102,7 +102,7 @@ public class AddEditFoodRecord extends JDialog {
 
 	}
 	
-	public AddEditFoodRecord(java.awt.Frame parent, boolean modal, ArrayList<FoodRecord> previousRecords) 
+	public AddEditFoodRecord(java.awt.Frame parent, boolean modal, ArrayList<Food> previousRecords) 
 	{
 		super(parent, modal);
 		setTitle("Add Edit Food Record");
@@ -592,7 +592,7 @@ public class AddEditFoodRecord extends JDialog {
     		int index = txtDonor.getSelectedIndex();
 	    	if (index > 0)
 	    	{
-	    		FoodRecord record = records.get(index - 1);
+	    		Food record = records.get(index - 1);
 	    		if (record != null)
 	    		{
 	    			txtDonorAddress.setText(record.getDonorAddress());
@@ -608,11 +608,11 @@ public class AddEditFoodRecord extends JDialog {
     private boolean OkCancel = false;
     public boolean getOkCancel(){return this.OkCancel;}
 
-    private FoodRecord record = new FoodRecord();
+    private Food record = new Food();
 
-    public FoodRecord getNewRecord() {return this.record;}
+    public Food getNewRecord() {return this.record;}
     
-    public void setNewRecord(FoodRecord rec) {
+    public void setNewRecord(Food rec) {
         this.record = rec;
         setControlsFromPrevious();
     }
@@ -626,8 +626,8 @@ public class AddEditFoodRecord extends JDialog {
         this.txtCommunity.setText("" + this.record.getCommunity());
         this.txtNonTefap.setText("" + this.record.getNonTefap());
         this.txtTefap.setText("" + this.record.getTefap());
-        this.txtSecHarvest.setText("" + this.record.getSecHarvest());
-        this.txtSecHarvestProduce.setText("" + this.record.getSecHarvestProduce());
+        this.txtSecHarvest.setText("" + this.record.getSecondHarvest());
+        this.txtSecHarvestProduce.setText("" + this.record.getSecondHarvestProduce());
         this.txtPantry.setText("" + this.record.getPantry());
         this.txtOther.setText("" + this.record.getOther());
         this.txtComments.setText(this.record.getComment());
@@ -651,8 +651,8 @@ public class AddEditFoodRecord extends JDialog {
         this.record.setCommunity(Double.parseDouble(this.txtCommunity.getText()));
         this.record.setNonTefap(Double.parseDouble(this.txtNonTefap.getText()));
         this.record.setTefap(Double.parseDouble(this.txtTefap.getText()));
-        this.record.setSecHarvest(Double.parseDouble(this.txtSecHarvest.getText()));
-        this.record.setSecHarvestProduce(Double.parseDouble(this.txtSecHarvestProduce.getText()));
+        this.record.setSecondHarvest(Double.parseDouble(this.txtSecHarvest.getText()));
+        this.record.setSecondHarvestProduce(Double.parseDouble(this.txtSecHarvestProduce.getText()));
         this.record.setPantry(Double.parseDouble(this.txtPantry.getText()));
         this.record.setOther(Double.parseDouble(this.txtOther.getText()));
         this.record.setComment(this.txtComments.getText());

@@ -16,10 +16,10 @@
 package org.pantry.food;
 
 import java.io.IOException;
-import java.util.function.Function;
 
 import org.pantry.food.actions.AboutMenuItem;
 import org.pantry.food.actions.CustomersMenuItem;
+import org.pantry.food.actions.FoodsMenuItem;
 import org.pantry.food.actions.MenuActions;
 import org.pantry.food.actions.VisitsMenuItem;
 import org.pantry.food.ui.dialog.ModalDialog;
@@ -113,6 +113,15 @@ public class JfxApplication extends Application {
 
 		});
 
+		foodBtn.addEventHandler(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				MenuActions.get(FoodsMenuItem.ACTION_ID).getOnAction().handle(new ActionEvent());
+			}
+
+		});
+
 		// Set up menu item icons
 		for (Menu menu : mnuBar.getMenus()) {
 			if ("views".equals(menu.getId())) {
@@ -127,15 +136,11 @@ public class JfxApplication extends Application {
 	}
 
 	protected void createMenuItems(UiMainContext context) {
-		MenuItem item = new CustomersMenuItem();
-		item.setOnAction(new SwitchContextEventHandler(context, e -> Fxmls.loadCached("Customers.fxml")));
-		MenuActions.add(item);
+		MenuActions.add(new CustomersMenuItem(context));
+		MenuActions.add(new VisitsMenuItem(context));
+		MenuActions.add(new FoodsMenuItem(context));
 
-		item = new VisitsMenuItem();
-		item.setOnAction(new SwitchContextEventHandler(context, e -> Fxmls.loadCached("Visits.fxml")));
-		MenuActions.add(item);
-
-		item = new AboutMenuItem();
+		MenuItem item = new AboutMenuItem();
 		item.setOnAction(event -> {
 			try {
 				new ModalDialog<Void, Void>().show("ui/dialog/AboutDialog.fxml");
@@ -149,6 +154,7 @@ public class JfxApplication extends Application {
 	protected void addViewMenuItems(Menu menu) {
 		menu.getItems().add(MenuActions.get(CustomersMenuItem.ACTION_ID));
 		menu.getItems().add(MenuActions.get(VisitsMenuItem.ACTION_ID));
+		menu.getItems().add(MenuActions.get(FoodsMenuItem.ACTION_ID));
 		menu.getItems().add(new SeparatorMenuItem());
 	}
 
@@ -158,24 +164,6 @@ public class JfxApplication extends Application {
 
 	void switchContext(Node newContext) {
 		scrollPane.setContent(newContext);
-	}
-
-	class SwitchContextEventHandler implements EventHandler<ActionEvent> {
-
-		private final UiMainContext context;
-		private final Function<ActionEvent, Node> fn;
-
-		public SwitchContextEventHandler(UiMainContext context, Function<ActionEvent, Node> fn) {
-			this.context = context;
-			this.fn = fn;
-		}
-
-		@Override
-		public void handle(ActionEvent event) {
-			Node newContext = fn.apply(event);
-			context.switchContext(newContext);
-		}
-
 	}
 
 }

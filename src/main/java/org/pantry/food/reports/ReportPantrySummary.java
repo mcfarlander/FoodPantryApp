@@ -31,12 +31,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.pantry.food.dao.CustomersDao;
-import org.pantry.food.dao.FoodRecordDao;
+import org.pantry.food.dao.FoodsDao;
 import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.dao.VolunteerDao;
 import org.pantry.food.dao.VolunteerEventDao;
 import org.pantry.food.model.Customer;
-import org.pantry.food.model.FoodRecord;
+import org.pantry.food.model.Food;
 import org.pantry.food.model.Visit;
 import org.pantry.food.model.VolunteerEvent;
 
@@ -349,15 +349,15 @@ public class ReportPantrySummary extends ReportBase {
 	}
 
 	private void getDonationData() throws FileNotFoundException, IOException, ParseException {
-		FoodRecordDao records = new FoodRecordDao();
+		FoodsDao records = new FoodsDao();
 		records.read();
 
-		FoodRecord totals = new FoodRecord();
+		Food totals = new Food();
 
 		Calendar mydate = new GregorianCalendar();
 
 		for (int i = 0; i < records.getRecordCount(); i++) {
-			FoodRecord record = records.getAll().get(i);
+			Food record = records.getAll().get(i);
 
 			Date thedate = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH).parse(record.getEntryDate());
 			mydate.setTime(thedate);
@@ -372,8 +372,8 @@ public class ReportPantrySummary extends ReportBase {
 		createRow("&nbsp;Community", "" + nf.format(totals.getCommunity()), "", false);
 		createRow("&nbsp;Pick N Save", "" + nf.format(totals.getPickNSave()), "", false);
 		createRow("&nbsp;Tefap", "" + nf.format(totals.getTefap()), "", false);
-		createRow("&nbsp;Second Harvest", "" + nf.format(totals.getSecHarvest()), "", false);
-		createRow("&nbsp;Second Harvest Produce", "" + nf.format(totals.getSecHarvestProduce()), "", false);
+		createRow("&nbsp;Second Harvest", "" + nf.format(totals.getSecondHarvest()), "", false);
+		createRow("&nbsp;Second Harvest Produce", "" + nf.format(totals.getSecondHarvestProduce()), "", false);
 		createRow("&nbsp;Milk", "" + nf.format(totals.getMilk()), "", false);
 		createRow("&nbsp;Non-Tefap", "" + nf.format(totals.getNonTefap()), "", false);
 		createRow("&nbsp;Non-Food", "" + nf.format(totals.getNonFood()), "", false);

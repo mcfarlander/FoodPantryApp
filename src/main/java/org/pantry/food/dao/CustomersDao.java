@@ -83,7 +83,7 @@ public class CustomersDao implements CsvDao<Customer> {
 
 	private List<Customer> customerList = new ArrayList<Customer>();
 
-	private final AtomicInteger lastCustomerId = new AtomicInteger();
+	private final AtomicInteger lastId = new AtomicInteger();
 	private FileAlterationObserver fileWatcher;
 	private FileAlterationListenerAdaptor fileListener;
 	private FileAlterationMonitor fileMonitor;
@@ -178,8 +178,8 @@ public class CustomersDao implements CsvDao<Customer> {
 					customers.add(cust);
 					householdIdSet.add(String.valueOf(cust.getHouseholdId()));
 
-					if (cust.getCustomerId() > lastCustomerId.get()) {
-						lastCustomerId.set(cust.getCustomerId());
+					if (cust.getCustomerId() > lastId.get()) {
+						lastId.set(cust.getCustomerId());
 					}
 				} else {
 					firstLine = !firstLine;
@@ -291,7 +291,7 @@ public class CustomersDao implements CsvDao<Customer> {
 	 * @return highest existing customer ID plus 1
 	 */
 	public int getNextId() {
-		return lastCustomerId.addAndGet(1);
+		return lastId.addAndGet(1);
 	}
 
 	/**

@@ -78,7 +78,7 @@ public class VisitsDao implements CsvDao<Visit> {
 	private static final String Col_WeekNumber = "weeknumber";
 	private static final String Col_Active = "active";
 
-	private final AtomicInteger lastVisitId = new AtomicInteger();
+	private final AtomicInteger lastId = new AtomicInteger();
 
 	private String startDir = "";
 
@@ -139,7 +139,7 @@ public class VisitsDao implements CsvDao<Visit> {
 		File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileVisits());
 
 		if (file.exists()) {
-			// Watch for file changes on customers.csv and notify interested listeners
+			// Watch for file changes on visitors.csv and notify interested listeners
 			// The users often change the files manually and are then surprised when the
 			// program does not know about the changes.
 			if (null == fileWatcher) {
@@ -176,8 +176,8 @@ public class VisitsDao implements CsvDao<Visit> {
 					visits.add(visit);
 					householdIdSet.add(String.valueOf(visit.getHouseholdId()));
 
-					if (visit.getVisitId() > lastVisitId.get()) {
-						lastVisitId.set(visit.getVisitId());
+					if (visit.getVisitId() > lastId.get()) {
+						lastId.set(visit.getVisitId());
 					}
 				} else {
 					firstLine = !firstLine;
@@ -286,7 +286,7 @@ public class VisitsDao implements CsvDao<Visit> {
 	 * @return highest existing visit ID plus 1
 	 */
 	public int getNextId() {
-		return lastVisitId.addAndGet(1);
+		return lastId.addAndGet(1);
 	}
 
 	/**

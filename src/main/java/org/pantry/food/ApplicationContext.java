@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pantry.food.dao.CustomersDao;
+import org.pantry.food.dao.FoodsDao;
 import org.pantry.food.dao.VisitsDao;
 
 /**
@@ -16,6 +17,7 @@ public class ApplicationContext {
 
 	private CustomersDao customersDao;
 	private VisitsDao visitsDao;
+	private FoodsDao foodsDao;
 
 	public static void addApplicationCloseListener(ApplicationCloseListener listener) {
 		INSTANCE.applicationCloseListeners.add(listener);
@@ -42,6 +44,13 @@ public class ApplicationContext {
 			INSTANCE.visitsDao = new VisitsDao();
 		}
 		return INSTANCE.visitsDao;
+	}
+
+	public static FoodsDao getFoodsDao() {
+		if (null == INSTANCE.foodsDao) {
+			INSTANCE.foodsDao = new FoodsDao();
+		}
+		return INSTANCE.foodsDao;
 	}
 
 }
