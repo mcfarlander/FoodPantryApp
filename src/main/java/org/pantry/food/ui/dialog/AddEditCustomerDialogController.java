@@ -96,11 +96,14 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 		monthRegisteredCbo.getItems().addAll(monthNames);
 
 		// Add icons to buttons
-		saveBtn.setGraphic(Images.getImageView("accept.png"));
 		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
+				if (!validStatusTracker.checkAll()) {
+					return;
+				}
+
 				boolean isNew = savedCustomer.getCustomerId() <= 0;
 				log.info("Attempting to save {} customer record {}", isNew ? "new" : "existing",
 						isNew ? savedCustomer.getCustomerId() : "");
@@ -129,7 +132,6 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 
 		});
 
-		cancelBtn.setGraphic(Images.getImageView("cancel.png"));
 		cancelBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -177,15 +179,17 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 		// Bind the input validators
 		log.debug("Binding input validators");
 		// Person IDs must be non-blank and numeric
-		TextInputFocusValidator textValidator = new TextInputFocusValidator(personIdText).add(new NumericValidator())
-				.add(new NotBlankValidator());
+		TextInputFocusValidator textValidator = new TextInputFocusValidator(personIdText).add(new NotBlankValidator())
+				.add(new NumericValidator());
 		personIdText.focusedProperty().addListener(textValidator);
 
-		textValidator = new TextInputFocusValidator(ageText).add(new NumericValidator()).add(new NotBlankValidator());
+		textValidator = new TextInputFocusValidator(ageText).add(new NotBlankValidator()).add(new NumericValidator())
+				.add(new NotBlankValidator());
 		ageText.focusedProperty().addListener(textValidator);
 
-		// Household IDs can be an empty string or a number
-		ComboInputValidator comboValidator = new ComboInputValidator(householdIdCbo).add(new NumericValidator());
+		// Household IDs must be number
+		ComboInputValidator comboValidator = new ComboInputValidator(householdIdCbo).add(new NotBlankValidator())
+				.add(new NumericValidator());
 		householdIdCbo.getSelectionModel().selectedItemProperty().addListener(comboValidator);
 
 		// Birthdate must comply with typical date format

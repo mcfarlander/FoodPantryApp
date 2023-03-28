@@ -11,7 +11,8 @@
 /* Make action buttons within the context of a data record really big so they're easy targets */
 .button.record-action {
 	-fx-margin-left: 20;
-	-fx-min-height: 60;	
+	-fx-min-height: 60;
+	-fx-font-weight: bold;	
 }
 
 /* Make checkboxes in dialogs bigger so they're easy targets */
@@ -32,8 +33,46 @@
 	-fx-min-width: 90;
 }
 
+.dialog-action-container .button.save {
+	-fx-graphic: url(../icons/accept.png);
+}
+
+.dialog-action-container .button.cancel {
+	-fx-graphic: url(../icons/cancel.png);
+}
+
 /* Add a red border to invalid inputs */
 .text-field.error,
 .combo-box.error {
 	-fx-border-color: red;
+}
+
+/* Right-align table columns containing numbers */
+.table-column.numeric {
+	-fx-alignment: CENTER-RIGHT;
+}
+
+/* Button Icons */
+#addCustomerBtn {
+ 	-fx-graphic: url(../icons/table_add.png);
+}
+
+#editCustomerBtn {
+ 	-fx-graphic: url(../icons/table_edit.png);
+}
+
+#deleteCustomerBtn {
+ 	-fx-graphic: url(../icons/table_delete.png);
+}
+
+#addVisitBtn {
+ 	-fx-graphic: url(../icons/cart_add.png);
+}
+
+#editVisitBtn {
+ 	-fx-graphic: url(../icons/cart_edit.png);
+}
+
+#deleteVisitBtn {
+ 	-fx-graphic: url(../icons/cart_delete.png);
 }

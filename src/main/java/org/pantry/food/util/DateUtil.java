@@ -9,6 +9,7 @@ import org.apache.commons.lang3.text.WordUtils;
 public class DateUtil {
 	private static DateTimeFormatter dateFormatInput = DateTimeFormatter.ofPattern("M/d/y");
 	private static DateTimeFormatter dateFormatOutput = DateTimeFormatter.ofPattern("MM/dd/yy");
+	private static DateTimeFormatter dateFormatOutputFourDigitYear = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 	// Reusable but immutable LocalDate instance so we don't have to create a new
 	// one every time we call getMonthName
 	private static final LocalDate getMonthNameDate = LocalDate.now();
@@ -30,8 +31,20 @@ public class DateUtil {
 		return LocalDate.parse(str, dateFormatInput);
 	}
 
+	public static String formatDate(LocalDate date) {
+		return dateFormatOutput.format(date);
+	}
+
+	public static String formatDateFourDigitYear(LocalDate date) {
+		return dateFormatOutputFourDigitYear.format(date);
+	}
+
 	public static String getCurrentDateString() {
 		return dateFormatOutput.format(LocalDate.now());
+	}
+
+	public static String getCurrentDateStringFourDigitYear() {
+		return dateFormatOutputFourDigitYear.format(LocalDate.now());
 	}
 
 	public static int getCurrentMonth() {

@@ -37,7 +37,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
-import org.pantry.food.dao.VisitorsDao;
+import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.model.Visit;
 import org.pantry.food.reports.ReportMonthlySummary;
 import org.pantry.food.ui.common.FormState;
@@ -222,7 +222,7 @@ public class FrameReportMonthlySummary extends javax.swing.JInternalFrame
     
     private void loadReport() {
         try {
-            VisitorsDao visIo = new VisitorsDao();
+            VisitsDao visIo = new VisitsDao();
             visIo.read();
 
             DefaultTableModel model = (DefaultTableModel)this.jTable1.getModel();

@@ -21,17 +21,17 @@
             </Label>
             <HBox>
                <children>
-                  <Button fx:id="addCustomerBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Add Customer">
+                  <Button fx:id="addCustomerBtn" id="addCustomerBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Add Customer">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="editCustomerBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Edit Customer">
+                  <Button fx:id="editCustomerBtn"  id="editCustomerBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Edit Customer">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="deleteCustomerBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Deactivate Customer">
+                  <Button fx:id="deleteCustomerBtn" id="deleteCustomerBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Deactivate Customer">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>

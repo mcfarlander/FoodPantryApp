@@ -15,104 +15,239 @@
 */
 package org.pantry.food.model;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  * A POJO to describe a visit.
  * 
  * @author Dave Johnson
  */
-public class Visit 
-{
-    private int visitId = 0;
-    private int householdId = 0;
-    private int visitorWeekNumber = 0;
-    private boolean newCustomer = false;
-    private int numberAdults = 0;
-    private int numberKids = 0;
-    private int numberSeniors = 0;
-    private boolean workingIncome = false;
-    private boolean otherIncome = false;
-    private boolean noIncome = true;
-    private String visitDate = "";
-    private boolean active = false;
+public class Visit {
+	private SimpleStringProperty visitIdProperty = new SimpleStringProperty();
+	private SimpleStringProperty householdIdProperty = new SimpleStringProperty();
+	private SimpleIntegerProperty visitorWeekNumberProperty = new SimpleIntegerProperty();
+	private SimpleBooleanProperty newCustomerProperty = new SimpleBooleanProperty();
+	private SimpleStringProperty numberAdultsProperty = new SimpleStringProperty();
+	private SimpleStringProperty numberKidsProperty = new SimpleStringProperty();
+	private SimpleStringProperty numberSeniorsProperty = new SimpleStringProperty();
+	private SimpleBooleanProperty workingIncomeProperty = new SimpleBooleanProperty();
+	private SimpleBooleanProperty noIncomeProperty = new SimpleBooleanProperty();
+	private SimpleBooleanProperty otherIncomeProperty = new SimpleBooleanProperty();
+	private SimpleStringProperty visitDateProperty = new SimpleStringProperty();
+	private SimpleBooleanProperty activeProperty = new SimpleBooleanProperty();
 
-    public int getVisitId() { return this.visitId; }
-    public void setVisitId(int id) { this.visitId = id; }
+	public Visit() {
+	}
 
-    public int getHouseholdId() { return this.householdId; }
-    public void setHouseholdId(int householdId) { this.householdId = householdId; }
+	public Visit(Visit other) {
+		if (null == other) {
+			return;
+		}
 
-    public boolean isNewCustomer() { return this.newCustomer; }
-    public void setNewCustomer(boolean newCustomer) { this.newCustomer = newCustomer; }
+		setVisitId(other.getVisitId());
+		setHouseholdId(other.getHouseholdId());
+		setVisitorWeekNumber(other.getVisitorWeekNumber());
+		setNewCustomer(other.isNewCustomer());
+		setNumberAdults(other.getNumberAdults());
+		setNumberKids(other.getNumberKids());
+		setNumberSeniors(other.getNumberSeniors());
+		setWorkingIncome(other.isWorkingIncome());
+		setOtherIncome(other.isOtherIncome());
+		setNoIncome(other.isNoIncome());
+		setVisitDate(other.getVisitDate());
+		setActive(other.isActive());
+	}
 
-    public boolean isNoIncome() { return this.noIncome; }
-    public void setNoIncome(boolean noIncome) { this.noIncome = noIncome; }
+	public int getVisitId() {
+		String value = visitIdProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
 
-    public int getNumberAdults() { return this.numberAdults; }
-    public void setNumberAdults(int numberAdults) { this.numberAdults = numberAdults; }
+	public void setVisitId(int id) {
+		visitIdProperty.set(String.valueOf(id));
+	}
 
-    public int getNumberKids() { return this.numberKids; }
-    public void setNumberKids(int numberKids) { this.numberKids = numberKids; }
-    
-    public int getNumberSeniors() { return this.numberSeniors; }
-    public void setNumberSeniors(int numberSeniors) { this.numberSeniors = numberSeniors; }
+	public int getHouseholdId() {
+		String value = householdIdProperty.get();
+		if (null == value || "".equals(value)) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
 
-    public boolean isOtherIncome() { return otherIncome; }
-    public void setOtherIncome(boolean otherIncome) { this.otherIncome = otherIncome; }
+	public void setHouseholdId(int householdId) {
+		this.householdIdProperty.set(String.valueOf(householdId));
+	}
 
-    public int getVisitorWeekNumber() { return visitorWeekNumber; }
-    public void setVisitorWeekNumber(int visitorWeekNumber) { this.visitorWeekNumber = visitorWeekNumber; }
+	public boolean isNewCustomer() {
+		return newCustomerProperty.get();
+	}
 
-    public boolean isWorkingIncome() { return workingIncome; }
-    public void setWorkingIncome(boolean workingIncome) { this.workingIncome = workingIncome; }
+	public void setNewCustomer(boolean newCustomer) {
+		newCustomerProperty.set(newCustomer);
+	}
 
-    public String getVisitDate() { return visitDate; }
-    public void setVisitDate(String visitDate) { this.visitDate = visitDate; }
+	public int getNumberAdults() {
+		String value = numberAdultsProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
 
-    public boolean isActive() { return this.active; }
-    public void setActive(boolean active) { this.active = active; }
+	public void setNumberAdults(int numberAdults) {
+		numberAdultsProperty.set(String.valueOf(numberAdults));
+	}
 
-    /**
-     * Helper for setting a line in the csv file.
-     * @return
-     */
-    public String[] getCvsEntry()
-    {
-        String[] entry = {"" + this.getVisitId(),
-                          "" + this.getHouseholdId(),
-                          "" + this.isNewCustomer(),
-                          "" + this.getNumberAdults(),
-                          "" + this.getNumberKids(),
-                          "" + this.getNumberSeniors(),
-                          "" + this.isWorkingIncome(),
-                          "" + this.isOtherIncome(),
-                          "" + this.isNoIncome(),
-                          "" + this.getVisitDate(),
-                          "" + this.getVisitorWeekNumber(),
-                          "" + this.active};
+	public int getNumberKids() {
+		String value = numberKidsProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
 
-        return entry;
-    }
+	public void setNumberKids(int numberKids) {
+		numberKidsProperty.set(String.valueOf(numberKids));
+	}
 
-    /**
-     * Helper method to return an object to a jtable model.
-     * @return
-     */
-    public Object[] getVisitObject()
-    {
-        return new Object[] {this.getVisitId(),
-                             this.getHouseholdId(),
-                             this.isNewCustomer(),
-                             this.getNumberAdults(),
-                             this.getNumberKids(),
-                             this.getNumberSeniors(),
-                             this.isWorkingIncome(),
-                             this.isOtherIncome(),
-                             this.isNoIncome(),
-                             this.getVisitDate(),
-                             this.getVisitorWeekNumber(),
-                             this.isActive()
-        };
+	public int getNumberSeniors() {
+		String value = numberSeniorsProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
 
-    }
+	public void setNumberSeniors(int numberSeniors) {
+		numberSeniorsProperty.set(String.valueOf(numberSeniors));
+	}
+
+	public int getVisitorWeekNumber() {
+		return visitorWeekNumberProperty.get();
+	}
+
+	public void setVisitorWeekNumber(int visitorWeekNumber) {
+		visitorWeekNumberProperty.set(visitorWeekNumber);
+	}
+
+	public String getVisitDate() {
+		return visitDateProperty.get();
+	}
+
+	public void setVisitDate(String visitDate) {
+		visitDateProperty.set(visitDate);
+	}
+
+	public boolean isWorkingIncome() {
+		return workingIncomeProperty.get();
+	}
+
+	public void setWorkingIncome(boolean workingIncome) {
+		workingIncomeProperty.set(workingIncome);
+	}
+
+	public boolean isNoIncome() {
+		return noIncomeProperty.get();
+	}
+
+	public void setNoIncome(boolean noIncome) {
+		noIncomeProperty.set(noIncome);
+	}
+
+	public boolean isOtherIncome() {
+		return otherIncomeProperty.get();
+	}
+
+	public void setOtherIncome(boolean otherIncome) {
+		otherIncomeProperty.set(otherIncome);
+	}
+
+	public boolean isActive() {
+		return activeProperty.get();
+	}
+
+	public void setActive(boolean active) {
+		activeProperty.set(active);
+	}
+
+	public SimpleStringProperty visitIdProperty() {
+		return visitIdProperty;
+	}
+
+	public SimpleStringProperty householdIdProperty() {
+		return householdIdProperty;
+	}
+
+	public SimpleIntegerProperty visitorWeekNumberProperty() {
+		return visitorWeekNumberProperty;
+	}
+
+	public SimpleBooleanProperty newCustomerProperty() {
+		return newCustomerProperty;
+	}
+
+	public SimpleStringProperty numberAdultsProperty() {
+		return numberAdultsProperty;
+	}
+
+	public SimpleStringProperty numberKidsProperty() {
+		return numberKidsProperty;
+	}
+
+	public SimpleStringProperty numberSeniorsProperty() {
+		return numberSeniorsProperty;
+	}
+
+	public SimpleBooleanProperty workingIncomeProperty() {
+		return workingIncomeProperty;
+	}
+
+	public SimpleBooleanProperty noIncomeProperty() {
+		return noIncomeProperty;
+	}
+
+	public SimpleBooleanProperty otherIncomeProperty() {
+		return otherIncomeProperty;
+	}
+
+	public SimpleStringProperty visitDateProperty() {
+		return visitDateProperty;
+	}
+
+	public SimpleBooleanProperty activeProperty() {
+		return activeProperty;
+	}
+
+	/**
+	 * Helper for setting a line in the csv file.
+	 * 
+	 * @return
+	 */
+	public String[] getCvsEntry() {
+		String[] entry = { "" + this.getVisitId(), "" + this.getHouseholdId(), "" + this.isNewCustomer(),
+				"" + this.getNumberAdults(), "" + this.getNumberKids(), "" + this.getNumberSeniors(),
+				"" + this.isWorkingIncome(), "" + this.isOtherIncome(), "" + this.isNoIncome(),
+				"" + this.getVisitDate(), "" + this.getVisitorWeekNumber(), "" + this.isActive() };
+
+		return entry;
+	}
+
+	/**
+	 * Helper method to return an object to a jtable model.
+	 * 
+	 * @return
+	 */
+	public Object[] getVisitObject() {
+		return new Object[] { this.getVisitId(), this.getHouseholdId(), this.isNewCustomer(), this.getNumberAdults(),
+				this.getNumberKids(), this.getNumberSeniors(), this.isWorkingIncome(), this.isOtherIncome(),
+				this.isNoIncome(), this.getVisitDate(), this.getVisitorWeekNumber(), this.isActive() };
+
+	}
 
 }

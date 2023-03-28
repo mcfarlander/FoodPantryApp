@@ -146,8 +146,8 @@
             </GridPane>
             <HBox alignment="CENTER_RIGHT" styleClass="dialog-action-container">
                <children>
-                  <Button fx:id="saveBtn" defaultButton="true" mnemonicParsing="false" text="Save" />
-                  <Button fx:id="cancelBtn" cancelButton="true" mnemonicParsing="false" text="Cancel">
+                  <Button fx:id="saveBtn" defaultButton="true" mnemonicParsing="false" styleClass="save" text="Save" />
+                  <Button fx:id="cancelBtn" cancelButton="true" mnemonicParsing="false" styleClass="cancel" text="Cancel">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>

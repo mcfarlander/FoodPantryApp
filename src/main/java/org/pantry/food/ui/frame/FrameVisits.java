@@ -36,7 +36,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
-import org.pantry.food.dao.VisitorsDao;
+import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.model.Visit;
 import org.pantry.food.ui.common.FormState;
 import org.pantry.food.ui.common.ProblemTableCellRender;
@@ -366,7 +366,7 @@ public class FrameVisits extends javax.swing.JInternalFrame {
 	}
 
 	/** The vis io. */
-	private VisitorsDao visIo = new VisitorsDao();
+	private VisitsDao visIo = new VisitsDao();
 
 	/** The next visit id. */
 	private int nextVisitId = 0;

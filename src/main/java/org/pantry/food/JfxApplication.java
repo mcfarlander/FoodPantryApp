@@ -104,6 +104,15 @@ public class JfxApplication extends Application {
 
 		});
 
+		visitsBtn.addEventHandler(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				MenuActions.get(VisitsMenuItem.ACTION_ID).getOnAction().handle(new ActionEvent());
+			}
+
+		});
+
 		// Set up menu item icons
 		for (Menu menu : mnuBar.getMenus()) {
 			if ("views".equals(menu.getId())) {
@@ -119,11 +128,11 @@ public class JfxApplication extends Application {
 
 	protected void createMenuItems(UiMainContext context) {
 		MenuItem item = new CustomersMenuItem();
-		item.setOnAction(new SwitchContextEventHandler(context, e -> Fxmls.load("Customers.fxml")));
+		item.setOnAction(new SwitchContextEventHandler(context, e -> Fxmls.loadCached("Customers.fxml")));
 		MenuActions.add(item);
 
 		item = new VisitsMenuItem();
-//		item.setOnAction(new SwitchContextEventHandler(context, e -> Fxmls.load("Visits.fxml")));
+		item.setOnAction(new SwitchContextEventHandler(context, e -> Fxmls.loadCached("Visits.fxml")));
 		MenuActions.add(item);
 
 		item = new AboutMenuItem();
@@ -138,13 +147,13 @@ public class JfxApplication extends Application {
 	}
 
 	protected void addViewMenuItems(Menu menu) {
-		menu.getItems().add(MenuActions.get("open.customers"));
-		menu.getItems().add(MenuActions.get("open.visits"));
+		menu.getItems().add(MenuActions.get(CustomersMenuItem.ACTION_ID));
+		menu.getItems().add(MenuActions.get(VisitsMenuItem.ACTION_ID));
 		menu.getItems().add(new SeparatorMenuItem());
 	}
 
 	protected void addHelpMenuItems(Menu menu) {
-		menu.getItems().add(MenuActions.get("open.about"));
+		menu.getItems().add(MenuActions.get(AboutMenuItem.ACTION_ID));
 	}
 
 	void switchContext(Node newContext) {

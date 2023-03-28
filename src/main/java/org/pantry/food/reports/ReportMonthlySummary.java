@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.pantry.food.dao.VisitorsDao;
+import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.model.Visit;
 
 /**
@@ -126,7 +126,7 @@ public class ReportMonthlySummary extends ReportBase
     {
         try 
         {
-            VisitorsDao visIo = new VisitorsDao();
+            VisitsDao visIo = new VisitsDao();
             visIo.read();
 
             //Calendar cal = Calendar.getInstance();

@@ -81,4 +81,17 @@ public class ValidStatusTracker {
 		return valid;
 	}
 
+	// Sets and removes focus from each control to trigger validation listeners
+	public Boolean checkAll() {
+		Boolean valid = Boolean.TRUE;
+		if (null != inputs) {
+			for (Control input : inputs) {
+				input.requestFocus();
+			}
+			valid = checkValid();
+		}
+
+		return valid;
+	}
+
 }

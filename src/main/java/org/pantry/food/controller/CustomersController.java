@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
-import org.pantry.food.Images;
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.dao.FileChangedListener;
 import org.pantry.food.model.Customer;
@@ -57,7 +56,6 @@ public class CustomersController {
 
 	@FXML
 	public void initialize() {
-		addCustomerBtn.setGraphic(Images.getImageView("table_add.png"));
 		addCustomerBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -79,18 +77,20 @@ public class CustomersController {
 
 		});
 
-		editCustomerBtn.setGraphic(Images.getImageView("table_edit.png"));
 		editCustomerBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				Customer customer = dataTable.getSelectionModel().getSelectedItem();
-				editCustomer(customer);
+				if (null == customer) {
+					new Alert(AlertType.WARNING, "Please select a customer to edit", ButtonType.OK).show();
+				} else {
+					showEditDialog(customer);
+				}
 			}
 
 		});
 
-		deleteCustomerBtn.setGraphic(Images.getImageView("table_delete.png"));
 		deleteCustomerBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -125,7 +125,7 @@ public class CustomersController {
 				if (event.getClickCount() == 2) {
 					// Invoke the Edit listener
 					Customer customer = dataTable.getSelectionModel().getSelectedItem();
-					editCustomer(customer);
+					showEditDialog(customer);
 				}
 			}
 
@@ -169,12 +169,12 @@ public class CustomersController {
 			// Invoked when the underlying data file changes
 			@Override
 			public void onFileChanged(String filename) {
-				refreshCustomers(customerDao.getCustomerList());
+				refreshTable(customerDao.getCustomerList());
 			}
 		});
 
 		try {
-			refreshCustomers(customerDao.read());
+			refreshTable(customerDao.read());
 		} catch (ArrayIndexOutOfBoundsException | FileNotFoundException ex) {
 			log.error(ex);
 			Alert alert = new Alert(AlertType.WARNING,
@@ -193,7 +193,7 @@ public class CustomersController {
 	 * 
 	 * @param customers customers to display
 	 */
-	private void refreshCustomers(List<Customer> customers) {
+	private void refreshTable(List<Customer> customers) {
 		try {
 			data.clear();
 
@@ -220,7 +220,7 @@ public class CustomersController {
 	 * 
 	 * @param customer customer record to be changed
 	 */
-	private void editCustomer(Customer customer) {
+	private void showEditDialog(Customer customer) {
 		try {
 			AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
 			input.setHouseholdIds(customerDao.getHouseholdIds());

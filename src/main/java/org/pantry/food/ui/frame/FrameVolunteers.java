@@ -34,7 +34,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
-import org.pantry.food.dao.VisitorsDao;
+import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.dao.VolunteerDao;
 import org.pantry.food.model.Visit;
 import org.pantry.food.model.Volunteer;

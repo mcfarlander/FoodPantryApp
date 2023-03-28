@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.dao.FoodRecordDao;
-import org.pantry.food.dao.VisitorsDao;
+import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.dao.VolunteerDao;
 import org.pantry.food.dao.VolunteerEventDao;
 import org.pantry.food.model.Customer;
@@ -245,7 +245,7 @@ public class ReportPantrySummary extends ReportBase
         boolean bFound = false;
         Calendar mydate = new GregorianCalendar();
         
-        VisitorsDao visits = new VisitorsDao();
+        VisitsDao visits = new VisitsDao();
         visits.read();
         
         for (int i = 0; i < visits.getVisitCount(); i++)
