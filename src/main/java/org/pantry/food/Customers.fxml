@@ -3,11 +3,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pantry.food.controller.CustomersController">
@@ -21,17 +21,17 @@
             </Label>
             <HBox>
                <children>
-                  <Button fx:id="addBtn" id="addCustomerBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Add Customer">
+                  <Button id="addCustomerBtn" fx:id="addBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Add Customer">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="editBtn"  id="editCustomerBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Edit Customer">
+                  <Button id="editCustomerBtn" fx:id="editBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Edit Customer">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="deleteBtn" id="deleteCustomerBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Deactivate Customer">
+                  <Button id="deleteCustomerBtn" fx:id="deleteBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Deactivate Customer">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
@@ -41,28 +41,24 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </HBox>
-            <ScrollPane fitToHeight="true" fitToWidth="true">
-               <content>
-                  <AnchorPane>
-                     <children>
-                        <TableView fx:id="dataTable" focusTraversable="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <columns>
-                            <TableColumn id="customerId" editable="false" minWidth="-1.0" prefWidth="75.0" text="Customer ID" />
-                            <TableColumn id="householdId" editable="false" minWidth="-1.0" prefWidth="100.0" text="Household ID" />
-                              <TableColumn id="personId" editable="false" minWidth="-1.0" prefWidth="75.0" text="Person ID" />
-                              <TableColumn id="gender" editable="false" minWidth="-1.0" prefWidth="75.0" text="Gender" />
-                              <TableColumn id="birthDate" editable="false" minWidth="-1.0" prefWidth="75.0" text="Birthdate" />
-                              <TableColumn id="age" editable="false" minWidth="-1.0" prefWidth="75.0" text="Age" />
-                              <TableColumn id="monthRegistered" editable="false" minWidth="-1.0" prefWidth="125.0" text="Month Registered" />
-                              <TableColumn id="newCustomer" editable="false" minWidth="-1.0" prefWidth="75.0" text="New?" />
-                              <TableColumn id="comments" editable="false" minWidth="-1.0" prefWidth="150.0" text="Comments" />
-                              <TableColumn id="active" editable="false" minWidth="-1.0" prefWidth="75.0" text="Active?" />
-                          </columns>
-                        </TableView>
-                     </children>
-                  </AnchorPane>
-               </content>
-            </ScrollPane>
+            <StackPane prefWidth="500.0">
+               <children>
+                  <TableView fx:id="dataTable" focusTraversable="false">
+                    <columns>
+                      <TableColumn id="customerId" editable="false" minWidth="-1.0" prefWidth="75.0" text="Customer ID" />
+                      <TableColumn id="householdId" editable="false" minWidth="-1.0" prefWidth="100.0" text="Household ID" />
+                        <TableColumn id="personId" editable="false" minWidth="-1.0" prefWidth="75.0" text="Person ID" />
+                        <TableColumn id="gender" editable="false" minWidth="-1.0" prefWidth="75.0" text="Gender" />
+                        <TableColumn id="birthDate" editable="false" minWidth="-1.0" prefWidth="75.0" text="Birthdate" />
+                        <TableColumn id="age" editable="false" minWidth="-1.0" prefWidth="75.0" text="Age" />
+                        <TableColumn id="monthRegistered" editable="false" minWidth="-1.0" prefWidth="125.0" text="Month Registered" />
+                        <TableColumn id="newCustomer" editable="false" minWidth="-1.0" prefWidth="75.0" text="New?" />
+                        <TableColumn id="comments" editable="false" minWidth="-1.0" prefWidth="150.0" text="Comments" />
+                        <TableColumn id="active" editable="false" minWidth="-1.0" prefWidth="75.0" text="Active?" />
+                    </columns>
+                  </TableView>
+               </children>
+            </StackPane>
          </children>
       </VBox>
    </children>
