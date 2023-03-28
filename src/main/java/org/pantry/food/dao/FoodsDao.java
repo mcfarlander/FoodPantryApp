@@ -30,6 +30,8 @@ import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.pantry.food.ApplicationCloseListener;
+import org.pantry.food.ApplicationContext;
 import org.pantry.food.model.Food;
 import org.pantry.food.ui.common.DataFiles;
 
@@ -110,6 +112,22 @@ public class FoodsDao implements CsvDao<Food> {
 	private static final String Col_DonorEmail = "donoremail";
 	private static final String Col_SecondHarvestProduce = "secondharvest_produce";
 
+	public FoodsDao() {
+		ApplicationContext.addApplicationCloseListener(new ApplicationCloseListener() {
+
+			@Override
+			public void onClosing() {
+				if (null != fileMonitor) {
+					try {
+						fileMonitor.stop();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -183,6 +201,10 @@ public class FoodsDao implements CsvDao<Food> {
 					}
 
 					foodList.add(record);
+
+					if (record.getFoodId() > lastId.get()) {
+						lastId.set(record.getFoodId());
+					}
 				} else {
 					firstLine = !firstLine;
 
@@ -198,7 +220,7 @@ public class FoodsDao implements CsvDao<Food> {
 
 			reader.close();
 		} else {
-			log.info("FoodRecord cvs file NOT found");
+			log.info("Food CSV file NOT found");
 		}
 
 		return foodList;
@@ -252,7 +274,7 @@ public class FoodsDao implements CsvDao<Food> {
 	}
 
 	/**
-	 * Modifies a foodrecords object in the list (in memory).
+	 * Modifies a food object in the list (in memory)
 	 * 
 	 * @param record
 	 */

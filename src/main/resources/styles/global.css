@@ -48,7 +48,8 @@
 }
 
 /* Right-align table columns containing numbers */
-.table-column.numeric {
+.table-column.numeric,
+.textfield.numeric {
 	-fx-alignment: CENTER-RIGHT;
 }
 

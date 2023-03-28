@@ -20,7 +20,7 @@ public class VisitsMenuItem extends MenuItem {
 		setId(ACTION_ID);
 		setAccelerator(KeyCombination.keyCombination("shortcut+2"));
 		setGraphic(Images.getImageView("cart.png"));
-		setText("Visits");
+		setText("Visitors");
 	}
 
 	public VisitsMenuItem(EventHandler<ActionEvent> onActionHandler) {

@@ -455,8 +455,9 @@ public class Food {
 	public Object[] getFoodRecordObject() {
 
 		return new Object[] { getFoodId(), getEntryDate(), getPickNSave(), getCommunity(), getNonTefap(), getTefap(),
-				getSecondHarvest(), getSecondHarvestProduce(), getPantry(), getOther(), getComment(), getNonFood(), getMilk(),
-				-getOther2(), getProduce(), isDonation(), getDonorName(), getDonorAddress(), getDonorEmail() };
+				getSecondHarvest(), getSecondHarvestProduce(), getPantry(), getOther(), getComment(), getNonFood(),
+				getMilk(), -getOther2(), getProduce(), isDonation(), getDonorName(), getDonorAddress(),
+				getDonorEmail() };
 	}
 
 	/**
@@ -489,8 +490,9 @@ public class Food {
 	 * @return the total
 	 */
 	public double getTotal() {
-		return getPickNSave() + getCommunity() + getNonTefap() + getTefap() + getSecondHarvest() + getSecondHarvestProduce()
-				+ getPantry() + getOther() + getNonFood() + getMilk() + getOther2() + getProduce();
+		return getPickNSave() + getCommunity() + getNonTefap() + getTefap() + getSecondHarvest()
+				+ getSecondHarvestProduce() + getPantry() + getOther() + getNonFood() + getMilk() + getOther2()
+				+ getProduce();
 	}
 
 }
