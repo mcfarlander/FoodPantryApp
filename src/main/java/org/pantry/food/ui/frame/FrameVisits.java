@@ -388,9 +388,7 @@ public class FrameVisits extends javax.swing.JInternalFrame {
 			Calendar cal = Calendar.getInstance();
 			Calendar visCal = Calendar.getInstance();
 
-			for (int i = 0; i < visIo.getVisitCount(); i++) {
-				Visit vis = visIo.getVisitList().get(i);
-
+			for (Visit vis : visIo.getAll()) {
 				Date visDate = dateFormat.parse(vis.getVisitDate());
 				visCal.setTime(visDate);
 
@@ -466,8 +464,7 @@ public class FrameVisits extends javax.swing.JInternalFrame {
 		if (irow > -1) {
 			int iVisitId = Integer.parseInt(this.jTable1.getModel().getValueAt(irow, 0).toString());
 
-			for (int i = 0; i < this.visIo.getVisitCount(); i++) {
-				Visit vis = this.visIo.getVisitList().get(i);
+			for (Visit vis : visIo.getAll()) {
 				if (vis.getVisitId() == iVisitId) {
 					visit = vis;
 					break;

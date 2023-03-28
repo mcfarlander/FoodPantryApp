@@ -383,7 +383,7 @@ public class FrameSettings extends javax.swing.JInternalFrame
 
             int iMonth = 0;
 
-            for ( Customer cust : custIO.getCustomerList() ) {
+            for ( Customer cust : custIO.getAll() ) {
                 iMonth = cust.getMonthRegistered() + 1;
                 cust.setMonthRegistered(iMonth);
             }

@@ -113,7 +113,7 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 				// available to the rest of this class
 				CustomersDao dao = ApplicationContext.getCustomersDao();
 				if (isNew) {
-					savedCustomer.setCustomerId(dao.getNextCustomerId());
+					savedCustomer.setCustomerId(dao.getNextId());
 					dao.add(savedCustomer);
 				} else {
 					dao.edit(savedCustomer);

@@ -171,7 +171,7 @@ public class FrameVolunteers extends javax.swing.JInternalFrame
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonDeleteActionPerformed(evt);
+                deactivate(evt);
             }
         });
         jToolBar1.add(jButton3);
@@ -285,7 +285,7 @@ public class FrameVolunteers extends javax.swing.JInternalFrame
      *
      * @param evt the evt
      */
-    private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {
+    private void deactivate(java.awt.event.ActionEvent evt) {
 
         Volunteer del = getSelected();
 
@@ -296,7 +296,7 @@ public class FrameVolunteers extends javax.swing.JInternalFrame
                 "Confirm", JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION){
-                objIo.delete(del);
+                objIo.deactivate(del);
                 save();
                 load();
             }
@@ -338,7 +338,7 @@ public class FrameVolunteers extends javax.swing.JInternalFrame
             Calendar visCal = Calendar.getInstance();
 
             for (int i = 0; i < objIo.getCvsCount(); i++){
-                Volunteer obj = objIo.getCvsList().get(i);
+                Volunteer obj = objIo.getAll().get(i);
 
                 model.addRow(obj.getVolunteerObject());
 
@@ -389,7 +389,7 @@ public class FrameVolunteers extends javax.swing.JInternalFrame
             int itestId = Integer.parseInt(this.jTable1.getModel().getValueAt(irow, 0).toString());
 
             for (int i = 0; i < this.objIo.getCvsCount(); i++){
-                Volunteer test = this.objIo.getCvsList().get(i);
+                Volunteer test = this.objIo.getAll().get(i);
                 if (test.getVolunteerId() == itestId){
                     obj = test;
                     break;

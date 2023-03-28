@@ -296,7 +296,7 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 					"Confirm", JOptionPane.YES_NO_OPTION);
 
 			if (result == JOptionPane.YES_OPTION) {
-				recordIo.delete(record);
+				recordIo.deactivate(record);
 
 				saveRecords();
 				loadRecords();
@@ -335,7 +335,7 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 			model.setRowCount(0);
 
 			for (int i = 0; i < recordIo.getRecordCount(); i++) {
-				FoodRecord record = recordIo.getRecordList().get(i);
+				FoodRecord record = recordIo.getAll().get(i);
 
 				model.addRow(record.getFoodRecordObject());
 
@@ -400,7 +400,7 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 			int iId = Integer.parseInt(this.jTable1.getModel().getValueAt(irow, 0).toString());
 
 			for (int i = 0; i < this.recordIo.getRecordCount(); i++) {
-				FoodRecord record = this.recordIo.getRecordList().get(i);
+				FoodRecord record = this.recordIo.getAll().get(i);
 				if (record.getRecordId() == iId) {
 					rec = record;
 					break;

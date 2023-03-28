@@ -107,12 +107,8 @@ public class VisitsDao implements CsvDao<Visit> {
 		});
 	}
 
-	public List<Visit> getVisitList() {
+	public List<Visit> getAll() {
 		return this.visitList;
-	}
-
-	public int getVisitCount() {
-		return this.visitList.size();
 	}
 
 	/**
@@ -266,6 +262,16 @@ public class VisitsDao implements CsvDao<Visit> {
 
 	} // end of editVisit
 
+	public void deactivate(Visit vis) {
+		for (int i = 0; i < visitList.size(); i++) {
+			Visit testVisit = visitList.get(i);
+			if (testVisit.getVisitId() == vis.getVisitId()) {
+				testVisit.setActive(false);
+				break;
+			}
+		}
+	}
+
 	public void delete(Visit vis) {
 		for (int i = 0; i < visitList.size(); i++) {
 			Visit testVisit = visitList.get(i);
@@ -279,7 +285,7 @@ public class VisitsDao implements CsvDao<Visit> {
 	/**
 	 * @return highest existing visit ID plus 1
 	 */
-	public int getNextVisitId() {
+	public int getNextId() {
 		return lastVisitId.addAndGet(1);
 	}
 

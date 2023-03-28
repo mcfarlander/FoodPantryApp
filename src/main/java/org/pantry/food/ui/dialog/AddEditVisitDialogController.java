@@ -84,7 +84,6 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 
 	@FXML
 	private void initialize() {
-		// Add icons to buttons
 		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -92,6 +91,10 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 				if (!validStatusTracker.checkAll()) {
 					return;
 				}
+
+				// We can't calculate week number on focus lost because the user doesn't have to
+				// focus on the visit date box
+				calculateAndSetWeekNumber();
 
 				boolean isNew = savedVisit.getVisitId() <= 0;
 				log.info("Attempting to save {} visit record {}", isNew ? "new" : "existing",
@@ -102,7 +105,7 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 				// available to the rest of this class
 				VisitsDao dao = ApplicationContext.getVisitsDao();
 				if (isNew) {
-					savedVisit.setVisitId(dao.getNextVisitId());
+					savedVisit.setVisitId(dao.getNextId());
 					savedVisit.setActive(true);
 					dao.add(savedVisit);
 				} else {
@@ -144,7 +147,6 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 		savedVisit = new Visit(input.getVisit());
 
 		householdIdCbo.getItems().add("");
-
 		if (null != input.getHouseholdIds()) {
 			householdIdCbo.getItems().addAll(input.getHouseholdIds());
 		}
@@ -156,6 +158,10 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 		numAdultsText.textProperty().bindBidirectional(savedVisit.numberAdultsProperty());
 		numKidsText.textProperty().bindBidirectional(savedVisit.numberKidsProperty());
 		numSeniorsText.textProperty().bindBidirectional(savedVisit.numberSeniorsProperty());
+
+		workingIncomeChk.selectedProperty().bindBidirectional(savedVisit.workingIncomeProperty());
+		otherIncomeChk.selectedProperty().bindBidirectional(savedVisit.otherIncomeProperty());
+		noIncomeChk.selectedProperty().bindBidirectional(savedVisit.noIncomeProperty());
 
 		visitDateText.textProperty().bindBidirectional(savedVisit.visitDateProperty());
 
@@ -186,23 +192,7 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean wasFocused, Boolean isFocused) {
 				if (wasFocused && !isFocused && DateUtil.isDate(visitDateText.getText())) {
-					String dateStr = visitDateText.getText();
-					log.trace("Visit date text focus lost, input is {}", dateStr);
 
-					try {
-						// Find the week number for this date
-						LocalDate visitDate = DateUtil.toDate(dateStr);
-						// Two-digit years are considered valid, but are the year 23 AD
-						if (visitDate.getYear() < 2000) {
-							visitDate = visitDate.plusYears(2000);
-							visitDateText.setText(DateUtil.formatDateFourDigitYear(visitDate));
-						}
-						int weekNumber = visitDate.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
-						savedVisit.setVisitorWeekNumber(weekNumber);
-					} catch (ParseException e) {
-						log.error("Invalid visit date - date {} could not be parsed", dateStr, e);
-						new Alert(AlertType.WARNING, "Invalid visit date").show();
-					}
 				}
 			}
 
@@ -245,6 +235,26 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 	@Override
 	public void setModalDialogParent(ModalDialog<AddEditVisitDialogInput, Visit> parent) {
 		this.parent = parent;
+	}
+
+	private void calculateAndSetWeekNumber() {
+		String dateStr = visitDateText.getText();
+		log.trace("Calculating week number, input is {}", dateStr);
+
+		try {
+			// Find the week number for this date
+			LocalDate visitDate = DateUtil.toDate(dateStr);
+			// Two-digit years are considered valid, but are the year 23 AD
+			if (visitDate.getYear() < 2000) {
+				visitDate = visitDate.plusYears(2000);
+				visitDateText.setText(DateUtil.formatDateFourDigitYear(visitDate));
+			}
+			int weekNumber = visitDate.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
+			savedVisit.setVisitorWeekNumber(weekNumber);
+		} catch (ParseException e) {
+			log.error("Invalid visit date - date {} could not be parsed", dateStr, e);
+			new Alert(AlertType.WARNING, "Invalid visit date").show();
+		}
 	}
 
 }

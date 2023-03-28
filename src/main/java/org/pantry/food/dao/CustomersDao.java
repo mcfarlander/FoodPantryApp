@@ -106,7 +106,8 @@ public class CustomersDao implements CsvDao<Customer> {
 		});
 	}
 
-	public List<Customer> getCustomerList() {
+	@Override
+	public List<Customer> getAll() {
 		return this.customerList;
 	}
 
@@ -260,6 +261,17 @@ public class CustomersDao implements CsvDao<Customer> {
 		}
 	}// end of editCustomer
 
+	@Override
+	public void deactivate(Customer cust) {
+		for (int i = 0; i < customerList.size(); i++) {
+			Customer testCust = customerList.get(i);
+			if (testCust.getCustomerId() == cust.getCustomerId()) {
+				customerList.remove(i);
+				break;
+			}
+		}
+	}
+
 	/**
 	 * Deletes a customer object from the list in memory. This should typically be
 	 * followed by a call to saveCsvFile().
@@ -278,7 +290,7 @@ public class CustomersDao implements CsvDao<Customer> {
 	/**
 	 * @return highest existing customer ID plus 1
 	 */
-	public int getNextCustomerId() {
+	public int getNextId() {
 		return lastCustomerId.addAndGet(1);
 	}
 

@@ -296,7 +296,7 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 					JOptionPane.YES_NO_OPTION);
 
 			if (result == JOptionPane.YES_OPTION) {
-				objIo.delete(del);
+				objIo.deactivate(del);
 				save();
 				load();
 			}
@@ -342,7 +342,7 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 			Calendar visCal = Calendar.getInstance();
 
 			for (int i = 0; i < objIo.getCvsCount(); i++) {
-				VolunteerEvent obj = objIo.getCvsList().get(i);
+				VolunteerEvent obj = objIo.getAll().get(i);
 
 				Date visDate = dateFormat.parse(obj.getEventDate());
 				visCal.setTime(visDate);
@@ -386,7 +386,7 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 			volIO.read();
 
 			for (int i = 0; i < volIO.getCvsCount(); i++) {
-				Volunteer obj = volIO.getCvsList().get(i);
+				Volunteer obj = volIO.getAll().get(i);
 				currentVolunteers.add(obj.getName());
 
 			}
@@ -432,7 +432,7 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 			int itestId = Integer.parseInt(this.jTable1.getModel().getValueAt(irow, 0).toString());
 
 			for (int i = 0; i < this.objIo.getCvsCount(); i++) {
-				VolunteerEvent test = this.objIo.getCvsList().get(i);
+				VolunteerEvent test = this.objIo.getAll().get(i);
 				if (test.getVolunteerEventId() == itestId) {
 					obj = test;
 					break;

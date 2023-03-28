@@ -19,21 +19,43 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-public interface CsvDao<T>
-{
+public interface CsvDao<T> {
 	/**
-	 * Read the CSV file and store an array of objects related to that type of file.
+	 * Reads the CSV file and store an array of objects related to that type of file
+	 * 
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
 	List<T> read() throws FileNotFoundException, IOException;
-	
+
 	/**
-	 * Save all objects contained by the DAO to a CSV file.
+	 * @return the in-memory entities. Does NOT read the CSV file. Prefer this over
+	 *         read().
+	 */
+	List<T> getAll();
+
+	/**
+	 * Saves all objects contained by the DAO to a CSV file.
+	 * 
 	 * @throws IOException
 	 */
 	void persist() throws IOException;
-	
-	
+
+	/**
+	 * Marks the entity inactive
+	 * 
+	 * @param entity
+	 */
+	void deactivate(T entity);
+
+	int getNextId();
+
+	/**
+	 * Registers an observer to be notified when the underlying data file is
+	 * modified
+	 * 
+	 * @param listener
+	 */
+	void addFileChangedListener(FileChangedListener listener);
 
 }

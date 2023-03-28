@@ -35,346 +35,258 @@ import org.pantry.food.model.Visit;
  * 
  * @author mcfarland_davej
  */
-public class ReportMonthlySummary extends ReportBase 
-{
-    private int monthSelected = 0;
-    public int getMonthSelected(){ return this.monthSelected; }
-    public void setMonthSelected(int iMonth){ this.monthSelected = iMonth; }
+public class ReportMonthlySummary extends ReportBase {
+	private int monthSelected = 0;
 
-    private DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	public int getMonthSelected() {
+		return this.monthSelected;
+	}
 
-    private String[] cols = new String [] 
-    {
-        "ID", "HouseholdId", "New?", "# Adults", 
-        "# Kids", "# Seniors", "Working Income", "Other Income",
-        "No Income", "Date"
-    };
-    
-    /*
-     * (non-Javadoc)
-     * @see org.pantry.food.reports.ReportBase#createReportTable()
-     */
-    @Override
-    public void createReportTable() 
-    {
-        this.setReportName("Monthly_Summary");
-        this.setReportTitle("McFarland Community Food Pantry Monthly Summary");
-        
-        Calendar c1 = Calendar.getInstance(); // today
-        this.setReportDescription(dateFormat.format(c1.getTime()));
+	public void setMonthSelected(int iMonth) {
+		this.monthSelected = iMonth;
+	}
 
-        this.createHeader();
+	private DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-        // create the basic table
-        this.getBuffer().append("<table border='1' cellpadding='4'>");
+	private String[] cols = new String[] { "ID", "HouseholdId", "New?", "# Adults", "# Kids", "# Seniors",
+			"Working Income", "Other Income", "No Income", "Date" };
 
-        // create a header row
-        createRow(cols[0], cols[1], cols[2],
-                cols[3], cols[4], cols[5],
-                cols[6], cols[7], cols[8],
-                cols[9], true);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.pantry.food.reports.ReportBase#createReportTable()
+	 */
+	@Override
+	public void createReportTable() {
+		this.setReportName("Monthly_Summary");
+		this.setReportTitle("McFarland Community Food Pantry Monthly Summary");
 
-        // create rest of the data rows
-        loadReport();
+		Calendar c1 = Calendar.getInstance(); // today
+		this.setReportDescription(dateFormat.format(c1.getTime()));
 
-        // finish the table
-        this.getBuffer().append("</table>");
+		this.createHeader();
 
-        // finish the html
-        this.createFooter();
+		// create the basic table
+		this.getBuffer().append("<table border='1' cellpadding='4'>");
 
-    }
+		// create a header row
+		createRow(cols[0], cols[1], cols[2], cols[3], cols[4], cols[5], cols[6], cols[7], cols[8], cols[9], true);
 
-    private void createRow(String col1, String col2, String col3,
-            String col4, String col5, String col6,
-            String col7, String col8, String col9, String col10, boolean isHeader)
-    {
-        this.getBuffer().append("<tr>");
+		// create rest of the data rows
+		loadReport();
 
-        if (isHeader)
-        {
-	        this.getBuffer().append("<th>").append(col1).append("</th>");
-	        this.getBuffer().append("<th>").append(col2).append("</th>");
-	        this.getBuffer().append("<th>").append(col3).append("</th>");
-	        this.getBuffer().append("<th>").append(col4).append("</th>");
-	        this.getBuffer().append("<th>").append(col5).append("</th>");
-	        this.getBuffer().append("<th>").append(col6).append("</th>");
-	        this.getBuffer().append("<th>").append(col7).append("</th>");
-	        this.getBuffer().append("<th>").append(col8).append("</th>");
-	        this.getBuffer().append("<th>").append(col9).append("</th>");
-	        this.getBuffer().append("<th>").append(col10).append("</th>");
-        }
-        else
-        {
-	        this.getBuffer().append("<td>").append(col1).append("</td>");
-	        this.getBuffer().append("<td>").append(col2).append("</td>");
-	        this.getBuffer().append("<td>").append(col3).append("</td>");
-	        this.getBuffer().append("<td>").append(col4).append("</td>");
-	        this.getBuffer().append("<td>").append(col5).append("</td>");
-	        this.getBuffer().append("<td>").append(col6).append("</td>");
-	        this.getBuffer().append("<td>").append(col7).append("</td>");
-	        this.getBuffer().append("<td>").append(col8).append("</td>");
-	        this.getBuffer().append("<td>").append(col9).append("</td>");
-	        this.getBuffer().append("<td>").append(col10).append("</td>");
-        }
+		// finish the table
+		this.getBuffer().append("</table>");
 
-        this.getBuffer().append("</tr>");
+		// finish the html
+		this.createFooter();
 
-    }// end of createTable
+	}
 
-    private void loadReport() 
-    {
-        try 
-        {
-            VisitsDao visIo = new VisitsDao();
-            visIo.read();
+	private void createRow(String col1, String col2, String col3, String col4, String col5, String col6, String col7,
+			String col8, String col9, String col10, boolean isHeader) {
+		this.getBuffer().append("<tr>");
 
-            //Calendar cal = Calendar.getInstance();
-            Calendar testCal = Calendar.getInstance();
+		if (isHeader) {
+			this.getBuffer().append("<th>").append(col1).append("</th>");
+			this.getBuffer().append("<th>").append(col2).append("</th>");
+			this.getBuffer().append("<th>").append(col3).append("</th>");
+			this.getBuffer().append("<th>").append(col4).append("</th>");
+			this.getBuffer().append("<th>").append(col5).append("</th>");
+			this.getBuffer().append("<th>").append(col6).append("</th>");
+			this.getBuffer().append("<th>").append(col7).append("</th>");
+			this.getBuffer().append("<th>").append(col8).append("</th>");
+			this.getBuffer().append("<th>").append(col9).append("</th>");
+			this.getBuffer().append("<th>").append(col10).append("</th>");
+		} else {
+			this.getBuffer().append("<td>").append(col1).append("</td>");
+			this.getBuffer().append("<td>").append(col2).append("</td>");
+			this.getBuffer().append("<td>").append(col3).append("</td>");
+			this.getBuffer().append("<td>").append(col4).append("</td>");
+			this.getBuffer().append("<td>").append(col5).append("</td>");
+			this.getBuffer().append("<td>").append(col6).append("</td>");
+			this.getBuffer().append("<td>").append(col7).append("</td>");
+			this.getBuffer().append("<td>").append(col8).append("</td>");
+			this.getBuffer().append("<td>").append(col9).append("</td>");
+			this.getBuffer().append("<td>").append(col10).append("</td>");
+		}
 
-            ArrayList<Visit> monthVisits = new ArrayList<Visit>();
-            ArrayList<String> weekNumbers = new ArrayList<String>();
+		this.getBuffer().append("</tr>");
 
-            int monthSumHouse = 0;
-            int monthSumNew = 0;
-            int monthSumAdults = 0;
-            int monthSumKids = 0;
-            int monthSumSeniors = 0;
-            int monthSumWorkingIncome = 0;
-            int monthSumOtherIncome = 0;
-            int monthSumNoIncome = 0;
+	}// end of createTable
 
-            for (int i = 0; i < visIo.getVisitCount(); i++)
-            {
-                Visit vis = visIo.getVisitList().get(i);
+	private void loadReport() {
+		try {
+			VisitsDao visIo = new VisitsDao();
+			visIo.read();
 
-                if (vis.isActive())
-                {
-                    Date testDate = dateFormat.parse(vis.getVisitDate());
-                    testCal.setTime(testDate);
+			// Calendar cal = Calendar.getInstance();
+			Calendar testCal = Calendar.getInstance();
 
-                    if (testCal.get(Calendar.MONTH) == this.monthSelected)
-                    {
+			ArrayList<Visit> monthVisits = new ArrayList<Visit>();
+			ArrayList<String> weekNumbers = new ArrayList<String>();
 
-                        monthVisits.add(vis);
-                        monthSumHouse++; 
+			int monthSumHouse = 0;
+			int monthSumNew = 0;
+			int monthSumAdults = 0;
+			int monthSumKids = 0;
+			int monthSumSeniors = 0;
+			int monthSumWorkingIncome = 0;
+			int monthSumOtherIncome = 0;
+			int monthSumNoIncome = 0;
 
-                        if (vis.isNewCustomer())
-                        {
-                            monthSumNew++;
-                        }
+			for (Visit vis : visIo.getAll()) {
+				if (vis.isActive()) {
+					Date testDate = dateFormat.parse(vis.getVisitDate());
+					testCal.setTime(testDate);
 
-                        monthSumAdults += vis.getNumberAdults();
-                        monthSumKids += vis.getNumberKids();
-                        monthSumSeniors += vis.getNumberSeniors();
+					if (testCal.get(Calendar.MONTH) == this.monthSelected) {
 
-                        if (vis.isWorkingIncome())
-                        {
-                            monthSumWorkingIncome++;
-                        }
+						monthVisits.add(vis);
+						monthSumHouse++;
 
-                        if (vis.isOtherIncome())
-                        {
-                            monthSumOtherIncome++;
-                        }
+						if (vis.isNewCustomer()) {
+							monthSumNew++;
+						}
 
-                        if (vis.isNoIncome())
-                        {
-                            monthSumNoIncome++;
-                        }
+						monthSumAdults += vis.getNumberAdults();
+						monthSumKids += vis.getNumberKids();
+						monthSumSeniors += vis.getNumberSeniors();
 
+						if (vis.isWorkingIncome()) {
+							monthSumWorkingIncome++;
+						}
 
-                        boolean bFound = false;
-                        for (int j = 0; j < weekNumbers.size(); j++){
-                            if (Integer.parseInt(weekNumbers.get(j).toString()) == vis.getVisitorWeekNumber())
-                            {
-                                bFound = true;
-                            }
+						if (vis.isOtherIncome()) {
+							monthSumOtherIncome++;
+						}
 
-                        }
+						if (vis.isNoIncome()) {
+							monthSumNoIncome++;
+						}
 
-                        if (!bFound)
-                        {
-                            weekNumbers.add("" + vis.getVisitorWeekNumber());
-                        }
+						boolean bFound = false;
+						for (int j = 0; j < weekNumbers.size(); j++) {
+							if (Integer.parseInt(weekNumbers.get(j).toString()) == vis.getVisitorWeekNumber()) {
+								bFound = true;
+							}
 
-                    }
+						}
 
-                }
+						if (!bFound) {
+							weekNumbers.add("" + vis.getVisitorWeekNumber());
+						}
 
-            }
+					}
 
-            // loop thru the current visits and get summaries
-            Collections.sort(weekNumbers); // sort the week numbers asc
+				}
 
-            for (int i = 0; i < weekNumbers.size(); i++)
-            {
-                int iWeekNumber = Integer.parseInt(weekNumbers.get(i).toString());
-                System.out.println("week number:" + iWeekNumber);
+			}
 
-                int weekSumHouse = 0;
-                int weekSumNew = 0;
-                int weekSumAdults = 0;
-                int weekSumKids = 0;
-                int weekSumSeniors = 0;
-                int weekSumWorkingIncome = 0;
-                int weekSumOtherIncome = 0;
-                int weekSumNoIncome = 0;
+			// loop thru the current visits and get summaries
+			Collections.sort(weekNumbers); // sort the week numbers asc
 
-                for (int j = 0; j < monthVisits.size(); j++)
-                {
-                    Visit vis = monthVisits.get(j);
+			for (int i = 0; i < weekNumbers.size(); i++) {
+				int iWeekNumber = Integer.parseInt(weekNumbers.get(i).toString());
+				System.out.println("week number:" + iWeekNumber);
 
-                    if (vis.getVisitorWeekNumber() == iWeekNumber)
-                    {
-                        weekSumHouse++;
+				int weekSumHouse = 0;
+				int weekSumNew = 0;
+				int weekSumAdults = 0;
+				int weekSumKids = 0;
+				int weekSumSeniors = 0;
+				int weekSumWorkingIncome = 0;
+				int weekSumOtherIncome = 0;
+				int weekSumNoIncome = 0;
 
-                        if (vis.isNewCustomer())
-                        {
-                            weekSumNew++;
-                        }
+				for (int j = 0; j < monthVisits.size(); j++) {
+					Visit vis = monthVisits.get(j);
 
-                        weekSumAdults += vis.getNumberAdults();
-                        weekSumKids += vis.getNumberKids();
-                        weekSumSeniors += vis.getNumberSeniors();
+					if (vis.getVisitorWeekNumber() == iWeekNumber) {
+						weekSumHouse++;
 
-                        if (vis.isWorkingIncome())
-                        {
-                            weekSumWorkingIncome++;
-                        }
+						if (vis.isNewCustomer()) {
+							weekSumNew++;
+						}
 
-                        if (vis.isOtherIncome())
-                        {
-                            weekSumOtherIncome++;
-                        }
+						weekSumAdults += vis.getNumberAdults();
+						weekSumKids += vis.getNumberKids();
+						weekSumSeniors += vis.getNumberSeniors();
 
-                        if (vis.isNoIncome())
-                        {
-                            weekSumNoIncome++;
-                        }
+						if (vis.isWorkingIncome()) {
+							weekSumWorkingIncome++;
+						}
 
-                        String sNew = "";
-                        if (vis.isNewCustomer())
-                        {
-                            sNew = "Yes";
-                        } 
-                        else 
-                        {
-                            sNew = "No";
-                        }
+						if (vis.isOtherIncome()) {
+							weekSumOtherIncome++;
+						}
 
-                        String sWorking = "";
-                        if (vis.isWorkingIncome())
-                        {
-                            sWorking = "Yes";
-                        } 
-                        else 
-                        {
-                            sWorking = "No";
-                        }
+						if (vis.isNoIncome()) {
+							weekSumNoIncome++;
+						}
 
-                        String sOther = "";
-                        if (vis.isOtherIncome())
-                        {
-                            sOther = "Yes";
-                        } 
-                        else 
-                        {
-                            sOther = "No";
-                        }
+						String sNew = "";
+						if (vis.isNewCustomer()) {
+							sNew = "Yes";
+						} else {
+							sNew = "No";
+						}
 
-                        String sNoIncome = "";
-                        if (vis.isNoIncome())
-                        {
-                            sNoIncome = "Yes";
-                        } 
-                        else 
-                        {
-                            sNoIncome = "No";
-                        }
+						String sWorking = "";
+						if (vis.isWorkingIncome()) {
+							sWorking = "Yes";
+						} else {
+							sWorking = "No";
+						}
 
-                        // show the visit info on the table
-                        createRow("" + weekSumHouse,
-                                        "" + vis.getHouseholdId(),
-                                        sNew,
-                                        "" + vis.getNumberAdults(),
-                                        "" + vis.getNumberKids(),
-                                        "" + vis.getNumberSeniors(),
-                                        sWorking,
-                                        sOther,
-                                        sNoIncome,
-                                        "" + vis.getVisitorWeekNumber(),
-                                        false
-                        );
+						String sOther = "";
+						if (vis.isOtherIncome()) {
+							sOther = "Yes";
+						} else {
+							sOther = "No";
+						}
 
-                    }
+						String sNoIncome = "";
+						if (vis.isNoIncome()) {
+							sNoIncome = "Yes";
+						} else {
+							sNoIncome = "No";
+						}
 
-                }
+						// show the visit info on the table
+						createRow("" + weekSumHouse, "" + vis.getHouseholdId(), sNew, "" + vis.getNumberAdults(),
+								"" + vis.getNumberKids(), "" + vis.getNumberSeniors(), sWorking, sOther, sNoIncome,
+								"" + vis.getVisitorWeekNumber(), false);
 
-                    // show the weekly summary info on the table
+					}
 
-                   createRow("Week Sum:",
-                             "w=" + weekSumHouse,
-                             "w=" + weekSumNew,
-                             "w=" + weekSumAdults,
-                             "w=" + weekSumKids,
-                             "w=" + weekSumSeniors,
-                             "w=" + weekSumWorkingIncome,
-                             "w=" + weekSumOtherIncome,
-                             "w=" + weekSumNoIncome,
-                             "Week " + (i + 1),
-                             false
-                    );
+				}
 
+				// show the weekly summary info on the table
 
-                   createRow("",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             false
-                     );
+				createRow("Week Sum:", "w=" + weekSumHouse, "w=" + weekSumNew, "w=" + weekSumAdults, "w=" + weekSumKids,
+						"w=" + weekSumSeniors, "w=" + weekSumWorkingIncome, "w=" + weekSumOtherIncome,
+						"w=" + weekSumNoIncome, "Week " + (i + 1), false);
 
+				createRow("", "", "", "", "", "", "", "", "", "", false);
 
+			}
 
-            }
+			// show the monthly summary line
+			createRow("Month Totals:", "T=" + monthSumHouse, "T=" + monthSumNew, "T=" + monthSumAdults,
+					"T=" + monthSumKids, "T=" + monthSumSeniors, "T=" + monthSumWorkingIncome,
+					"T=" + monthSumOtherIncome, "T=" + monthSumNoIncome, "Month Summary", false
 
-            // show the monthly summary line
-            createRow("Month Totals:",
-                      "T=" + monthSumHouse,
-                      "T=" + monthSumNew,
-                      "T=" + monthSumAdults,
-                      "T=" + monthSumKids,
-                      "T=" + monthSumSeniors,
-                      "T=" + monthSumWorkingIncome,
-                      "T=" + monthSumOtherIncome,
-                      "T=" + monthSumNoIncome,
-                      "Month Summary",
-                      false
+			);
 
-            );
+		} catch (ParseException ex) {
+			Logger.getLogger(ReportMonthlySummary.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (FileNotFoundException ex) {
+			Logger.getLogger(ReportMonthlySummary.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
+			Logger.getLogger(ReportMonthlySummary.class.getName()).log(Level.SEVERE, null, ex);
+		}
 
-
-        } 
-        catch (ParseException ex) 
-        {
-            Logger.getLogger(ReportMonthlySummary.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        catch (FileNotFoundException ex) 
-        {
-            Logger.getLogger(ReportMonthlySummary.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        catch (IOException ex) 
-        {
-            Logger.getLogger(ReportMonthlySummary.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-
+	}
 
 }// end of class

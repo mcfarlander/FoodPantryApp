@@ -251,7 +251,7 @@ public class FrameVolunteerHours extends javax.swing.JInternalFrame {
 
 			if (result == JOptionPane.YES_OPTION) {
 				// custIo.deleteCustomer(newCust);
-				recordIo.delete(record);
+				recordIo.deactivate(record);
 
 				saveRecords();
 				loadRecords();
@@ -280,7 +280,7 @@ public class FrameVolunteerHours extends javax.swing.JInternalFrame {
 			model.setRowCount(0);
 
 			for (int i = 0; i < recordIo.getCvsCount(); i++) {
-				VolunteerHour record = recordIo.getCvsList().get(i);
+				VolunteerHour record = recordIo.getAll().get(i);
 
 				model.addRow(record.getVolunteerHourObject());
 
@@ -331,7 +331,7 @@ public class FrameVolunteerHours extends javax.swing.JInternalFrame {
 			int iId = Integer.parseInt(this.jTable1.getModel().getValueAt(irow, 0).toString());
 
 			for (int i = 0; i < this.recordIo.getCvsCount(); i++) {
-				VolunteerHour record = this.recordIo.getCvsList().get(i);
+				VolunteerHour record = this.recordIo.getAll().get(i);
 				if (record.getVolunteerHourId() == iId) {
 					rec = record;
 					break;

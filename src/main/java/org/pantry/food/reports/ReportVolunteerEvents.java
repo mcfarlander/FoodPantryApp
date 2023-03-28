@@ -164,7 +164,7 @@ public class ReportVolunteerEvents  extends ReportBase
 
              for (int i = 0; i < recIo.getCvsCount(); i++)
              {
-                VolunteerEvent record = recIo.getCvsList().get(i);
+                VolunteerEvent record = recIo.getAll().get(i);
                 String name = record.getVolunteerName();
                 
                 boolean bFound = false;
@@ -295,7 +295,7 @@ public class ReportVolunteerEvents  extends ReportBase
     	
     	for (int i = 0; i < volunteerIO.getCvsCount(); i++)
     	{
-    		Volunteer volun = volunteerIO.getCvsList().get(i);
+    		Volunteer volun = volunteerIO.getAll().get(i);
     		
     		if (name.equalsIgnoreCase(volun.getName()))
     		{

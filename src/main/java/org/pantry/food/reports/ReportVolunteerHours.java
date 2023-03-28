@@ -142,7 +142,7 @@ public class ReportVolunteerHours  extends ReportBase
             Calendar cal = Calendar.getInstance();
 
              for (int i = 0; i < recIo.getCvsCount(); i++){
-                VolunteerHour record = recIo.getCvsList().get(i);
+                VolunteerHour record = recIo.getAll().get(i);
 
                 Date testDate = dateFormat.parse(record.getEntryDate());
                 cal.setTime(testDate);

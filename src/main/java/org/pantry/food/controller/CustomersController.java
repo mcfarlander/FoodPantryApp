@@ -7,130 +7,29 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
+import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.CustomersDao;
-import org.pantry.food.dao.FileChangedListener;
 import org.pantry.food.model.Customer;
 import org.pantry.food.ui.common.FormState;
+import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditCustomerDialogInput;
-import org.pantry.food.ui.dialog.ModalDialog;
 import org.pantry.food.util.DateUtil;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 
-public class CustomersController {
+public class CustomersController extends AbstractController<Customer, AddEditCustomerDialogInput> {
 
 	private final static Logger log = LogManager.getLogger(CustomersController.class);
 
-	@FXML
-	private Button addCustomerBtn;
-
-	@FXML
-	private Button editCustomerBtn;
-
-	@FXML
-	private Button deleteCustomerBtn;
-
-	@FXML
-	private TableView<Customer> dataTable;
-
-	private ObservableList<Customer> data = FXCollections.observableArrayList();
-
 	private CustomersDao customerDao = ApplicationContext.getCustomersDao();
 
-	private Integer nextCustomerId = 0;
-
-	@FXML
-	public void initialize() {
-		addCustomerBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				// Open Add/Edit Customer dialog
-				try {
-					AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
-					input.setHouseholdIds(customerDao.getHouseholdIds());
-					new ModalDialog<AddEditCustomerDialogInput, Customer>().show("ui/dialog/AddEditCustomerDialog.fxml",
-							input);
-					// When the new customer is saved to the data file, the controller's file change
-					// listener will be invoked which will trigger a refresh of the data table - so
-					// no need to handle that here
-				} catch (IOException e) {
-					log.error("Could not add customer", e);
-					new Alert(AlertType.ERROR, "Could not add customer\r\n" + e.getMessage()).show();
-				}
-			}
-
-		});
-
-		editCustomerBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				Customer customer = dataTable.getSelectionModel().getSelectedItem();
-				if (null == customer) {
-					new Alert(AlertType.WARNING, "Please select a customer to edit", ButtonType.OK).show();
-				} else {
-					showEditDialog(customer);
-				}
-			}
-
-		});
-
-		deleteCustomerBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				// Double-check with the user before deactivating
-				Customer customer = dataTable.getSelectionModel().getSelectedItem();
-				if (null == customer) {
-					new Alert(AlertType.WARNING, "Please select a customer to deactivate", ButtonType.OK).show();
-				} else {
-					Alert alert = new Alert(AlertType.CONFIRMATION,
-							"Are you sure you want to deactivate this customer?", ButtonType.YES, ButtonType.NO);
-					alert.showAndWait();
-					if (ButtonType.YES == alert.getResult()) {
-						customer.setActive(false);
-						customerDao.edit(customer);
-						try {
-							customerDao.persist();
-						} catch (IOException e) {
-							log.error("Could not save file", e);
-							new Alert(AlertType.ERROR, "Problem saving file\r\n" + e.getMessage()).show();
-						}
-					}
-				}
-			}
-		});
-
-		// Double-click is the same as Edit
-		dataTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount() == 2) {
-					// Invoke the Edit listener
-					Customer customer = dataTable.getSelectionModel().getSelectedItem();
-					showEditDialog(customer);
-				}
-			}
-
-		});
-
+	public void init() {
 		for (TableColumn<?, ?> column : dataTable.getColumns()) {
 			// The ID of each column is the name of the corresponding property in the
 			// Customer object
@@ -162,17 +61,6 @@ public class CustomersController {
 			}
 		}
 
-		dataTable.setItems(data);
-
-		customerDao.addFileChangedListener(new FileChangedListener() {
-
-			// Invoked when the underlying data file changes
-			@Override
-			public void onFileChanged(String filename) {
-				refreshTable(customerDao.getCustomerList());
-			}
-		});
-
 		try {
 			refreshTable(customerDao.read());
 		} catch (ArrayIndexOutOfBoundsException | FileNotFoundException ex) {
@@ -193,7 +81,7 @@ public class CustomersController {
 	 * 
 	 * @param customers customers to display
 	 */
-	private void refreshTable(List<Customer> customers) {
+	protected void refreshTable(List<Customer> customers) {
 		try {
 			data.clear();
 
@@ -201,10 +89,6 @@ public class CustomersController {
 				boolean canAdd = FormState.getInstance().isShowInactiveCustomers() ? true : customer.isActive();
 				if (canAdd) {
 					data.add(customer);
-				}
-
-				if (customer.getCustomerId() >= nextCustomerId) {
-					nextCustomerId = customer.getCustomerId() + 1;
 				}
 			}
 		} catch (ArrayIndexOutOfBoundsException ex) {
@@ -215,19 +99,32 @@ public class CustomersController {
 		}
 	}
 
-	/**
-	 * Displays a dialog for modifying a given customer
-	 * 
-	 * @param customer customer record to be changed
-	 */
-	private void showEditDialog(Customer customer) {
-		try {
-			AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
-			input.setHouseholdIds(customerDao.getHouseholdIds());
-			input.setCustomer(customer);
-			new ModalDialog<AddEditCustomerDialogInput, Customer>().show("ui/dialog/AddEditCustomerDialog.fxml", input);
-		} catch (IOException e) {
-			log.error("Could not edit customer", e);
-		}
+	@Override
+	protected String getAddEditDialogFxmlFile() {
+		return "ui/dialog/AddEditCustomerDialog.fxml";
+	}
+
+	@Override
+	protected AddEditCustomerDialogInput getAddDialogInput() {
+		AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
+		input.setHouseholdIds(customerDao.getHouseholdIds());
+		return input;
+	}
+
+	@Override
+	protected AddEditCustomerDialogInput getEditDialogInput(Customer customer) {
+		AddEditCustomerDialogInput input = getAddDialogInput();
+		input.setCustomer(customer);
+		return input;
+	}
+
+	@Override
+	protected String getEntityTypeName() {
+		return "customer";
+	}
+
+	@Override
+	protected CsvDao<Customer> getDao() {
+		return customerDao;
 	}
 }

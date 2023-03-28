@@ -333,7 +333,7 @@ public class FrameCustomers extends javax.swing.JInternalFrame
             model.setRowCount(0);
 
             for (int i = 0; i < custIo.getCustomerCount(); i++){
-                Customer cust = custIo.getCustomerList().get(i);
+                Customer cust = custIo.getAll().get(i);
 
                 if (FormState.getInstance().isShowInactiveCustomers()){
                     model.addRow(cust.getCustomerObject());
@@ -393,7 +393,7 @@ public class FrameCustomers extends javax.swing.JInternalFrame
             int iId = Integer.parseInt(this.jTable1.getModel().getValueAt(irow, 0).toString());
 
             for (int i = 0; i < this.custIo.getCustomerCount(); i++){
-                Customer cust = this.custIo.getCustomerList().get(i);
+                Customer cust = this.custIo.getAll().get(i);
                 if (cust.getCustomerId() == iId){
                     customer = cust;
                     break;

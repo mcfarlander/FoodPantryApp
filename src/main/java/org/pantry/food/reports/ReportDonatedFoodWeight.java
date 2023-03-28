@@ -166,7 +166,7 @@ public class ReportDonatedFoodWeight extends ReportBase {
 
              for (int i = 0; i < recIo.getRecordCount(); i++)
              {
-                FoodRecord record = recIo.getRecordList().get(i);
+                FoodRecord record = recIo.getAll().get(i);
 
                 Date testDate = dateFormat.parse(record.getEntryDate());
                 cal.setTime(testDate);
