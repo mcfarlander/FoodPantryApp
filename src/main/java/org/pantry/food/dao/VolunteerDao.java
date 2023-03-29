@@ -218,4 +218,10 @@ public class VolunteerDao implements CsvDao<Volunteer> {
 
 	}
 
+	@Override
+	public void delete(Volunteer entity) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

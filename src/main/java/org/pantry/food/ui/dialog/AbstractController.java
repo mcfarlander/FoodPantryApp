@@ -69,16 +69,17 @@ public abstract class AbstractController<T, DIT> {
 			@Override
 			public void handle(ActionEvent event) {
 				// Double-check with the user before deactivating
-				T visit = dataTable.getSelectionModel().getSelectedItem();
-				if (null == visit) {
-					new Alert(AlertType.WARNING, "Please select a visit to deactivate", ButtonType.OK).show();
+				T entity = dataTable.getSelectionModel().getSelectedItem();
+				if (null == entity) {
+					new Alert(AlertType.WARNING, "Please select a " + getEntityTypeName() + " to deactivate",
+							ButtonType.OK).show();
 				} else {
 					Alert alert = new Alert(AlertType.CONFIRMATION,
 							"Are you sure you want to deactivate this " + getEntityTypeName() + "?", ButtonType.YES,
 							ButtonType.NO);
 					alert.showAndWait();
 					if (ButtonType.YES == alert.getResult()) {
-						dao.deactivate(visit);
+						dao.deactivate(entity);
 						try {
 							dao.persist();
 						} catch (IOException e) {

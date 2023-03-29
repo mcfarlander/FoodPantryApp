@@ -205,4 +205,10 @@ public class VolunteerHourDao implements CsvDao<VolunteerHour> {
 
 	}
 
+	@Override
+	public void delete(VolunteerHour entity) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

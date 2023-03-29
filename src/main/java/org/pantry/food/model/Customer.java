@@ -196,20 +196,6 @@ public class Customer {
 	}
 
 	/**
-	 * Helper method to set a line in the csv file.
-	 * 
-	 * @return
-	 */
-	public String[] getCsvEntry() {
-		String[] entry = { "" + customerIdProperty.get(), "" + householdIdProperty.get(), "" + personIdProperty.get(),
-				"" + genderProperty.get(), "" + birthDateProperty.get(), "" + ageProperty.get(),
-				"" + monthRegisteredProperty.get(), "" + newCustomerProperty.get(), "" + commentsProperty.get(),
-				"" + activeProperty.get() };
-
-		return entry;
-	}
-
-	/**
 	 * Helper method to return an object to the jtable model.
 	 * 
 	 * @return

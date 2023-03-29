@@ -430,24 +430,6 @@ public class Food {
 	}
 
 	/**
-	 * Helper method to set a line in the csv file.
-	 *
-	 * @return the cvs entry
-	 */
-	public String[] getCvsEntry() {
-
-		String[] entry = { String.valueOf(getFoodId()), getEntryDate(), String.valueOf(getPickNSave()),
-				String.valueOf(getCommunity()), String.valueOf(getNonTefap()), String.valueOf(getTefap()),
-				String.valueOf(getSecondHarvest()), String.valueOf(getPantry()), String.valueOf(getOther()),
-				String.valueOf(getComment()), String.valueOf(getNonFood()), String.valueOf(getMilk()),
-				String.valueOf(getOther2()), String.valueOf(getProduce()), String.valueOf(isDonation()),
-				String.valueOf(getDonorName()), String.valueOf(getDonorAddress()), String.valueOf(getDonorEmail()),
-				String.valueOf(getSecondHarvestProduce()) };
-
-		return entry;
-	}
-
-	/**
 	 * Helper method to return an object to the jtable model.
 	 *
 	 * @return the food record object

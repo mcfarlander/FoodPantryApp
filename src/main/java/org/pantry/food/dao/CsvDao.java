@@ -21,7 +21,7 @@ import java.util.List;
 
 public interface CsvDao<T> {
 	/**
-	 * Reads the CSV file and store an array of objects related to that type of file
+	 * Maps entities from the underlying CSV file into objects in memory
 	 * 
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -44,17 +44,28 @@ public interface CsvDao<T> {
 	/**
 	 * Marks the entity inactive
 	 * 
-	 * @param entity
+	 * @param entity entity to deactivate
 	 */
 	void deactivate(T entity);
 
+	/**
+	 * Removes the entity from the data store
+	 * 
+	 * @param entity entity to delete
+	 */
+	void delete(T entity);
+
+	/**
+	 * 
+	 * @return
+	 */
 	int getNextId();
 
 	/**
 	 * Registers an observer to be notified when the underlying data file is
 	 * modified
 	 * 
-	 * @param listener
+	 * @param listener observer to add
 	 */
 	void addFileChangedListener(FileChangedListener listener);
 

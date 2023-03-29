@@ -132,8 +132,7 @@ public class ReportPantrySummary extends ReportBase {
 
 		boolean isFromMonth = false;
 
-		for (int i = 0; i < custs.getCustomerCount(); i++) {
-			Customer cust = custs.getAll().get(i);
+		for (Customer cust : custs.getAll()) {
 			numberCustomers++;
 
 			isFromMonth = (cust.getMonthRegistered() - 1 == monthSelected);
@@ -356,9 +355,7 @@ public class ReportPantrySummary extends ReportBase {
 
 		Calendar mydate = new GregorianCalendar();
 
-		for (int i = 0; i < records.getRecordCount(); i++) {
-			Food record = records.getAll().get(i);
-
+		for (Food record : records.getAll()) {
 			Date thedate = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH).parse(record.getEntryDate());
 			mydate.setTime(thedate);
 

@@ -16,32 +16,16 @@
 package org.pantry.food.dao;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
-import org.apache.commons.io.monitor.FileAlterationMonitor;
-import org.apache.commons.io.monitor.FileAlterationObserver;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.pantry.food.ApplicationCloseListener;
-import org.pantry.food.ApplicationContext;
+import org.pantry.food.dao.mapper.ArrayRowMapper;
+import org.pantry.food.dao.mapper.CustomerRowMapper;
 import org.pantry.food.model.Customer;
 import org.pantry.food.ui.common.DataFiles;
-
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
-
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 /**
  * Contains all the logic to map between a customer file and the Customer class.
@@ -52,19 +36,7 @@ import javafx.scene.control.Alert.AlertType;
  * 
  * @author mcfarland_davej
  */
-public class CustomersDao implements CsvDao<Customer> {
-	private final static Logger log = LogManager.getLogger(CustomersDao.class.getName());
-
-	private static final int CUSTOMERID = 0;
-	private static final int HOUSEHOLDID = 1;
-	private static final int PERSONID = 2;
-	private static final int GENDER = 3;
-	private static final int BIRTHDATE = 4;
-	private static final int AGE = 5;
-	private static final int MONTHREGISTERED = 6;
-	private static final int NEWCUSTOMER = 7;
-	private static final int COMMENTS = 8;
-	private static final int ACTIVE = 9;
+public class CustomersDao extends AbstractCsvDao<Customer> {
 
 	private static final String Col_CustomerId = "customerid";
 	private static final String Col_HouseholdId = "householdid";
@@ -77,43 +49,10 @@ public class CustomersDao implements CsvDao<Customer> {
 	private static final String Col_Comments = "comments";
 	private static final String Col_Active = "active";
 
-	private NumberAsStringComparator numberAsStringComparator = new NumberAsStringComparator();
-
 	private String startDir = "";
-
-	private List<Customer> customerList = new ArrayList<Customer>();
-
-	private final AtomicInteger lastId = new AtomicInteger();
-	private FileAlterationObserver fileWatcher;
-	private FileAlterationListenerAdaptor fileListener;
-	private FileAlterationMonitor fileMonitor;
-	private List<FileChangedListener> fileChangedListeners = new ArrayList<>();
+	private NumberAsStringComparator numberAsStringComparator = new NumberAsStringComparator();
 	private List<String> householdIds = new ArrayList<>();
-
-	public CustomersDao() {
-		ApplicationContext.addApplicationCloseListener(new ApplicationCloseListener() {
-
-			@Override
-			public void onClosing() {
-				if (null != fileMonitor) {
-					try {
-						fileMonitor.stop();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		});
-	}
-
-	@Override
-	public List<Customer> getAll() {
-		return this.customerList;
-	}
-
-	public int getCustomerCount() {
-		return this.customerList.size();
-	}
+	private Set<String> tempHouseHoldIds = new HashSet<>();
 
 	/**
 	 * IDs of every household in the customer list
@@ -124,227 +63,48 @@ public class CustomersDao implements CsvDao<Customer> {
 		return householdIds;
 	}
 
-	public void setStartDir(String sDir) {
-		this.startDir = sDir;
+	@Override
+	protected ArrayRowMapper<Customer> getRowMapper() {
+		return new CustomerRowMapper();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.pantry.food.dao.CsvDao#read()
-	 */
-	public List<Customer> read() throws FileNotFoundException, IOException {
-		log.info("CustomersDao.read");
-
-		if (startDir.length() == 0) {
-			startDir = new java.io.File(".").getCanonicalPath();
-		}
-
-		File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileCustomers());
-
-		if (file.exists()) {
-			// Watch for file changes on customers.csv and notify interested listeners
-			// The users often change the files manually and are then surprised when the
-			// program does not know about the changes.
-			if (null == fileWatcher) {
-				startFileWatcher(file);
-			}
-
-			log.info("Customers csv file found");
-			List<Customer> customers = new ArrayList<>();
-			Set<String> householdIdSet = new HashSet<>();
-
-			// read in the whole file into a list
-			FileReader fr = new FileReader(file);
-			CSVReader reader = new CSVReader(fr);
-
-			String[] nextLine;
-			boolean firstLine = true;
-			while ((nextLine = reader.readNext()) != null) {
-				// nextLine[] is an array of values from the line
-				if (!firstLine) {
-					Customer cust = new Customer();
-					cust.setCustomerId(Integer.parseInt(nextLine[CUSTOMERID]));
-					cust.setHouseholdId(Integer.parseInt(nextLine[HOUSEHOLDID]));
-					cust.setPersonId(Integer.parseInt(nextLine[PERSONID]));
-					cust.setGender(nextLine[GENDER]);
-					cust.setBirthDate(nextLine[BIRTHDATE]);
-					cust.setAge(Integer.parseInt(nextLine[AGE]));
-					cust.setMonthRegistered(Integer.parseInt(nextLine[MONTHREGISTERED]));
-					cust.setNewCustomer(Boolean.parseBoolean(nextLine[NEWCUSTOMER]));
-					cust.setComments(nextLine[COMMENTS]);
-					cust.setActive(Boolean.parseBoolean(nextLine[ACTIVE]));
-
-					customers.add(cust);
-					householdIdSet.add(String.valueOf(cust.getHouseholdId()));
-
-					if (cust.getCustomerId() > lastId.get()) {
-						lastId.set(cust.getCustomerId());
-					}
-				} else {
-					firstLine = !firstLine;
-				}
-			}
-
-			reader.close();
-
-			customerList = customers;
-			householdIds.clear();
-			householdIds.addAll(householdIdSet);
-			householdIds.sort(numberAsStringComparator);
-		} else {
-			log.error("Customers CSV file NOT found");
-		}
-
-		return customerList;
-	} // end of readCsvFile
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.pantry.food.dao.CsvDao#saveCsvFile()
-	 */
-	public void persist() throws IOException {
-		log.info("CustomersDao.persist");
-
-		if (startDir.length() == 0) {
-			startDir = new java.io.File(".").getCanonicalPath();
-		}
-
-		File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileCustomers());
-
-		if (file.exists()) {
-			file.delete();
-		}
-
-		FileWriter fw = new FileWriter(file);
-		CSVWriter writer = new CSVWriter(fw);
-
-		// add the column titles
-		String[] titles = { Col_CustomerId, Col_HouseholdId, Col_PersonId, Col_Gender, Col_BirthDate, Col_Age,
-				Col_MonthRegistered, Col_NewCustomer, Col_Comments, Col_Active };
-
-		writer.writeNext(titles);
-
-		for (Customer customer : customerList) {
-			writer.writeNext(customer.getCsvEntry());
-		}
-
-		writer.close();
-	}
-
-	/*
-	 * Adds a customer object to the customer list in memory.
-	 */
-	public void add(Customer cust) {
-		customerList.add(cust);
-	}
-
-	/**
-	 * Modifies a customer object in the list (in memory).
-	 * 
-	 * @param cust
-	 */
-	public void edit(Customer cust) {
-		Integer foundIndex = null;
-		for (int i = 0; i < customerList.size(); i++) {
-			Customer testCust = customerList.get(i);
-			if (testCust.getCustomerId() == cust.getCustomerId()) {
-				foundIndex = i;
-				break;
-			}
-		}
-
-		// Replace in-memory customer with the updated customer
-		if (null != foundIndex) {
-			customerList.set(foundIndex, cust);
-		}
-	}// end of editCustomer
 
 	@Override
-	public void deactivate(Customer cust) {
-		for (int i = 0; i < customerList.size(); i++) {
-			Customer testCust = customerList.get(i);
-			if (testCust.getCustomerId() == cust.getCustomerId()) {
-				customerList.remove(i);
-				break;
-			}
-		}
+	protected int getId(Customer entity) {
+		return entity.getCustomerId();
 	}
 
-	/**
-	 * Deletes a customer object from the list in memory. This should typically be
-	 * followed by a call to saveCsvFile().
-	 */
-	public void delete(Customer cust) {
-		for (int i = 0; i < customerList.size(); i++) {
-			Customer testCust = customerList.get(i);
-			if (testCust.getCustomerId() == cust.getCustomerId()) {
-				customerList.remove(i);
-				break;
-			}
+	@Override
+	protected void setDeactivated(Customer entity) {
+		entity.setActive(false);
+	}
+
+	@Override
+	protected File getCsvFile() throws IOException {
+		if (startDir.length() == 0) {
+			startDir = new java.io.File(".").getCanonicalPath();
 		}
 
-	}// end of deleteCustomer
-
-	/**
-	 * @return highest existing customer ID plus 1
-	 */
-	public int getNextId() {
-		return lastId.addAndGet(1);
+		return new File(startDir + "/" + DataFiles.getInstance().getCsvFileCustomers());
 	}
 
-	/**
-	 * Registers an observer to be notified when the customers data file is modified
-	 * 
-	 * @param listener
-	 */
-	public void addFileChangedListener(FileChangedListener listener) {
-		fileChangedListeners.add(listener);
+	@Override
+	protected String[] getCsvHeader() {
+		return new String[] { Col_CustomerId, Col_HouseholdId, Col_PersonId, Col_Gender, Col_BirthDate, Col_Age,
+				Col_MonthRegistered, Col_NewCustomer, Col_Comments, Col_Active };
 	}
 
-	/**
-	 * Unregisters a previously-registered data file change listener
-	 * 
-	 * @param listener
-	 */
-	public void removeFileChangedListener(FileChangedListener listener) {
-		fileChangedListeners.remove(listener);
+	@Override
+	protected void afterLineRead(Customer entity) {
+		tempHouseHoldIds.add(String.valueOf(entity.getHouseholdId()));
 	}
 
-	/**
-	 * Starts the CSV file watcher
-	 * 
-	 * @param file file to watch for changes
-	 */
-	private void startFileWatcher(File file) {
-		fileWatcher = new FileAlterationObserver(file.getParentFile(), FileFilterUtils.nameFileFilter(file.getName()));
-		fileListener = new FileAlterationListenerAdaptor() {
-			public void onFileChange(File file) {
-				// First we update our own local in-memory data repository
-				try {
-					read();
-				} catch (IOException e) {
-					String message = "Could not read Customers file\r\n" + e.getMessage();
-					log.error(message, e);
-					new Alert(AlertType.WARNING, message).show();
-				}
-
-				// Then notify listeners
-				for (FileChangedListener listener : fileChangedListeners) {
-					listener.onFileChanged(file.getName());
-				}
-			}
-		};
-
-		fileWatcher.addListener(fileListener);
-		fileMonitor = new FileAlterationMonitor(500, fileWatcher);
-		try {
-			fileWatcher.initialize();
-			fileMonitor.start();
-		} catch (Exception e) {
-			log.error("Could not start file monitor", e);
-		}
+	@Override
+	protected void afterRead(List<Customer> entities) {
+		// Replace the existing household IDs with the new unique, sorted set
+		householdIds.clear();
+		householdIds.addAll(tempHouseHoldIds);
+		householdIds.sort(numberAsStringComparator);
+		tempHouseHoldIds.clear();
 	}
 
 }// end of class

@@ -334,9 +334,7 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 			DefaultTableModel model = (DefaultTableModel) this.jTable1.getModel();
 			model.setRowCount(0);
 
-			for (int i = 0; i < recordIo.getRecordCount(); i++) {
-				Food record = recordIo.getAll().get(i);
-
+			for (Food record : recordIo.getAll()) {
 				model.addRow(record.getFoodRecordObject());
 
 				if (record.getFoodId() >= nextRecordId) {
@@ -398,8 +396,7 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 		if (irow > -1) {
 			int iId = Integer.parseInt(this.jTable1.getModel().getValueAt(irow, 0).toString());
 
-			for (int i = 0; i < this.recordIo.getRecordCount(); i++) {
-				Food record = this.recordIo.getAll().get(i);
+			for (Food record : recordIo.getAll()) {
 				if (record.getFoodId() == iId) {
 					rec = record;
 					break;
