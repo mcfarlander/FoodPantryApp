@@ -89,3 +89,15 @@
 #deleteFoodBtn {
  	-fx-graphic: url(../icons/tag_blue_delete.png);
 }
+
+#addVolunteerBtn {
+ 	-fx-graphic: url(../icons/user_add.png);
+}
+
+#editVolunteerBtn {
+ 	-fx-graphic: url(../icons/user_edit.png);
+}
+
+#deleteVolunteerBtn {
+ 	-fx-graphic: url(../icons/user_delete.png);
+}

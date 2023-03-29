@@ -15,68 +15,124 @@
 */
 package org.pantry.food.model;
 
+import javafx.beans.property.SimpleStringProperty;
+
 /**
  * A POJO to describe a volunteer
  * 
  * @author mcfarland_davej
  */
-public class Volunteer
-{
-	private int volunteerId;
-    private String name;
-    private String phone;
-    private String email;
-    private String type; 	// adult, student, special, other, or unknown //TODO declare these constants
-    private String note;
+public class Volunteer {
 
-    public int getVolunteerId() {return volunteerId;}
-	public void setVolunteerId(int volunteerId) {this.volunteerId = volunteerId;}
-	
-	public String getName() {return name;}
-	public void setName(String name) {this.name = name;}
-	
-	public String getPhone() {return phone;}
-	public void setPhone(String phone) {this.phone = phone;}
-	
-	public String getEmail() {return email;}
-	public void setEmail(String email) {this.email = email;}
-	
-	public String getType() {return type;}
-	public void setType(String type) {this.type = type;}
-	
-	public String getNote() {return note;}
-	public void setNote(String note) {this.note = note;}
-	
-    /**
-     * Helper for setting a line in the csv file.
-     * @return
-     */
-    public String[] getCvsEntry()
-    {
-        String[] entry = {"" + this.getVolunteerId(),
-                          this.getName(),
-                          this.getPhone(),
-                          this.getEmail(),
-                          this.getType(),
-                          this.getNote()};
+	private SimpleStringProperty volunteerIdProperty = new SimpleStringProperty();
+	private SimpleStringProperty nameProperty = new SimpleStringProperty();
+	private SimpleStringProperty phoneProperty = new SimpleStringProperty();
+	private SimpleStringProperty emailProperty = new SimpleStringProperty();
+	private SimpleStringProperty typeProperty = new SimpleStringProperty();
+	private SimpleStringProperty noteProperty = new SimpleStringProperty();
 
-        return entry;
-    }
+	public Volunteer() {
 
-    /**
-     * Helper method to return an object to a jtable model.
-     * @return
-     */
-    public Object[] getVolunteerObject()
-    {
-        return new Object[] {this.getVolunteerId(),
-                          this.getName(),
-                          this.getPhone(),
-                          this.getEmail(),
-                          this.getType(),
-                          this.getNote()
-        };
+	}
 
-    }
+	public Volunteer(Volunteer other) {
+		if (null == other) {
+			return;
+		}
+
+		setVolunteerId(other.getVolunteerId());
+		setName(other.getName());
+		setPhone(other.getPhone());
+		setEmail(other.getEmail());
+		setType(other.getType());
+		setNote(other.getNote());
+	}
+
+	public int getVolunteerId() {
+		String value = volunteerIdProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Integer.valueOf(value);
+	}
+
+	public void setVolunteerId(int volunteerId) {
+		volunteerIdProperty.set(String.valueOf(volunteerId));
+	}
+
+	public String getName() {
+		return nameProperty.get();
+	}
+
+	public void setName(String name) {
+		nameProperty.set(name);
+	}
+
+	public String getPhone() {
+		return phoneProperty.get();
+	}
+
+	public void setPhone(String phone) {
+		phoneProperty.set(phone);
+	}
+
+	public String getEmail() {
+		return emailProperty.get();
+	}
+
+	public void setEmail(String email) {
+		emailProperty.set(email);
+	}
+
+	public String getType() {
+		return typeProperty.get();
+	}
+
+	public void setType(String type) {
+		typeProperty.set(type);
+	}
+
+	public String getNote() {
+		return noteProperty.get();
+	}
+
+	public void setNote(String note) {
+		noteProperty.set(note);
+	}
+
+	public SimpleStringProperty volunteerIdProperty() {
+		return volunteerIdProperty;
+	}
+
+	public SimpleStringProperty nameProperty() {
+		return nameProperty;
+	}
+
+	public SimpleStringProperty phoneProperty() {
+		return phoneProperty;
+	}
+
+	public SimpleStringProperty emailProperty() {
+		return emailProperty;
+	}
+
+	public SimpleStringProperty typeProperty() {
+		return typeProperty;
+	}
+
+	public SimpleStringProperty noteProperty() {
+		return noteProperty;
+	}
+
+	/**
+	 * Helper method to return an object to a jtable model.
+	 * 
+	 * @return
+	 */
+	public Object[] getVolunteerObject() {
+		return new Object[] { this.getVolunteerId(), this.getName(), this.getPhone(), this.getEmail(), this.getType(),
+				this.getNote() };
+
+	}
 
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.pantry.food.Images;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.FileChangedListener;
 
@@ -20,7 +21,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public abstract class AbstractController<T, DIT> {
 
@@ -71,12 +74,13 @@ public abstract class AbstractController<T, DIT> {
 				// Double-check with the user before deactivating
 				T entity = dataTable.getSelectionModel().getSelectedItem();
 				if (null == entity) {
-					new Alert(AlertType.WARNING, "Please select a " + getEntityTypeName() + " to deactivate",
-							ButtonType.OK).show();
+					Alert alert = addAlertIcon(new Alert(AlertType.NONE,
+							"Please select a " + getEntityTypeName() + " to deactivate", ButtonType.OK));
+					alert.show();
 				} else {
-					Alert alert = new Alert(AlertType.CONFIRMATION,
+					Alert alert = addAlertIcon(new Alert(AlertType.NONE,
 							"Are you sure you want to deactivate this " + getEntityTypeName() + "?", ButtonType.YES,
-							ButtonType.NO);
+							ButtonType.NO));
 					alert.showAndWait();
 					if (ButtonType.YES == alert.getResult()) {
 						dao.deactivate(entity);
@@ -84,7 +88,7 @@ public abstract class AbstractController<T, DIT> {
 							dao.persist();
 						} catch (IOException e) {
 							log.error("Could not save file", e);
-							new Alert(AlertType.ERROR, "Problem saving file\r\n" + e.getMessage()).show();
+							addAlertIcon(new Alert(AlertType.ERROR, "Problem saving file\r\n" + e.getMessage())).show();
 						}
 					}
 				}
@@ -124,12 +128,12 @@ public abstract class AbstractController<T, DIT> {
 			refreshTable(dao.read());
 		} catch (ArrayIndexOutOfBoundsException | FileNotFoundException ex) {
 			log.error(ex);
-			Alert alert = new Alert(AlertType.WARNING, WordUtils.capitalizeFully(getEntityTypeName())
-					+ " file found, but it is incorrect or missing\n" + ex.getMessage());
+			Alert alert = addAlertIcon(new Alert(AlertType.ERROR, WordUtils.capitalizeFully(getEntityTypeName())
+					+ " file found, but it is incorrect or missing\n" + ex.getMessage()));
 			alert.show();
 		} catch (IOException ex) {
 			log.error(ex);
-			Alert alert = new Alert(AlertType.WARNING, "Problem opening file\n" + ex.getMessage());
+			Alert alert = addAlertIcon(new Alert(AlertType.ERROR, "Problem opening file\n" + ex.getMessage()));
 			alert.show();
 		}
 	}
@@ -159,7 +163,9 @@ public abstract class AbstractController<T, DIT> {
 
 	protected void showEditDialog(T entity) {
 		if (null == entity) {
-			new Alert(AlertType.WARNING, "Please select a " + getEntityTypeName() + "to edit", ButtonType.OK).show();
+			addAlertIcon(
+					new Alert(AlertType.NONE, "Please select a " + getEntityTypeName() + " to edit", ButtonType.OK))
+					.show();
 		} else {
 			try {
 				DIT input = getEditDialogInput(entity);
@@ -168,6 +174,15 @@ public abstract class AbstractController<T, DIT> {
 				log.error("Could not edit " + entity.getClass().getName(), e);
 			}
 		}
+	}
+
+	protected Image getIcon() {
+		return Images.getImageView("generic.png").getImage();
+	}
+
+	private Alert addAlertIcon(Alert alert) {
+		((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(getIcon());
+		return alert;
 	}
 
 }

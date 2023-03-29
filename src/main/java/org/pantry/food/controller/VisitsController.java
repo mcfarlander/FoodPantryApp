@@ -95,7 +95,7 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 					}
 				} catch (ParseException e) {
 					log.error("Could not parse date " + visit.getVisitDate(), e);
-					Alert alert = new Alert(AlertType.WARNING,
+					Alert alert = new Alert(AlertType.ERROR,
 							"Could not parse date for visit ID " + visit.getVisitId() + ", skipping");
 					alert.show();
 				}
@@ -106,7 +106,7 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 			}
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			log.error(ex);
-			Alert alert = new Alert(AlertType.WARNING,
+			Alert alert = new Alert(AlertType.ERROR,
 					"Visit file found, but it is incorrect or missing\n" + ex.getMessage());
 			alert.show();
 		}

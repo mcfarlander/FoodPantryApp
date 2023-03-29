@@ -6,6 +6,7 @@ import java.util.List;
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.dao.FoodsDao;
 import org.pantry.food.dao.VisitsDao;
+import org.pantry.food.dao.VolunteersDao;
 
 /**
  * Poor-man's singleton dependency injection context
@@ -18,6 +19,7 @@ public class ApplicationContext {
 	private CustomersDao customersDao;
 	private VisitsDao visitsDao;
 	private FoodsDao foodsDao;
+	private VolunteersDao volunteersDao;
 
 	public static void addApplicationCloseListener(ApplicationCloseListener listener) {
 		INSTANCE.applicationCloseListeners.add(listener);
@@ -51,6 +53,13 @@ public class ApplicationContext {
 			INSTANCE.foodsDao = new FoodsDao();
 		}
 		return INSTANCE.foodsDao;
+	}
+
+	public static VolunteersDao getVolunteersDao() {
+		if (null == INSTANCE.volunteersDao) {
+			INSTANCE.volunteersDao = new VolunteersDao();
+		}
+		return INSTANCE.volunteersDao;
 	}
 
 }

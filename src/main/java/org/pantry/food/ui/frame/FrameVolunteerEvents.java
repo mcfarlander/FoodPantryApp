@@ -35,7 +35,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
-import org.pantry.food.dao.VolunteerDao;
+import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.dao.VolunteerEventDao;
 import org.pantry.food.model.Volunteer;
 import org.pantry.food.model.VolunteerEvent;
@@ -382,11 +382,10 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 	private void loadVolunteers() {
 
 		try {
-			VolunteerDao volIO = new VolunteerDao();
+			VolunteersDao volIO = new VolunteersDao();
 			volIO.read();
 
-			for (int i = 0; i < volIO.getCvsCount(); i++) {
-				Volunteer obj = volIO.getAll().get(i);
+			for (Volunteer obj : volIO.getAll()) {
 				currentVolunteers.add(obj.getName());
 
 			}

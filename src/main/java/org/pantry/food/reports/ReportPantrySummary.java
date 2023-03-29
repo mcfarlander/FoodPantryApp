@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.dao.FoodsDao;
 import org.pantry.food.dao.VisitsDao;
-import org.pantry.food.dao.VolunteerDao;
+import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.dao.VolunteerEventDao;
 import org.pantry.food.model.Customer;
 import org.pantry.food.model.Food;
@@ -271,7 +271,7 @@ public class ReportPantrySummary extends ReportBase {
 		double totalRegularHours = 0;
 		double totalOtherHours = 0;
 
-		VolunteerDao volunteers = new VolunteerDao();
+		VolunteersDao volunteers = new VolunteersDao();
 		volunteers.read();
 
 		VolunteerEventDao events = new VolunteerEventDao();
