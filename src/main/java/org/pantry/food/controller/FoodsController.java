@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.FoodsDao;
+import org.pantry.food.model.Donor;
 import org.pantry.food.model.Food;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditFoodDialogInput;
@@ -25,7 +26,7 @@ public class FoodsController extends AbstractController<Food, AddEditFoodDialogI
 
 	private FoodsDao foodsDao = ApplicationContext.getFoodsDao();
 
-	private List<Food> donors = new ArrayList<>();
+	private List<Donor> donors = new ArrayList<>();
 
 	protected void init() {
 		for (TableColumn<?, ?> column : dataTable.getColumns()) {
@@ -42,7 +43,6 @@ public class FoodsController extends AbstractController<Food, AddEditFoodDialogI
 					return new SimpleBooleanProperty(cellValue.getValue().isDonation());
 				});
 			} else {
-				log.info("Setting column handler for {}", column.getId());
 				column.setCellValueFactory(new PropertyValueFactory<>(column.getId()));
 			}
 		}
@@ -55,13 +55,14 @@ public class FoodsController extends AbstractController<Food, AddEditFoodDialogI
 	 */
 	protected void refreshTable(List<Food> foods) {
 		data.clear();
+		donors.clear();
+
+		Donor anon = new Donor("Anonymous");
+		if (!donors.contains(anon)) {
+			donors.add(anon);
+		}
 
 		Set<String> donorNames = new HashSet<>();
-
-		Food anon = new Food();
-		anon.setDonorName("Anonymous");
-		donors.add(anon);
-
 		for (Food food : foods) {
 			data.add(food);
 
@@ -73,14 +74,12 @@ public class FoodsController extends AbstractController<Food, AddEditFoodDialogI
 					donorName = donorName.trim();
 
 					if (!donorNames.contains(donorName)) {
-						donors.add(food);
+						donors.add(new Donor(donorName, food.getDonorAddress(), food.getDonorEmail()));
 						donorNames.add(donorName);
 					}
 				}
 			}
 		}
-
-		donors.clear();
 	}
 
 	@Override

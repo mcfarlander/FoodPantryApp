@@ -35,8 +35,8 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
+import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
-import org.pantry.food.dao.VolunteerEventDao;
 import org.pantry.food.model.Volunteer;
 import org.pantry.food.model.VolunteerEvent;
 import org.pantry.food.ui.common.FormState;
@@ -319,7 +319,7 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 	}
 
 	/** The obj io. */
-	private VolunteerEventDao objIo = new VolunteerEventDao();
+	private VolunteerEventsDao objIo = new VolunteerEventsDao();
 
 	/** The next id. */
 	private int nextId = 0;
@@ -341,9 +341,7 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 			Calendar cal = Calendar.getInstance();
 			Calendar visCal = Calendar.getInstance();
 
-			for (int i = 0; i < objIo.getCvsCount(); i++) {
-				VolunteerEvent obj = objIo.getAll().get(i);
-
+			for (VolunteerEvent obj : objIo.getAll()) {
 				Date visDate = dateFormat.parse(obj.getEventDate());
 				visCal.setTime(visDate);
 
@@ -430,8 +428,7 @@ public class FrameVolunteerEvents extends javax.swing.JInternalFrame {
 		if (irow > -1) {
 			int itestId = Integer.parseInt(this.jTable1.getModel().getValueAt(irow, 0).toString());
 
-			for (int i = 0; i < this.objIo.getCvsCount(); i++) {
-				VolunteerEvent test = this.objIo.getAll().get(i);
+			for (VolunteerEvent test : objIo.getAll()) {
 				if (test.getVolunteerEventId() == itestId) {
 					obj = test;
 					break;

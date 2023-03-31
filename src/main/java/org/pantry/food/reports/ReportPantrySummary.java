@@ -33,8 +33,8 @@ import java.util.logging.Logger;
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.dao.FoodsDao;
 import org.pantry.food.dao.VisitsDao;
+import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
-import org.pantry.food.dao.VolunteerEventDao;
 import org.pantry.food.model.Customer;
 import org.pantry.food.model.Food;
 import org.pantry.food.model.Visit;
@@ -274,7 +274,7 @@ public class ReportPantrySummary extends ReportBase {
 		VolunteersDao volunteers = new VolunteersDao();
 		volunteers.read();
 
-		VolunteerEventDao events = new VolunteerEventDao();
+		VolunteerEventsDao events = new VolunteerEventsDao();
 		events.read();
 
 		Calendar mydate = new GregorianCalendar();
@@ -284,9 +284,7 @@ public class ReportPantrySummary extends ReportBase {
 		ArrayList<String> distinctOthers = new ArrayList<String>();
 		boolean bfound = false;
 
-		for (int i = 0; i < events.getCvsCount(); i++) {
-			VolunteerEvent event = (VolunteerEvent) events.getAll().get(i);
-
+		for (VolunteerEvent event : events.getAll()) {
 			Date thedate = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH).parse(event.getEventDate());
 			mydate.setTime(thedate);
 

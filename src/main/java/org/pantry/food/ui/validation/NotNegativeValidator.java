@@ -9,6 +9,6 @@ public class NotNegativeValidator extends NumericValidator {
 	@Override
 	public Boolean validate(String input) {
 		boolean isValid = super.validate(input);
-		return isValid && Integer.parseInt(input.trim()) >= 0;
+		return isValid && Double.parseDouble(input.trim()) >= 0;
 	}
 }

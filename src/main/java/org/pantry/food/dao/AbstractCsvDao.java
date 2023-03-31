@@ -107,6 +107,16 @@ public abstract class AbstractCsvDao<T> implements CsvDao<T> {
 
 	@Override
 	public List<T> getAll() {
+		if (null == entities) {
+			try {
+				entities = read();
+			} catch (FileNotFoundException e) {
+				// We don't have a good way to handle this scenario
+				log.error("Could not find file", e);
+			} catch (IOException e) {
+				log.error("Could not read file", e);
+			}
+		}
 		return entities;
 	}
 

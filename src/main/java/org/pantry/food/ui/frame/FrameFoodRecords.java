@@ -230,11 +230,10 @@ public class FrameFoodRecords extends javax.swing.JInternalFrame {
 	 * @param evt the evt
 	 */
 	private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {
-
 		AddEditFoodRecord dial = new AddEditFoodRecord(null, true, donorRecords);
 		Food record = new Food();
 		record.setFoodId(this.nextRecordId);
-		record.setEntryDate(DateUtil.getCurrentDateString());
+		record.setEntryDate(DateUtil.getCurrentDateStringFourDigitYear());
 		dial.setNewRecord(record);
 		dial.setLocationRelativeTo(this);
 

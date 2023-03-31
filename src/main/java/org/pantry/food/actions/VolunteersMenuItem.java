@@ -11,7 +11,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCombination;
 
 /**
- * Visits menu display configuration
+ * Volunteers menu display configuration
  */
 public class VolunteersMenuItem extends MenuItem {
 	public static final String ACTION_ID = "open.volunteers";

@@ -26,7 +26,7 @@ import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.model.Volunteer;
 import org.pantry.food.model.VolunteerType;
 import org.pantry.food.ui.ValidStatusTracker;
-import org.pantry.food.ui.validation.ComboInputValidator;
+import org.pantry.food.ui.validation.ComboFocusValidator;
 import org.pantry.food.ui.validation.NotBlankValidator;
 import org.pantry.food.ui.validation.TextInputFocusValidator;
 
@@ -145,10 +145,10 @@ public class AddEditVolunteerDialogController
 		// Bind the input validators
 		log.debug("Binding input validators");
 		// Only Type and Name are required
-		ComboInputValidator comboValidator = new ComboInputValidator(typeCbo).add(new NotBlankValidator());
-		typeCbo.getSelectionModel().selectedItemProperty().addListener(comboValidator);
+		TextInputFocusValidator textValidator = new ComboFocusValidator(typeCbo).add(new NotBlankValidator());
+		typeCbo.focusedProperty().addListener(textValidator);
 
-		TextInputFocusValidator textValidator = new TextInputFocusValidator(nameText).add(new NotBlankValidator());
+		textValidator = new TextInputFocusValidator(nameText).add(new NotBlankValidator());
 		nameText.focusedProperty().addListener(textValidator);
 
 		validStatusTracker.add(typeCbo, nameText);

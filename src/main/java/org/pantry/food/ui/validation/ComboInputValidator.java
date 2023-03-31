@@ -47,6 +47,5 @@ public class ComboInputValidator extends TextInputValidator {
 				return isValid;
 			});
 		}
-
 	}
 }

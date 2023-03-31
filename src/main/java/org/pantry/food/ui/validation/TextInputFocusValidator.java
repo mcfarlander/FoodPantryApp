@@ -7,11 +7,16 @@ import org.pantry.food.util.ValidationStyleUtil;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
 import javafx.scene.control.TextInputControl;
 
 public class TextInputFocusValidator implements ChangeListener<Boolean> {
 	private List<StringValidator> validators = new ArrayList<>();
 	private TextInputControl input;
+
+	protected TextInputFocusValidator() {
+
+	}
 
 	public TextInputFocusValidator(TextInputControl input) {
 		this.input = input;
@@ -27,8 +32,8 @@ public class TextInputFocusValidator implements ChangeListener<Boolean> {
 		// Validate input when focus is lost
 		if (wasFocused && !isFocused) {
 			// User has now focused on this element, remove any error styling
-			ValidationStyleUtil.validate(input, (unused) -> {
-				String value = input.getText();
+			ValidationStyleUtil.validate(toNode(), (unused) -> {
+				String value = getValue();
 				if (null == value) {
 					value = "";
 				}
@@ -43,5 +48,14 @@ public class TextInputFocusValidator implements ChangeListener<Boolean> {
 				return isValid;
 			});
 		}
+	}
+
+	// Subclasses can override this function to handle other types of controls
+	protected String getValue() {
+		return input.getText();
+	}
+
+	protected Node toNode() {
+		return input;
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.dao.FoodsDao;
 import org.pantry.food.dao.VisitsDao;
+import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
 
 /**
@@ -20,6 +21,9 @@ public class ApplicationContext {
 	private VisitsDao visitsDao;
 	private FoodsDao foodsDao;
 	private VolunteersDao volunteersDao;
+	private VolunteerEventsDao volunteerEventsDao;
+
+	private String copiedEventName = "";
 
 	public static void addApplicationCloseListener(ApplicationCloseListener listener) {
 		INSTANCE.applicationCloseListeners.add(listener);
@@ -60,6 +64,31 @@ public class ApplicationContext {
 			INSTANCE.volunteersDao = new VolunteersDao();
 		}
 		return INSTANCE.volunteersDao;
+	}
+
+	public static VolunteerEventsDao getVolunteerEventsDao() {
+		if (null == INSTANCE.volunteerEventsDao) {
+			INSTANCE.volunteerEventsDao = new VolunteerEventsDao();
+		}
+		return INSTANCE.volunteerEventsDao;
+	}
+
+	/**
+	 * "Copies" an event name for later "pasting" across multiple Add/Edit Volunteer
+	 * Event dialogs
+	 * 
+	 * @param name
+	 */
+	public static void setCopiedEventName(String name) {
+		INSTANCE.copiedEventName = name;
+	}
+
+	/**
+	 * @return the previously-copied event name, or empty string if none has been
+	 *         copied
+	 */
+	public static String getCopiedEventName() {
+		return INSTANCE.copiedEventName;
 	}
 
 }

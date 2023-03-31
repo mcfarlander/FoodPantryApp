@@ -25,8 +25,8 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
-import org.pantry.food.dao.VolunteerEventDao;
 import org.pantry.food.model.Volunteer;
 import org.pantry.food.model.VolunteerEvent;
 
@@ -49,7 +49,7 @@ public class ReportVolunteerEvents extends ReportBase {
 			"Sep", "Oct", "Nov", "Dec", "Total" };
 
 	private VolunteersDao volunteerIO = new VolunteersDao(); // used to find the type of volunteer based on voluneer's
-															// name
+																// name
 
 	/*
 	 * (non-Javadoc)
@@ -134,7 +134,7 @@ public class ReportVolunteerEvents extends ReportBase {
 	private void loadReport() {
 		try {
 
-			VolunteerEventDao recIo = new VolunteerEventDao();
+			VolunteerEventsDao recIo = new VolunteerEventsDao();
 			recIo.read();
 
 			// create an arraylist of regular volunteers
@@ -142,8 +142,7 @@ public class ReportVolunteerEvents extends ReportBase {
 			double[] monthTotals = new double[12];
 			double yearTotal = 0;
 
-			for (int i = 0; i < recIo.getCvsCount(); i++) {
-				VolunteerEvent record = recIo.getAll().get(i);
+			for (VolunteerEvent record : recIo.getAll()) {
 				String name = record.getVolunteerName();
 
 				boolean bFound = false;

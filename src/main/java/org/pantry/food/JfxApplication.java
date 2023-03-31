@@ -22,6 +22,7 @@ import org.pantry.food.actions.CustomersMenuItem;
 import org.pantry.food.actions.FoodsMenuItem;
 import org.pantry.food.actions.MenuActions;
 import org.pantry.food.actions.VisitsMenuItem;
+import org.pantry.food.actions.VolunteerEventsMenuItem;
 import org.pantry.food.actions.VolunteersMenuItem;
 import org.pantry.food.ui.dialog.ModalDialog;
 
@@ -78,6 +79,8 @@ public class JfxApplication extends Application {
 
 		Scene scene = new Scene(container);
 		scene.getStylesheets().add("styles/global.css");
+
+		stage.getIcons().add(Images.getImageView("generic.png").getImage());
 
 		String title = Resources.getString("Application.title");
 		stage.setTitle(title);
@@ -141,6 +144,7 @@ public class JfxApplication extends Application {
 		MenuActions.add(new VisitsMenuItem(context));
 		MenuActions.add(new FoodsMenuItem(context));
 		MenuActions.add(new VolunteersMenuItem(context));
+		MenuActions.add(new VolunteerEventsMenuItem(context));
 
 		MenuItem item = new AboutMenuItem();
 		item.setOnAction(event -> {
@@ -159,6 +163,7 @@ public class JfxApplication extends Application {
 		menu.getItems().add(MenuActions.get(FoodsMenuItem.ACTION_ID));
 		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(MenuActions.get(VolunteersMenuItem.ACTION_ID));
+		menu.getItems().add(MenuActions.get(VolunteerEventsMenuItem.ACTION_ID));
 	}
 
 	protected void addHelpMenuItems(Menu menu) {

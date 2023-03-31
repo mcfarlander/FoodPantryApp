@@ -2,6 +2,7 @@ package org.pantry.food.ui.dialog;
 
 import java.util.List;
 
+import org.pantry.food.model.Donor;
 import org.pantry.food.model.Food;
 
 /**
@@ -10,7 +11,7 @@ import org.pantry.food.model.Food;
 public class AddEditFoodDialogInput {
 
 	private Food food;
-	private List<Food> donors;
+	private List<Donor> donors;
 
 	public Food getFood() {
 		return food;
@@ -20,11 +21,11 @@ public class AddEditFoodDialogInput {
 		this.food = food;
 	}
 
-	public List<Food> getDonors() {
+	public List<Donor> getDonors() {
 		return donors;
 	}
 
-	public void setDonors(List<Food> donors) {
+	public void setDonors(List<Donor> donors) {
 		this.donors = donors;
 	}
 }

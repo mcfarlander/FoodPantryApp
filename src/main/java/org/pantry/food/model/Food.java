@@ -25,28 +25,59 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class Food {
 
-	private SimpleStringProperty foodIdProperty = new SimpleStringProperty();
+	private SimpleStringProperty idProperty = new SimpleStringProperty();
 	private SimpleStringProperty entryDateProperty = new SimpleStringProperty();
-	private SimpleStringProperty pickNSaveProperty = new SimpleStringProperty();
-	private SimpleStringProperty communityProperty = new SimpleStringProperty();
-	private SimpleStringProperty nonTefapProperty = new SimpleStringProperty();
-	private SimpleStringProperty tefapProperty = new SimpleStringProperty();
-	private SimpleStringProperty secondHarvestProperty = new SimpleStringProperty();
-	private SimpleStringProperty secondHarvestProduceProperty = new SimpleStringProperty();
-	private SimpleStringProperty pantryProperty = new SimpleStringProperty();
-	private SimpleStringProperty otherProperty = new SimpleStringProperty();
-	private SimpleStringProperty nonFoodProperty = new SimpleStringProperty();
-	private SimpleStringProperty milkProperty = new SimpleStringProperty();
-	private SimpleStringProperty other2Property = new SimpleStringProperty();
-	private SimpleStringProperty produceProperty = new SimpleStringProperty();
+	private SimpleStringProperty pickNSaveProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty communityProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty nonTefapProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty tefapProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty secondHarvestProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty secondHarvestProduceProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty pantryProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty otherProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty pantryNonFoodProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty nonFoodProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty milkProperty = new SimpleStringProperty("0");
+	private SimpleStringProperty other2Property = new SimpleStringProperty("0");
+	private SimpleStringProperty produceProperty = new SimpleStringProperty("0");
 	private SimpleStringProperty commentProperty = new SimpleStringProperty("");
 	private SimpleBooleanProperty donationProperty = new SimpleBooleanProperty();
 	private SimpleStringProperty donorNameProperty = new SimpleStringProperty();
 	private SimpleStringProperty donorAddressProperty = new SimpleStringProperty();
 	private SimpleStringProperty donorEmailProperty = new SimpleStringProperty();
 
+	public Food() {
+	}
+
+	public Food(Food other) {
+		if (null == other) {
+			return;
+		}
+
+		setFoodId(other.getFoodId());
+		setEntryDate(other.getEntryDate());
+		setPickNSave(other.getPickNSave());
+		setCommunity(other.getCommunity());
+		setNonTefap(other.getNonTefap());
+		setTefap(other.getTefap());
+		setSecondHarvest(other.getSecondHarvest());
+		setSecondHarvestProduce(other.getSecondHarvestProduce());
+		setPantry(other.getPantry());
+		setOther(other.getOther());
+		setPantryNonFood(other.getPantryNonFood());
+		setNonFood(other.getNonFood());
+		setMilk(other.getMilk());
+		setOther2(other.getOther2());
+		setProduce(other.getProduce());
+		setComment(other.getComment());
+		setDonation(other.isDonation());
+		setDonorName(other.getDonorName());
+		setDonorAddress(other.getDonorAddress());
+		setDonorEmail(other.getDonorEmail());
+	}
+
 	public int getFoodId() {
-		String value = foodIdProperty.get();
+		String value = idProperty.get();
 		if (null == value) {
 			return -1;
 		}
@@ -54,7 +85,7 @@ public class Food {
 	}
 
 	public void setFoodId(int recordId) {
-		foodIdProperty.set(String.valueOf(recordId));
+		idProperty.set(String.valueOf(recordId));
 	}
 
 	/**
@@ -273,6 +304,18 @@ public class Food {
 		produceProperty.set(String.valueOf(produce));
 	}
 
+	public double getPantryNonFood() {
+		String value = pantryNonFoodProperty.get();
+		if (null == value) {
+			return -1;
+		}
+		return Double.valueOf(value);
+	}
+
+	public void setPantryNonFood(double nonfood) {
+		pantryNonFoodProperty.set(String.valueOf(nonfood));
+	}
+
 	/**
 	 * Gets the non food.
 	 *
@@ -427,6 +470,86 @@ public class Food {
 	 */
 	public void setSecondHarvestProduce(double produce) {
 		secondHarvestProduceProperty.set(String.valueOf(produce));
+	}
+
+	public SimpleStringProperty idProperty() {
+		return idProperty;
+	}
+
+	public SimpleStringProperty entryDateProperty() {
+		return entryDateProperty;
+	}
+
+	public SimpleStringProperty pickNSaveProperty() {
+		return pickNSaveProperty;
+	}
+
+	public SimpleStringProperty communityProperty() {
+		return communityProperty;
+	}
+
+	public SimpleStringProperty nonTefapProperty() {
+		return nonTefapProperty;
+	}
+
+	public SimpleStringProperty tefapProperty() {
+		return tefapProperty;
+	}
+
+	public SimpleStringProperty secondHarvestProperty() {
+		return secondHarvestProperty;
+	}
+
+	public SimpleStringProperty secondHarvestProduceProperty() {
+		return secondHarvestProduceProperty;
+	}
+
+	public SimpleStringProperty pantryProperty() {
+		return pantryProperty;
+	}
+
+	public SimpleStringProperty otherProperty() {
+		return otherProperty;
+	}
+
+	public SimpleStringProperty nonFoodProperty() {
+		return nonFoodProperty;
+	}
+
+	public SimpleStringProperty pantryNonFoodProperty() {
+		return pantryNonFoodProperty;
+	}
+
+	public SimpleStringProperty milkProperty() {
+		return milkProperty;
+	}
+
+	public SimpleStringProperty other2Property() {
+		return other2Property;
+	}
+
+	public SimpleStringProperty produceProperty() {
+		return produceProperty;
+	}
+
+	public SimpleStringProperty commentProperty() {
+		return commentProperty;
+	}
+
+	public SimpleBooleanProperty donationProperty() {
+		return donationProperty;
+	}
+
+	public SimpleStringProperty donorNameProperty() {
+		return donorNameProperty;
+	}
+
+	public SimpleStringProperty donorAddressProperty() {
+		return donorAddressProperty;
+	}
+
+	public SimpleStringProperty donorEmailProperty() {
+		return donorEmailProperty;
 	}
 
 	/**
