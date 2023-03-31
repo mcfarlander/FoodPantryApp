@@ -21,6 +21,7 @@ import org.pantry.food.actions.AboutMenuItem;
 import org.pantry.food.actions.CustomersMenuItem;
 import org.pantry.food.actions.FoodsMenuItem;
 import org.pantry.food.actions.MenuActions;
+import org.pantry.food.actions.SettingsMenuItem;
 import org.pantry.food.actions.VisitsMenuItem;
 import org.pantry.food.actions.VolunteerEventsMenuItem;
 import org.pantry.food.actions.VolunteersMenuItem;
@@ -80,9 +81,10 @@ public class JfxApplication extends Application {
 		Scene scene = new Scene(container);
 		scene.getStylesheets().add("styles/global.css");
 
+		stage.getIcons().clear();
 		stage.getIcons().add(Images.getImageView("generic.png").getImage());
 
-		String title = Resources.getString("Application.title");
+		String title = ApplicationContext.getResources().getString("application.title");
 		stage.setTitle(title);
 
 		stage.setScene(scene);
@@ -145,6 +147,7 @@ public class JfxApplication extends Application {
 		MenuActions.add(new FoodsMenuItem(context));
 		MenuActions.add(new VolunteersMenuItem(context));
 		MenuActions.add(new VolunteerEventsMenuItem(context));
+		MenuActions.add(new SettingsMenuItem(context));
 
 		MenuItem item = new AboutMenuItem();
 		item.setOnAction(event -> {
@@ -164,6 +167,8 @@ public class JfxApplication extends Application {
 		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(MenuActions.get(VolunteersMenuItem.ACTION_ID));
 		menu.getItems().add(MenuActions.get(VolunteerEventsMenuItem.ACTION_ID));
+		menu.getItems().add(new SeparatorMenuItem());
+		menu.getItems().add(MenuActions.get(SettingsMenuItem.ACTION_ID));
 	}
 
 	protected void addHelpMenuItems(Menu menu) {

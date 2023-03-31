@@ -7,10 +7,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
+import org.pantry.food.Resources;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.model.Visit;
-import org.pantry.food.ui.common.FormState;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditVisitDialogInput;
 import org.pantry.food.util.DateUtil;
@@ -27,6 +27,7 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 	private final static Logger log = LogManager.getLogger(VisitsController.class);
 
 	private VisitsDao visitsDao = ApplicationContext.getVisitsDao();
+	private Resources resources = ApplicationContext.getResources();
 
 	protected void init() {
 		for (TableColumn<?, ?> column : dataTable.getColumns()) {
@@ -71,6 +72,8 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 		try {
 			data.clear();
 
+			boolean showAll = resources.getBoolean("visits.show.all");
+			boolean showInactive = resources.getBoolean("visits.show.inactive");
 			LocalDate now = LocalDate.now();
 
 			for (Visit visit : visits) {
@@ -83,12 +86,11 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 							&& now.getMonthValue() == visitDate.getMonthValue()) {
 						// Active visits in the current month/year are always shown
 						canAdd = true;
-					} else if (visit.isActive() && FormState.getInstance().isShowAllYearVisits()) {
+					} else if (visit.isActive() && showAll) {
 						// Visits outside of the current month that are active are shown if Show All
 						// Year Visits is true
 						canAdd = true;
-					} else if (!visit.isActive() && FormState.getInstance().isShowAllYearVisits()
-							&& FormState.getInstance().isShowInactiveVisits()) {
+					} else if (!visit.isActive() && showAll && showInactive) {
 						// Inactive visits outside of the current month are shown if Show All Year
 						// Visits and Show Inactive Visits are both true
 						canAdd = true;

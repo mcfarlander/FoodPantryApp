@@ -29,18 +29,19 @@ public class AboutDialog implements IModalDialogController<Void, Void> {
 	private Label titleLabel;
 	@FXML
 	private Label versionLabel;
-	
-    @FXML
-    private void initialize() {
-    	org.jdesktop.application.ResourceMap resourceMap = 
-    			org.jdesktop.application.Application.getInstance(org.pantry.food.FoodPantryApp.class).getContext().getResourceMap(AboutDialog.class);
-    	titleLabel.setText(resourceMap.getString("Application.title"));
-    	versionLabel.setText(resourceMap.getString("Application.version"));
-    	imageLabel.setGraphic(Images.getImageView("about.png"));
-    }
-    
+
+	@FXML
+	private void initialize() {
+		org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application
+				.getInstance(org.pantry.food.FoodPantryApp.class).getContext().getResourceMap(AboutDialog.class);
+		titleLabel.setText(resourceMap.getString("application.title"));
+		versionLabel.setText(resourceMap.getString("pplication.version"));
+		imageLabel.setGraphic(Images.getImageView("about.png"));
+	}
+
 	@Override
-	public void setInput(Void input) {}
+	public void setInput(Void input) {
+	}
 
 	@Override
 	public String getTitle() {
@@ -63,6 +64,7 @@ public class AboutDialog implements IModalDialogController<Void, Void> {
 	}
 
 	@Override
-	public void setModalDialogParent(ModalDialog<Void, Void> parent) {}
-    
+	public void setModalDialogParent(ModalDialog<Void, Void> parent) {
+	}
+
 }

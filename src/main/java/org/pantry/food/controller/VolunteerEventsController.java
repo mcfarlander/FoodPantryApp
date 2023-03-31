@@ -7,11 +7,11 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
+import org.pantry.food.Resources;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.model.VolunteerEvent;
-import org.pantry.food.ui.common.FormState;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditVolunteerEventDialogInput;
 import org.pantry.food.util.DateUtil;
@@ -27,6 +27,7 @@ public class VolunteerEventsController extends AbstractController<VolunteerEvent
 
 	private VolunteerEventsDao volunteerEventDao = ApplicationContext.getVolunteerEventsDao();
 	private VolunteersDao volunteersDao = ApplicationContext.getVolunteersDao();
+	private Resources resources = ApplicationContext.getResources();
 
 	protected void init() {
 		for (TableColumn<?, ?> column : dataTable.getColumns()) {
@@ -45,12 +46,13 @@ public class VolunteerEventsController extends AbstractController<VolunteerEvent
 		try {
 			data.clear();
 
+			boolean showAll = resources.getBoolean("events.show.all");
 			LocalDate now = LocalDate.now();
 			for (VolunteerEvent event : events) {
 				LocalDate eventDate;
 				try {
 					eventDate = DateUtil.toDate(event.getEventDate());
-					if (FormState.getInstance().isShowAll() || (now.getMonthValue() == eventDate.getMonthValue()
+					if (showAll || (now.getMonthValue() == eventDate.getMonthValue()
 							&& now.getYear() == eventDate.getYear())) {
 						data.add(event);
 					}

@@ -7,7 +7,9 @@ import java.util.List;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.pantry.food.ApplicationContext;
 import org.pantry.food.Images;
+import org.pantry.food.SettingsChangedListener;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.FileChangedListener;
 
@@ -115,6 +117,13 @@ public abstract class AbstractController<T, DIT> {
 			// Invoked when the underlying data file changes
 			@Override
 			public void onFileChanged(String filename) {
+				refreshTable(dao.getAll());
+			}
+		});
+
+		ApplicationContext.addSettingsChangedListener(new SettingsChangedListener() {
+			@Override
+			public void onChanged() {
 				refreshTable(dao.getAll());
 			}
 		});

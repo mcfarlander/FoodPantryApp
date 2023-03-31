@@ -16,7 +16,9 @@ public class ApplicationContext {
 	private static ApplicationContext INSTANCE = new ApplicationContext();
 
 	private List<ApplicationCloseListener> applicationCloseListeners = new ArrayList<>();
+	private List<SettingsChangedListener> settingsChangedListeners = new ArrayList<>();
 
+	private Resources resources;
 	private CustomersDao customersDao;
 	private VisitsDao visitsDao;
 	private FoodsDao foodsDao;
@@ -36,6 +38,26 @@ public class ApplicationContext {
 				listener.onClosing();
 			}
 		}
+	}
+
+	public static void addSettingsChangedListener(SettingsChangedListener listener) {
+		INSTANCE.settingsChangedListeners.add(listener);
+	}
+
+	// Notifies registered listeners that settings have changed
+	public static void settingsChanged() {
+		for (SettingsChangedListener listener : INSTANCE.settingsChangedListeners) {
+			if (null != listener) {
+				listener.onChanged();
+			}
+		}
+	}
+
+	public static Resources getResources() {
+		if (null == INSTANCE.resources) {
+			INSTANCE.resources = new Resources();
+		}
+		return INSTANCE.resources;
 	}
 
 	public static CustomersDao getCustomersDao() {

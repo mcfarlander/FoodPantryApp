@@ -7,10 +7,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
+import org.pantry.food.Resources;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.model.Customer;
-import org.pantry.food.ui.common.FormState;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditCustomerDialogInput;
 import org.pantry.food.util.DateUtil;
@@ -28,6 +28,7 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 	private final static Logger log = LogManager.getLogger(CustomersController.class);
 
 	private CustomersDao customerDao = ApplicationContext.getCustomersDao();
+	private Resources resources = ApplicationContext.getResources();
 
 	public void init() {
 		for (TableColumn<?, ?> column : dataTable.getColumns()) {
@@ -65,12 +66,12 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 			refreshTable(customerDao.read());
 		} catch (ArrayIndexOutOfBoundsException | FileNotFoundException ex) {
 			log.error(ex);
-			Alert alert = new Alert(AlertType.WARNING,
+			Alert alert = new Alert(AlertType.NONE,
 					"Customer file found, but it is incorrect or missing\n" + ex.getMessage());
 			alert.show();
 		} catch (IOException ex) {
 			log.error(ex);
-			Alert alert = new Alert(AlertType.WARNING, "Problem opening file\n" + ex.getMessage());
+			Alert alert = new Alert(AlertType.NONE, "Problem opening file\n" + ex.getMessage());
 			alert.show();
 		}
 	}
@@ -85,8 +86,9 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 		try {
 			data.clear();
 
+			boolean showInactive = resources.getBoolean("customers.show.inactive");
 			for (Customer customer : customers) {
-				boolean canAdd = FormState.getInstance().isShowInactiveCustomers() ? true : customer.isActive();
+				boolean canAdd = showInactive ? true : customer.isActive();
 				if (canAdd) {
 					data.add(customer);
 				}

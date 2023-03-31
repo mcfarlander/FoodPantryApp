@@ -7,6 +7,7 @@ import org.pantry.food.Fxmls;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -45,8 +46,9 @@ public class ModalDialog<I, O> {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(scene);
 
-		if (null != controller.getIcon()) {
-			stage.getIcons().add(controller.getIcon());
+		Image icon = controller.getIcon();
+		if (null != icon) {
+			stage.getIcons().add(icon);
 		}
 		stage.setTitle(controller.getTitle());
 		stage.showAndWait();

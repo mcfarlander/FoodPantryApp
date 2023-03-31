@@ -101,3 +101,9 @@
 #deleteVolunteerBtn {
  	-fx-graphic: url(../icons/user_delete.png);
 }
+
+/* Heading labels in the Settings dialog */
+.settings-heading {
+	-fx-font-size: 120%;
+	-fx-font-weight: bold;
+}
