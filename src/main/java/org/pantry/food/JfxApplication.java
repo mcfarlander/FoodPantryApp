@@ -21,6 +21,7 @@ import org.pantry.food.actions.AboutMenuItem;
 import org.pantry.food.actions.CustomersMenuItem;
 import org.pantry.food.actions.FoodsMenuItem;
 import org.pantry.food.actions.MenuActions;
+import org.pantry.food.actions.ReportsMenuItem;
 import org.pantry.food.actions.SettingsMenuItem;
 import org.pantry.food.actions.VisitsMenuItem;
 import org.pantry.food.actions.VolunteerEventsMenuItem;
@@ -147,6 +148,7 @@ public class JfxApplication extends Application {
 		MenuActions.add(new FoodsMenuItem(context));
 		MenuActions.add(new VolunteersMenuItem(context));
 		MenuActions.add(new VolunteerEventsMenuItem(context));
+		MenuActions.add(new ReportsMenuItem(context));
 		MenuActions.add(new SettingsMenuItem(context));
 
 		MenuItem item = new AboutMenuItem();
@@ -167,6 +169,7 @@ public class JfxApplication extends Application {
 		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(MenuActions.get(VolunteersMenuItem.ACTION_ID));
 		menu.getItems().add(MenuActions.get(VolunteerEventsMenuItem.ACTION_ID));
+		menu.getItems().add(MenuActions.get(ReportsMenuItem.ACTION_ID));
 		menu.getItems().add(new SeparatorMenuItem());
 		menu.getItems().add(MenuActions.get(SettingsMenuItem.ACTION_ID));
 	}

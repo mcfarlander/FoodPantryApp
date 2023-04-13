@@ -42,6 +42,8 @@ import org.pantry.food.model.Visit;
 import org.pantry.food.reports.ReportMonthlySummary;
 import org.pantry.food.ui.common.FormState;
 
+import net.sf.nervalreports.core.ReportGenerationException;
+
 /**
  *
  * @author mcfarland_davej
@@ -413,12 +415,12 @@ public class FrameReportMonthlySummary extends javax.swing.JInternalFrame {
 		report.setMonthSelected(monthSelected);
 
 		try {
-			report.createReportTable();
-			report.saveReport();
-			JOptionPane.showMessageDialog(this, "The summary has been saved.");
-		} catch (IOException ex) {
+			report.createReport();
+			report.savePdf();
+			JOptionPane.showMessageDialog(this, "The summary has been saved");
+		} catch (IOException | ReportGenerationException ex) {
 			log.log(Level.SEVERE, null, ex);
-			JOptionPane.showMessageDialog(this, "There was a problem saving see log.");
+			JOptionPane.showMessageDialog(this, "There was a problem saving, see log");
 		}
 
 	}

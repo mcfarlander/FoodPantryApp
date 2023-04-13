@@ -7,6 +7,7 @@ import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.dao.FoodsDao;
 import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.dao.VolunteerEventsDao;
+import org.pantry.food.dao.VolunteerHourDao;
 import org.pantry.food.dao.VolunteersDao;
 
 /**
@@ -24,6 +25,7 @@ public class ApplicationContext {
 	private FoodsDao foodsDao;
 	private VolunteersDao volunteersDao;
 	private VolunteerEventsDao volunteerEventsDao;
+	private VolunteerHourDao volunteerHourDao;
 
 	private String copiedEventName = "";
 
@@ -93,6 +95,13 @@ public class ApplicationContext {
 			INSTANCE.volunteerEventsDao = new VolunteerEventsDao();
 		}
 		return INSTANCE.volunteerEventsDao;
+	}
+
+	public static VolunteerHourDao getVolunteerHourDao() {
+		if (null == INSTANCE.volunteerHourDao) {
+			INSTANCE.volunteerHourDao = new VolunteerHourDao();
+		}
+		return INSTANCE.volunteerHourDao;
 	}
 
 	/**

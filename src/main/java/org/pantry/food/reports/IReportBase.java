@@ -17,67 +17,43 @@ package org.pantry.food.reports;
 
 import java.io.IOException;
 
-import com.itextpdf.text.DocumentException;
+import net.sf.nervalreports.core.ReportGenerationException;
 
 /**
  * Report interface. All reporting needs to utilize this interface.
  * 
  * @author mcfarland_davej
  */
-public interface IReportBase 
-{
+public interface IReportBase {
 	/**
 	 * Set the report name.
-	 * @param name	String the report name
+	 * 
+	 * @param name String the report name
 	 */
-    void setReportName(String name);
-    
-    /**
-     * Set the report's title.
-     * @param title	String the title to appear in the report
-     */
-    void setReportTitle(String title);
-    
-    /**
-     * Set the report description.
-     * @param descr	String the description to appear in the report
-     */
-    void setReportDescription(String descr);
-    
-    /**
-     * Get the string buffer object used to build the report.
-     * @return	StringBuffer	the string buffer
-     */
-    StringBuffer getBuffer();
+	void setReportName(String name);
 
-    /**
-     * Create the HTML header.
-     */
-    void createHeader();
-    
-    /**
-     * Add the CSS to the HTML header.
-     */
-    void addCss();
-    
-    /**
-     * Add the HTML footer (close out any tags).
-     */
-    void createFooter();
+	/**
+	 * Set the report's title.
+	 * 
+	 * @param title String the title to appear in the report
+	 */
+	void setReportTitle(String title);
 
-    /**
-     * Save the report as an HTML file.
-     * @return	String the path the report was saved to
-     * @throws IOException
-     */
-    String saveReport() throws IOException;
-    
-    /**
-     * Save the report as a PDF file.
-     * @return	String the path the report was saved to
-     * @throws IOException
-     * @throws DocumentException
-     */
-    String saveReportPdf() throws IOException, DocumentException;
-    
+	/**
+	 * Set the report description.
+	 * 
+	 * @param descr String the description to appear in the report
+	 */
+	void setReportDescription(String descr);
+
+	void createReport() throws ReportGenerationException;
+
+	/**
+	 * Save the report as an HTML file.
+	 * 
+	 * @return String the path the report was saved to
+	 * @throws IOException
+	 */
+	String savePdf() throws IOException;
+
 }

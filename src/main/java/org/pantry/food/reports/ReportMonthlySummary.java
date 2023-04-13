@@ -15,8 +15,6 @@
 */
 package org.pantry.food.reports;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,11 +22,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.pantry.food.ApplicationContext;
 import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.model.Visit;
+
+import net.sf.nervalreports.core.ReportGenerationException;
 
 /**
  * Create a report for the visitors to the pantry for a given month.
@@ -36,6 +38,7 @@ import org.pantry.food.model.Visit;
  * @author mcfarland_davej
  */
 public class ReportMonthlySummary extends ReportBase {
+	private DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	private int monthSelected = 0;
 
 	public int getMonthSelected() {
@@ -46,85 +49,45 @@ public class ReportMonthlySummary extends ReportBase {
 		this.monthSelected = iMonth;
 	}
 
-	private DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-
 	private String[] cols = new String[] { "ID", "HouseholdId", "New?", "# Adults", "# Kids", "# Seniors",
 			"Working Income", "Other Income", "No Income", "Date" };
+
+	public ReportMonthlySummary() {
+		setReportName("Monthly_Summary");
+		setReportTitle("McFarland Community Food Pantry Monthly Summary");
+		setReportDescription(dateFormat.format(Calendar.getInstance().getTime()));
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.pantry.food.reports.ReportBase#createReportTable()
+	 * @see org.pantry.food.reports.ReportBase#buildReport()
 	 */
 	@Override
-	public void createReportTable() {
-		this.setReportName("Monthly_Summary");
-		this.setReportTitle("McFarland Community Food Pantry Monthly Summary");
-
-		Calendar c1 = Calendar.getInstance(); // today
-		this.setReportDescription(dateFormat.format(c1.getTime()));
-
-		this.createHeader();
-
-		// create the basic table
-		this.getBuffer().append("<table border='1' cellpadding='4'>");
-
+	public void buildReport() throws ReportGenerationException {
 		// create a header row
-		createRow(cols[0], cols[1], cols[2], cols[3], cols[4], cols[5], cols[6], cols[7], cols[8], cols[9], true);
+		report.beginTable(cols.length);
+		report.beginTableHeaderRow();
+		for (int x = 0; x < cols.length; x++) {
+			report.addTableHeaderCell(cols[x]);
+		}
+		report.endTableHeaderRow();
 
 		// create rest of the data rows
 		loadReport();
-
 		// finish the table
-		this.getBuffer().append("</table>");
-
-		// finish the html
-		this.createFooter();
-
+		report.endTable();
 	}
 
-	private void createRow(String col1, String col2, String col3, String col4, String col5, String col6, String col7,
-			String col8, String col9, String col10, boolean isHeader) {
-		this.getBuffer().append("<tr>");
+	@Override
+	public void createFooter() {
+	}
 
-		if (isHeader) {
-			this.getBuffer().append("<th>").append(col1).append("</th>");
-			this.getBuffer().append("<th>").append(col2).append("</th>");
-			this.getBuffer().append("<th>").append(col3).append("</th>");
-			this.getBuffer().append("<th>").append(col4).append("</th>");
-			this.getBuffer().append("<th>").append(col5).append("</th>");
-			this.getBuffer().append("<th>").append(col6).append("</th>");
-			this.getBuffer().append("<th>").append(col7).append("</th>");
-			this.getBuffer().append("<th>").append(col8).append("</th>");
-			this.getBuffer().append("<th>").append(col9).append("</th>");
-			this.getBuffer().append("<th>").append(col10).append("</th>");
-		} else {
-			this.getBuffer().append("<td>").append(col1).append("</td>");
-			this.getBuffer().append("<td>").append(col2).append("</td>");
-			this.getBuffer().append("<td>").append(col3).append("</td>");
-			this.getBuffer().append("<td>").append(col4).append("</td>");
-			this.getBuffer().append("<td>").append(col5).append("</td>");
-			this.getBuffer().append("<td>").append(col6).append("</td>");
-			this.getBuffer().append("<td>").append(col7).append("</td>");
-			this.getBuffer().append("<td>").append(col8).append("</td>");
-			this.getBuffer().append("<td>").append(col9).append("</td>");
-			this.getBuffer().append("<td>").append(col10).append("</td>");
-		}
-
-		this.getBuffer().append("</tr>");
-
-	}// end of createTable
-
-	private void loadReport() {
+	private void loadReport() throws ReportGenerationException {
 		try {
-			VisitsDao visIo = new VisitsDao();
-			visIo.read();
-
 			// Calendar cal = Calendar.getInstance();
-			Calendar testCal = Calendar.getInstance();
-
-			ArrayList<Visit> monthVisits = new ArrayList<Visit>();
-			ArrayList<String> weekNumbers = new ArrayList<String>();
+			List<Visit> monthVisits = new ArrayList<Visit>();
+			List<String> weekNumbers = new ArrayList<String>();
 
 			int monthSumHouse = 0;
 			int monthSumNew = 0;
@@ -135,13 +98,14 @@ public class ReportMonthlySummary extends ReportBase {
 			int monthSumOtherIncome = 0;
 			int monthSumNoIncome = 0;
 
-			for (Visit vis : visIo.getAll()) {
+			Calendar testCal = Calendar.getInstance();
+			VisitsDao visitsDao = ApplicationContext.getVisitsDao();
+			for (Visit vis : visitsDao.getAll()) {
 				if (vis.isActive()) {
 					Date testDate = dateFormat.parse(vis.getVisitDate());
 					testCal.setTime(testDate);
 
 					if (testCal.get(Calendar.MONTH) == this.monthSelected) {
-
 						monthVisits.add(vis);
 						monthSumHouse++;
 
@@ -176,11 +140,8 @@ public class ReportMonthlySummary extends ReportBase {
 						if (!bFound) {
 							weekNumbers.add("" + vis.getVisitorWeekNumber());
 						}
-
 					}
-
 				}
-
 			}
 
 			// loop thru the current visits and get summaries
@@ -188,8 +149,6 @@ public class ReportMonthlySummary extends ReportBase {
 
 			for (int i = 0; i < weekNumbers.size(); i++) {
 				int iWeekNumber = Integer.parseInt(weekNumbers.get(i).toString());
-				System.out.println("week number:" + iWeekNumber);
-
 				int weekSumHouse = 0;
 				int weekSumNew = 0;
 				int weekSumAdults = 0;
@@ -199,94 +158,202 @@ public class ReportMonthlySummary extends ReportBase {
 				int weekSumOtherIncome = 0;
 				int weekSumNoIncome = 0;
 
-				for (int j = 0; j < monthVisits.size(); j++) {
-					Visit vis = monthVisits.get(j);
-
-					if (vis.getVisitorWeekNumber() == iWeekNumber) {
+				for (Visit visit : monthVisits) {
+					if (visit.getVisitorWeekNumber() == iWeekNumber) {
 						weekSumHouse++;
 
-						if (vis.isNewCustomer()) {
+						if (visit.isNewCustomer()) {
 							weekSumNew++;
 						}
 
-						weekSumAdults += vis.getNumberAdults();
-						weekSumKids += vis.getNumberKids();
-						weekSumSeniors += vis.getNumberSeniors();
+						weekSumAdults += visit.getNumberAdults();
+						weekSumKids += visit.getNumberKids();
+						weekSumSeniors += visit.getNumberSeniors();
 
-						if (vis.isWorkingIncome()) {
+						if (visit.isWorkingIncome()) {
 							weekSumWorkingIncome++;
 						}
 
-						if (vis.isOtherIncome()) {
+						if (visit.isOtherIncome()) {
 							weekSumOtherIncome++;
 						}
 
-						if (vis.isNoIncome()) {
+						if (visit.isNoIncome()) {
 							weekSumNoIncome++;
 						}
 
-						String sNew = "";
-						if (vis.isNewCustomer()) {
-							sNew = "Yes";
-						} else {
-							sNew = "No";
-						}
-
-						String sWorking = "";
-						if (vis.isWorkingIncome()) {
-							sWorking = "Yes";
-						} else {
-							sWorking = "No";
-						}
-
-						String sOther = "";
-						if (vis.isOtherIncome()) {
-							sOther = "Yes";
-						} else {
-							sOther = "No";
-						}
-
-						String sNoIncome = "";
-						if (vis.isNoIncome()) {
-							sNoIncome = "Yes";
-						} else {
-							sNoIncome = "No";
-						}
-
 						// show the visit info on the table
-						createRow("" + weekSumHouse, "" + vis.getHouseholdId(), sNew, "" + vis.getNumberAdults(),
-								"" + vis.getNumberKids(), "" + vis.getNumberSeniors(), sWorking, sOther, sNoIncome,
-								"" + vis.getVisitorWeekNumber(), false);
-
+						addTableRow(visit);
 					}
-
 				}
 
 				// show the weekly summary info on the table
+				VisitSummary weekTotal = new VisitSummary();
+				weekTotal.setFirstColumnlabel("Week Sum:");
+				weekTotal.setHouseholdSum(weekSumHouse);
+				weekTotal.setNewHouseholdSum(weekSumNew);
+				weekTotal.setAdultsSum(weekSumAdults);
+				weekTotal.setKidsSum(weekSumKids);
+				weekTotal.setSeniorsSum(weekSumSeniors);
+				weekTotal.setWorkingIncomeSum(weekSumWorkingIncome);
+				weekTotal.setOtherIncomeSum(weekSumOtherIncome);
+				weekTotal.setNoIncomeSum(weekSumNoIncome);
+				weekTotal.setLastColumnlabel("Week " + (i + 1));
+				addTableSummary(weekTotal, "w=");
 
-				createRow("Week Sum:", "w=" + weekSumHouse, "w=" + weekSumNew, "w=" + weekSumAdults, "w=" + weekSumKids,
-						"w=" + weekSumSeniors, "w=" + weekSumWorkingIncome, "w=" + weekSumOtherIncome,
-						"w=" + weekSumNoIncome, "Week " + (i + 1), false);
-
-				createRow("", "", "", "", "", "", "", "", "", "", false);
-
+				addEmptyRow();
 			}
 
 			// show the monthly summary line
-			createRow("Month Totals:", "T=" + monthSumHouse, "T=" + monthSumNew, "T=" + monthSumAdults,
-					"T=" + monthSumKids, "T=" + monthSumSeniors, "T=" + monthSumWorkingIncome,
-					"T=" + monthSumOtherIncome, "T=" + monthSumNoIncome, "Month Summary", false
+			VisitSummary monthTotal = new VisitSummary();
+			monthTotal.setFirstColumnlabel("Month Totals:");
+			monthTotal.setHouseholdSum(monthSumHouse);
+			monthTotal.setNewHouseholdSum(monthSumNew);
+			monthTotal.setAdultsSum(monthSumAdults);
+			monthTotal.setKidsSum(monthSumKids);
+			monthTotal.setSeniorsSum(monthSumSeniors);
+			monthTotal.setWorkingIncomeSum(monthSumWorkingIncome);
+			monthTotal.setOtherIncomeSum(monthSumOtherIncome);
+			monthTotal.setNoIncomeSum(monthSumNoIncome);
+			monthTotal.setLastColumnlabel("Monthly Summary");
+			addTableSummary(monthTotal, "m=");
 
-			);
-
+			report.endTable();
 		} catch (ParseException ex) {
 			Logger.getLogger(ReportMonthlySummary.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (FileNotFoundException ex) {
-			Logger.getLogger(ReportMonthlySummary.class.getName()).log(Level.SEVERE, null, ex);
-		} catch (IOException ex) {
-			Logger.getLogger(ReportMonthlySummary.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+
+	private void addTableRow(Visit record) throws ReportGenerationException {
+		report.beginTableRow();
+		report.addTableCell(String.valueOf(record.getVisitorWeekNumber()));
+		report.addTableCell(String.valueOf(record.getHouseholdId()));
+		report.addTableCell(String.valueOf(getYesNo(record.isNewCustomer())));
+		report.addTableCell(String.valueOf(record.getNumberAdults()));
+		report.addTableCell(String.valueOf(record.getNumberKids()));
+		report.addTableCell(String.valueOf(record.getNumberSeniors()));
+		report.addTableCell(String.valueOf(getYesNo(record.isWorkingIncome())));
+		report.addTableCell(String.valueOf(getYesNo(record.isOtherIncome())));
+		report.addTableCell(String.valueOf(getYesNo(record.isNoIncome())));
+		report.addTableCell(String.valueOf(record.getVisitorWeekNumber()));
+		report.endTableRow();
+	}
+
+	private void addTableSummary(VisitSummary record, String prefix) throws ReportGenerationException {
+		report.beginTableRow();
+		report.addTableCell(record.getFirstColumnlabel());
+		report.addTableCell(prefix + String.valueOf(record.getHouseholdSum()));
+		report.addTableCell(prefix + String.valueOf(record.getNewHouseholdSum()));
+		report.addTableCell(prefix + String.valueOf(record.getAdultsSum()));
+		report.addTableCell(prefix + String.valueOf(record.getKidsSum()));
+		report.addTableCell(prefix + String.valueOf(record.getSeniorsSum()));
+		report.addTableCell(prefix + String.valueOf(record.getWorkingIncomeSum()));
+		report.addTableCell(prefix + String.valueOf(record.getOtherIncomeSum()));
+		report.addTableCell(prefix + String.valueOf(record.getNoIncomeSum()));
+		report.addTableCell(record.getLastColumnlabel());
+		report.endTableRow();
+	}
+
+	private void addEmptyRow() throws ReportGenerationException {
+		report.beginTableRow();
+		report.endTableRow();
+	}
+
+	private String getYesNo(Boolean bool) {
+		return bool ? "Yes" : "No";
+	}
+
+	class VisitSummary {
+		String firstColumnlabel = "";
+		String lastColumnlabel = "";
+		int householdSum = 0;
+		int newHouseholdSum = 0;
+		int adultsSum = 0;
+		int kidsSum = 0;
+		int seniorsSum = 0;
+		int workingIncomeSum = 0;
+		int otherIncomeSum = 0;
+		int noIncomeSum = 0;
+
+		public String getFirstColumnlabel() {
+			return firstColumnlabel;
 		}
 
+		public void setFirstColumnlabel(String firstColumnlabel) {
+			this.firstColumnlabel = firstColumnlabel;
+		}
+
+		public String getLastColumnlabel() {
+			return lastColumnlabel;
+		}
+
+		public void setLastColumnlabel(String lastColumnlabel) {
+			this.lastColumnlabel = lastColumnlabel;
+		}
+
+		public int getHouseholdSum() {
+			return householdSum;
+		}
+
+		public void setHouseholdSum(int householdSum) {
+			this.householdSum = householdSum;
+		}
+
+		public int getNewHouseholdSum() {
+			return newHouseholdSum;
+		}
+
+		public void setNewHouseholdSum(int newHouseholdSum) {
+			this.newHouseholdSum = newHouseholdSum;
+		}
+
+		public int getAdultsSum() {
+			return adultsSum;
+		}
+
+		public void setAdultsSum(int adultsSum) {
+			this.adultsSum = adultsSum;
+		}
+
+		public int getKidsSum() {
+			return kidsSum;
+		}
+
+		public void setKidsSum(int kidsSum) {
+			this.kidsSum = kidsSum;
+		}
+
+		public int getSeniorsSum() {
+			return seniorsSum;
+		}
+
+		public void setSeniorsSum(int seniorsSum) {
+			this.seniorsSum = seniorsSum;
+		}
+
+		public int getWorkingIncomeSum() {
+			return workingIncomeSum;
+		}
+
+		public void setWorkingIncomeSum(int workingIncomeSum) {
+			this.workingIncomeSum = workingIncomeSum;
+		}
+
+		public int getOtherIncomeSum() {
+			return otherIncomeSum;
+		}
+
+		public void setOtherIncomeSum(int otherIncomeSum) {
+			this.otherIncomeSum = otherIncomeSum;
+		}
+
+		public int getNoIncomeSum() {
+			return noIncomeSum;
+		}
+
+		public void setNoIncomeSum(int noIncomeSum) {
+			this.noIncomeSum = noIncomeSum;
+		}
 	}
 
 }// end of class

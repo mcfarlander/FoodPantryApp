@@ -20,8 +20,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javafx.beans.property.SimpleStringProperty;
 
@@ -32,6 +33,7 @@ import javafx.beans.property.SimpleStringProperty;
  *
  */
 public class VolunteerEvent {
+	private Logger log = LogManager.getLogger(VolunteerEvent.class);
 	private SimpleStringProperty idProperty = new SimpleStringProperty();
 	private SimpleStringProperty nameProperty = new SimpleStringProperty();
 	private SimpleStringProperty volunteerNameProperty = new SimpleStringProperty();
@@ -186,7 +188,7 @@ public class VolunteerEvent {
 			// + " recorded:" + this.monthHrs[index]);
 
 		} catch (ParseException ex) {
-			Logger.getLogger(VolunteerEvent.class.getName()).log(Level.SEVERE, null, ex);
+			log.error(ex);
 		}
 
 	}

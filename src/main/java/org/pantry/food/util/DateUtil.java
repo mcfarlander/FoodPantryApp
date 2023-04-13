@@ -60,4 +60,5 @@ public class DateUtil {
 	public static String getMonthName(int id) {
 		return WordUtils.capitalizeFully(getMonthNameDate.withMonth(id).getMonth().toString()).substring(0, 3);
 	}
+
 }

@@ -26,13 +26,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.pantry.food.dao.CustomersDao;
+import org.pantry.food.ApplicationContext;
 import org.pantry.food.dao.FoodsDao;
-import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.model.Customer;
@@ -40,12 +38,15 @@ import org.pantry.food.model.Food;
 import org.pantry.food.model.Visit;
 import org.pantry.food.model.VolunteerEvent;
 
+import net.sf.nervalreports.core.ReportGenerationException;
+
 /**
  * Create a report of the summary of activity at the pantry.
  * 
  * @author mcfarland_davej
  *
  */
+/// HAS NOT BEEN CONVERTED TO USE Nerval YET!!
 public class ReportPantrySummary extends ReportBase {
 
 	private int monthSelected = 0;
@@ -63,60 +64,40 @@ public class ReportPantrySummary extends ReportBase {
 
 	private String[] cols = new String[] { "Category", "Value", "Notes" };
 
+	public ReportPantrySummary() {
+		setReportName("Pantry_Summary");
+		setReportTitle("MCFP Report Summary");
+		setReportDescription(dateFormat.format(Calendar.getInstance().getTime()));
+
+		nf.setMaximumFractionDigits(1);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.pantry.food.reports.ReportBase#createReportTable()
 	 */
 	@Override
-	public void createReportTable() {
-		nf.setMaximumFractionDigits(1);
-
-		this.setReportName("Pantry_Summary");
-		this.setReportTitle("MCFP Report Summary");
-
-		Calendar c1 = Calendar.getInstance(); // today
-		this.setReportDescription(dateFormat.format(c1.getTime()));
-
-		this.createHeader();
-
-		// create the basic table
-		this.getBuffer().append("<table border='1' cellpadding='4'>").append("\n");
-
-		// create a header row
-		createRow(cols[0], cols[1], cols[2], true);
+	public void buildReport() throws ReportGenerationException {
+		report.beginTable(cols.length);
+		report.beginTableHeaderRow();
+		for (int x = 0; x < cols.length; x++) {
+			report.addTableHeaderCell(cols[x]);
+		}
+		report.endTableHeaderRow();
 
 		// create rest of the data rows
 		loadReport();
 
 		// finish the table
-		this.getBuffer().append("</table>").append("\n");
-
-		// finish the html
-		this.createFooter();
+		report.endTable();
 	}
 
-	private void createRow(String col1, String col2, String col3, boolean isHeader) {
-		this.getBuffer().append("<tr>").append("\n");
+	@Override
+	public void createFooter() {
+	}
 
-		if (isHeader) {
-			this.getBuffer().append("<th>").append(col1).append("</th>").append("\n");
-			this.getBuffer().append("<th>").append(col2).append("</th>").append("\n");
-			this.getBuffer().append("<th>").append(col3).append("</th>").append("\n");
-		} else {
-			this.getBuffer().append("<td>").append(col1).append("</td>").append("\n");
-			this.getBuffer().append("<td>").append(col2).append("</td>").append("\n");
-			this.getBuffer().append("<td>").append(col3).append("</td>").append("\n");
-		}
-
-		this.getBuffer().append("</tr>").append("\n");
-
-	}// end of createTable
-
-	private void getCustomerData() throws FileNotFoundException, IOException {
-		CustomersDao custs = new CustomersDao();
-		custs.read();
-
+	private void addCustomerData() throws FileNotFoundException, IOException, ReportGenerationException {
 		int numberCustomers = 0;
 		int numberNewAdults = 0;
 		int numberNewSeniors = 0;
@@ -127,39 +108,42 @@ public class ReportPantrySummary extends ReportBase {
 		int numberMonthSeniors = 0;
 		int numberMonthKids = 0;
 
-		ArrayList<Customer> distinctHouseholdsYtd = new ArrayList<Customer>();
-		ArrayList<Customer> distinctHouseholdsMonth = new ArrayList<Customer>();
+		List<Customer> distinctHouseholdsYtd = new ArrayList<Customer>();
+		List<Customer> distinctHouseholdsMonth = new ArrayList<Customer>();
 
 		boolean isFromMonth = false;
-
-		for (Customer cust : custs.getAll()) {
-			numberCustomers++;
-
+		List<Customer> customers = ApplicationContext.getCustomersDao().getAll();
+		numberCustomers = customers.size();
+		for (Customer cust : customers) {
 			isFromMonth = (cust.getMonthRegistered() - 1 == monthSelected);
 
 			if (cust.isNewCustomer()) {
 				if (cust.isActive()) {
-					if (isFromMonth)
+					if (isFromMonth) {
 						numberMonthCustomers++;
+					}
 
 					if (cust.getAge() > 19) {
 						if (cust.getAge() >= 60) {
 							numberNewSeniors++;
 
-							if (isFromMonth)
+							if (isFromMonth) {
 								numberMonthSeniors++;
+							}
 						} else {
 							numberNewAdults++;
 
-							if (isFromMonth)
+							if (isFromMonth) {
 								numberMonthAdults++;
+							}
 						}
 
 					} else {
 						numberNewKids++;
 
-						if (isFromMonth)
+						if (isFromMonth) {
 							numberMonthKids++;
+						}
 
 					}
 
@@ -201,32 +185,29 @@ public class ReportPantrySummary extends ReportBase {
 
 		}
 
-		createRow("New Customers Month", "" + numberMonthCustomers, "Adults:" + numberMonthAdults + " Seniors:"
-				+ numberMonthSeniors + " Children:" + numberMonthKids + " Households:" + distinctHouseholdsMonth.size(),
-				false);
+		addTableRow("New Customers Month", String.valueOf(numberMonthCustomers),
+				"Adults:" + numberMonthAdults + " Seniors:" + numberMonthSeniors + " Children:" + numberMonthKids
+						+ " Households:" + distinctHouseholdsMonth.size());
 
-		createRow("New Customers YTD", "" + numberCustomers, "Adults:" + numberNewAdults + " Seniors:"
-				+ numberNewSeniors + " Children:" + numberNewKids + " Households:" + distinctHouseholdsYtd.size(),
-				false);
-
+		addTableRow("New Customers YTD", String.valueOf(numberCustomers), "Adults:" + numberNewAdults + " Seniors:"
+				+ numberNewSeniors + " Children:" + numberNewKids + " Households:" + distinctHouseholdsYtd.size());
 	}
 
-	private void getVisitsData() throws FileNotFoundException, IOException, ParseException {
+	private void addVisitsData() throws FileNotFoundException, IOException, ParseException, ReportGenerationException {
 		int numberTotalVisits = 0;
 		int numberDistinctHouseholds = 0;
 		int numberDistinctAdults = 0;
 		int numberDistintKids = 0;
 		int numberDistintSeniors = 0;
 
-		ArrayList<Visit> distinctHouseholdVisits = new ArrayList<Visit>();
+		List<Visit> distinctHouseholdVisits = new ArrayList<Visit>();
 		boolean bFound = false;
 		Calendar mydate = new GregorianCalendar();
 
-		VisitsDao visitsDao = new VisitsDao();
-		List<Visit> visits = visitsDao.read();
+		List<Visit> visits = ApplicationContext.getVisitsDao().getAll();
 
 		for (Visit visit : visits) {
-			Date thedate = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH).parse(visit.getVisitDate());
+			Date thedate = dateFormat.parse(visit.getVisitDate());
 			mydate.setTime(thedate);
 
 			if ((mydate.get(Calendar.MONTH) == monthSelected) && visit.isActive()) {
@@ -243,149 +224,137 @@ public class ReportPantrySummary extends ReportBase {
 				if (!bFound) {
 					distinctHouseholdVisits.add(visit);
 				}
-
 			}
-
 		}
 
-		for (int i = 0; i < distinctHouseholdVisits.size(); i++) {
-			numberDistinctHouseholds++;
-			Visit visit = distinctHouseholdVisits.get(i);
+		numberDistinctHouseholds += distinctHouseholdVisits.size();
+		for (Visit visit : distinctHouseholdVisits) {
 			numberDistinctAdults += visit.getNumberAdults();
 			numberDistintKids += visit.getNumberKids();
 			numberDistintSeniors += visit.getNumberSeniors();
-
 		}
 
-		createRow("Total Visits", "" + numberTotalVisits, "", false);
-		createRow("&nbsp;Distinct Houses", "" + numberDistinctHouseholds, "", false);
-		createRow("&nbsp;Distinct Adults", "" + numberDistinctAdults, "", false);
-		createRow("&nbsp;Distinct Kids", "" + numberDistintKids, "", false);
-		createRow("&nbsp;Distinct Seniors", "" + numberDistintSeniors, "", false);
-
+		addTableRow("Total Visits", String.valueOf(numberTotalVisits), "");
+		addTableRow("&nbsp;Distinct Houses", String.valueOf(numberDistinctHouseholds), "");
+		addTableRow("&nbsp;Distinct Adults", String.valueOf(numberDistinctAdults), "");
+		addTableRow("&nbsp;Distinct Kids", String.valueOf(numberDistintKids), "");
+		addTableRow("&nbsp;Distinct Seniors", String.valueOf(numberDistintSeniors), "");
 	}
 
-	private void getVolunteerData() throws FileNotFoundException, IOException, ParseException {
+	private void addVolunteerData()
+			throws FileNotFoundException, IOException, ParseException, ReportGenerationException {
 		double totalHours = 0;
 		double totalStudentHours = 0;
 		double totalRegularHours = 0;
 		double totalOtherHours = 0;
 
-		VolunteersDao volunteers = new VolunteersDao();
-		volunteers.read();
-
-		VolunteerEventsDao events = new VolunteerEventsDao();
-		events.read();
+		VolunteersDao volunteersDao = ApplicationContext.getVolunteersDao();
+		VolunteerEventsDao eventsDao = ApplicationContext.getVolunteerEventsDao();
 
 		Calendar mydate = new GregorianCalendar();
 
-		ArrayList<String> distinctStudents = new ArrayList<String>();
-		ArrayList<String> distinctRegulars = new ArrayList<String>();
-		ArrayList<String> distinctOthers = new ArrayList<String>();
+		List<String> distinctStudents = new ArrayList<String>();
+		List<String> distinctRegulars = new ArrayList<String>();
+		List<String> distinctOthers = new ArrayList<String>();
 		boolean bfound = false;
 
-		for (VolunteerEvent event : events.getAll()) {
-			Date thedate = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH).parse(event.getEventDate());
+		for (VolunteerEvent event : eventsDao.getAll()) {
+			Date thedate = dateFormat.parse(event.getEventDate());
 			mydate.setTime(thedate);
 
 			if (mydate.get(Calendar.MONTH) == monthSelected) {
 				totalHours += event.getVolunteerHours();
 				bfound = false;
 
-				String volunteerType = (volunteers.getTypeFromName(event.getVolunteerName()));
+				String volunteerType = (volunteersDao.getTypeFromName(event.getVolunteerName()));
 
 				if (volunteerType.equalsIgnoreCase("Regular")) {
 					totalRegularHours += event.getVolunteerHours();
 
-					for (int j = 0; j < distinctRegulars.size(); j++) {
-						if (distinctRegulars.get(j).equalsIgnoreCase(event.getVolunteerName())) {
+					for (String regular : distinctRegulars) {
+						if (regular.equalsIgnoreCase(event.getVolunteerName())) {
 							bfound = true;
 							break;
 						}
 					}
 
-					if (!bfound)
+					if (!bfound) {
 						distinctRegulars.add(event.getVolunteerName());
+					}
 
 				} else if (volunteerType.equalsIgnoreCase("Student")) {
 					totalStudentHours += event.getVolunteerHours();
 
-					for (int j = 0; j < distinctStudents.size(); j++) {
-						if (distinctStudents.get(j).equalsIgnoreCase(event.getVolunteerName())) {
+					for (String student : distinctStudents) {
+						if (student.equalsIgnoreCase(event.getVolunteerName())) {
 							bfound = true;
 							break;
 						}
 					}
 
-					if (!bfound)
+					if (!bfound) {
 						distinctStudents.add(event.getVolunteerName());
-
+					}
 				} else {
 					totalOtherHours += event.getVolunteerHours();
 
-					for (int j = 0; j < distinctOthers.size(); j++) {
-						if (distinctOthers.get(j).equalsIgnoreCase(event.getVolunteerName())) {
+					for (String other : distinctOthers) {
+						if (other.equalsIgnoreCase(event.getVolunteerName())) {
 							bfound = true;
 							break;
 						}
 					}
 
-					if (!bfound)
+					if (!bfound) {
 						distinctOthers.add(event.getVolunteerName());
-
+					}
 				}
 			}
 		}
 
-		createRow("Total Hours", "" + nf.format(totalHours),
-				"Count:" + (distinctStudents.size() + distinctRegulars.size() + distinctOthers.size()), false);
-		createRow("&nbsp;Student Hours", "" + nf.format(totalStudentHours), "Count:" + distinctStudents.size(), false);
-		createRow("&nbsp;Regular Hours", "" + nf.format(totalRegularHours), "Count:" + distinctRegulars.size(), false);
-		createRow("&nbsp;Other Hours", "" + nf.format(totalOtherHours), "Count:" + distinctOthers.size(), false);
-
+		addTableRow("Total Hours", nf.format(totalHours),
+				"Count:" + (distinctStudents.size() + distinctRegulars.size() + distinctOthers.size()));
+		addTableRow("&nbsp;Student Hours", nf.format(totalStudentHours), "Count:" + distinctStudents.size());
+		addTableRow("&nbsp;Regular Hours", nf.format(totalRegularHours), "Count:" + distinctRegulars.size());
+		addTableRow("&nbsp;Other Hours", nf.format(totalOtherHours), "Count:" + distinctOthers.size());
 	}
 
-	private void getDonationData() throws FileNotFoundException, IOException, ParseException {
-		FoodsDao records = new FoodsDao();
-		records.read();
-
+	private void addDonationData()
+			throws FileNotFoundException, IOException, ParseException, ReportGenerationException {
+		FoodsDao foodsDao = ApplicationContext.getFoodsDao();
 		Food totals = new Food();
-
 		Calendar mydate = new GregorianCalendar();
 
-		for (Food record : records.getAll()) {
-			Date thedate = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH).parse(record.getEntryDate());
+		for (Food record : foodsDao.getAll()) {
+			Date thedate = dateFormat.parse(record.getEntryDate());
 			mydate.setTime(thedate);
 
 			if (mydate.get(Calendar.MONTH) == monthSelected) {
 				totals.addToCurrent(record);
 			}
-
 		}
 
-		createRow("Total Donations", "" + nf.format(totals.getTotal()), "", false);
-		createRow("&nbsp;Community", "" + nf.format(totals.getCommunity()), "", false);
-		createRow("&nbsp;Pick N Save", "" + nf.format(totals.getPickNSave()), "", false);
-		createRow("&nbsp;Tefap", "" + nf.format(totals.getTefap()), "", false);
-		createRow("&nbsp;Second Harvest", "" + nf.format(totals.getSecondHarvest()), "", false);
-		createRow("&nbsp;Second Harvest Produce", "" + nf.format(totals.getSecondHarvestProduce()), "", false);
-		createRow("&nbsp;Milk", "" + nf.format(totals.getMilk()), "", false);
-		createRow("&nbsp;Non-Tefap", "" + nf.format(totals.getNonTefap()), "", false);
-		createRow("&nbsp;Non-Food", "" + nf.format(totals.getNonFood()), "", false);
-		createRow("&nbsp;Pantry Non-Food", "" + nf.format(totals.getOther()), "", false);
-		createRow("&nbsp;Pantry Produce", "" + nf.format(totals.getOther2()), "", false);
-		createRow("&nbsp;Produce", "" + nf.format(totals.getProduce()), "", false);
-		createRow("&nbsp;Pantry Purchases", "" + nf.format(totals.getPantry()), "", false);
-
+		addTableRow("Total Donations", nf.format(totals.getTotal()), "");
+		addTableRow("&nbsp;Community", "" + nf.format(totals.getCommunity()), "");
+		addTableRow("&nbsp;Pick N Save", "" + nf.format(totals.getPickNSave()), "");
+		addTableRow("&nbsp;Tefap", "" + nf.format(totals.getTefap()), "");
+		addTableRow("&nbsp;Second Harvest", "" + nf.format(totals.getSecondHarvest()), "");
+		addTableRow("&nbsp;Second Harvest Produce", "" + nf.format(totals.getSecondHarvestProduce()), "");
+		addTableRow("&nbsp;Milk", "" + nf.format(totals.getMilk()), "");
+		addTableRow("&nbsp;Non-Tefap", "" + nf.format(totals.getNonTefap()), "");
+		addTableRow("&nbsp;Non-Food", "" + nf.format(totals.getNonFood()), "");
+		addTableRow("&nbsp;Pantry Non-Food", "" + nf.format(totals.getOther()), "");
+		addTableRow("&nbsp;Pantry Produce", "" + nf.format(totals.getOther2()), "");
+		addTableRow("&nbsp;Produce", "" + nf.format(totals.getProduce()), "");
+		addTableRow("&nbsp;Pantry Purchases", "" + nf.format(totals.getPantry()), "");
 	}
 
-	private void loadReport() {
+	private void loadReport() throws ReportGenerationException {
 		try {
-			getCustomerData();
-			getVisitsData();
-			getDonationData();
-			getVolunteerData();
-
+			addCustomerData();
+			addVisitsData();
+			addDonationData();
+			addVolunteerData();
 		} catch (FileNotFoundException ex) {
 			Logger.getLogger(ReportPantrySummary.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (IOException ex) {
@@ -393,7 +362,14 @@ public class ReportPantrySummary extends ReportBase {
 		} catch (ParseException ex) {
 			Logger.getLogger(ReportPantrySummary.class.getName()).log(Level.SEVERE, null, ex);
 		}
+	}
 
+	private void addTableRow(String firstCol, String secondCol, String thirdCol) throws ReportGenerationException {
+		report.beginTableRow();
+		report.addTableCell(firstCol);
+		report.addTableCell(secondCol);
+		report.addTableCell(thirdCol);
+		report.endTableRow();
 	}
 
 } // end of class
