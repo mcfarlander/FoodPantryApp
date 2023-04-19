@@ -1,7 +1,6 @@
 package org.pantry.food.controller;
 
 import java.awt.GraphicsEnvironment;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,18 +24,18 @@ import javax.print.event.PrintJobListener;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.pantry.food.Fxmls;
+import org.pantry.food.reports.AbstractReportStrategy;
+import org.pantry.food.reports.GenericReportController;
 import org.pantry.food.reports.IReportBase;
 import org.pantry.food.reports.ReportDonatedFoodWeight;
-import org.pantry.food.reports.ReportPantrySummary;
-import org.pantry.food.reports.ReportVolunteerEvents;
-import org.pantry.food.reports.ReportVolunteerHours;
-import org.pantry.food.ui.dialog.ModalDialog;
-import org.pantry.food.ui.dialog.ReportViewerDialogInput;
 import org.pantry.food.util.DateUtil;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -44,7 +43,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
-import net.sf.nervalreports.core.ReportGenerationException;
+import javafx.scene.layout.Pane;
 
 public class ReportsController {
 
@@ -62,27 +61,31 @@ public class ReportsController {
 	@FXML
 	private Button openBtn;
 
-	@FXML
-	private Button pdfBtn;
+//	@FXML
+//	private Button pdfBtn;
 
 	@FXML
 	private Label outputLabel;
+
+	@FXML
+	private Pane root;
 
 	@FXML
 	private void initialize() {
 		openBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				// Open ReportViewer dialog for the PDF we just saved
+				// Open report viewer
+				AbstractReportStrategy strategy = runSelectedReport();
+
+				FXMLLoader loader = Fxmls.getLoader("reports/ReportContainer.fxml");
 				try {
-					String path = runSelectedReport();
-					ReportViewerDialogInput input = new ReportViewerDialogInput();
-					input.setPdfFile(new File(path));
-					// Display report viewer as a dialog
-					new ModalDialog<ReportViewerDialogInput, Void>().show("ReportViewer.fxml", input);
+					Node rootNode = loader.load();
+					GenericReportController controller = (GenericReportController) loader.getController();
+					controller.setStrategy(strategy);
+					root.getChildren().clear();
+					root.getChildren().add(rootNode);
 				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (ReportGenerationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -92,7 +95,7 @@ public class ReportsController {
 			@Override
 			public void handle(ActionEvent event) {
 				try {
-					String path = runSelectedReport();
+					String path = ""; // runSelectedReport();
 					// Printy printy
 					PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 					DocFlavor flavor = DocFlavor.INPUT_STREAM.PDF;
@@ -144,35 +147,27 @@ public class ReportsController {
 				} catch (PrintException | FileNotFoundException e) {
 					e.printStackTrace();
 					new Alert(AlertType.NONE, "Could not print! Check printer is on.").show();
-				} catch (ReportGenerationException e) {
-					e.printStackTrace();
 				}
 			}
 		});
 
-		pdfBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				String path = null;
-				try {
-					path = runSelectedReport();
-				} catch (ReportGenerationException e) {
-					e.printStackTrace();
-				}
-				outputLabel.setText("Saved to " + path);
-			}
-		});
+//		pdfBtn.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent event) {
+//				String path = null;
+//					path = runSelectedReport();
+//				outputLabel.setText("Saved to " + path);
+//			}
+//		});
 
 		monthCbo.getItems().addAll("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Dec");
 		monthCbo.getSelectionModel().select(DateUtil.getCurrentMonth() - 1);
 	}
 
-	private String runSelectedReport() throws ReportGenerationException {
+	private AbstractReportStrategy runSelectedReport() {
 		RadioButton radio = ((RadioButton) radios.getSelectedToggle());
 		log.info("Running report {}", radio.getId());
-		IReportBase report = getSelectedReport(radio);
-		report.createReport();
-		return savePdf(report);
+		return getSelectedReport(radio);
 	}
 
 	private String savePdf(IReportBase report) {
@@ -190,27 +185,27 @@ public class ReportsController {
 		return null;
 	}
 
-	private IReportBase getSelectedReport(RadioButton radio) {
-		IReportBase report = null;
+	private AbstractReportStrategy getSelectedReport(RadioButton radio) {
+		AbstractReportStrategy reportStrategy = null;
 		switch (radio.getId()) {
 		case "monthly.summary":
 			break;
 		case "food.weight":
-			report = new ReportDonatedFoodWeight();
+			reportStrategy = new ReportDonatedFoodWeight();
 			break;
-		case "volunteer.hours":
-			report = new ReportVolunteerHours();
-			break;
-		case "volunteer.events":
-			report = new ReportVolunteerEvents();
-			break;
-		case "pantry.report":
-			ReportPantrySummary specificReport = new ReportPantrySummary();
-			specificReport.setMonthSelected(monthCbo.getSelectionModel().getSelectedIndex());
-			report = specificReport;
-			break;
+//		case "volunteer.hours":
+//			reportStrategy = new ReportVolunteerHours();
+//			break;
+//		case "volunteer.events":
+//			reportStrategy = new ReportVolunteerEvents();
+//			break;
+//		case "pantry.report":
+//			ReportPantrySummary specificReport = new ReportPantrySummary();
+//			specificReport.setMonthSelected(monthCbo.getSelectionModel().getSelectedIndex());
+//			reportStrategy = specificReport;
+//			break;
 		}
-		return report;
+		return reportStrategy;
 	}
 
 	private void delete(String path) {

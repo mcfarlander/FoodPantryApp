@@ -19,8 +19,10 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,52 +30,52 @@ import org.pantry.food.ApplicationContext;
 import org.pantry.food.dao.FoodsDao;
 import org.pantry.food.model.Food;
 
-import net.sf.nervalreports.core.ReportGenerationException;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
 
 /**
  * Creates a report based on the donations of food and other misc items.
  * 
  * @author mcfarland_davej
  */
-public class ReportDonatedFoodWeight extends ReportBase {
+public class ReportDonatedFoodWeight extends AbstractReportStrategy {
 
 	private DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-	NumberFormat nf = NumberFormat.getInstance();
+	private NumberFormat nf = NumberFormat.getInstance();
 
 	private String[] cols = new String[] { "Month", "Total Weight (lbs)", "Pick N Save", "Community", "Non-TEFAP",
 			"TEFAP", "2nd Harvest", "2nd Harvest Produce", "Pantry Purchase", "Pantry Non-Food", "NonFood", "Milk",
 			"Bread", "Produce", "Comments" };
 
 	public ReportDonatedFoodWeight() {
-		setReportName("Donated_Food_Weight");
-		setReportTitle("Donated Food Weight Record");
-		setReportDescription(dateFormat.format(Calendar.getInstance().getTime()));
-
 		nf.setMaximumFractionDigits(1);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.pantry.food.reports.ReportBase#buildReport()
-	 */
-	@Override
-	public void buildReport() throws ReportGenerationException {
-		// create a header row
-		report.beginTable(cols.length);
-		report.beginTableHeaderRow();
-		for (int x = 0; x < cols.length; x++) {
-			report.addTableHeaderCell(cols[x]);
-		}
-		report.endTableHeaderRow();
-
-		// create rest of the data rows
-		loadReport();
-
-		report.endTable();
+	private ReportRow createTableRow(String firstCol, Food record) {
+		ReportRow row = new ReportRow().addColumn(firstCol).addColumn(nf.format(record.getTotal()))
+				.addColumn(nf.format(record.getPickNSave())).addColumn(nf.format(record.getCommunity()))
+				.addColumn(nf.format(record.getNonTefap())).addColumn(nf.format(record.getTefap()))
+				.addColumn(nf.format(record.getSecondHarvest())).addColumn(nf.format(record.getSecondHarvestProduce()))
+				.addColumn(nf.format(record.getPantry())).addColumn(nf.format(record.getOther()))
+				.addColumn(nf.format(record.getNonFood())).addColumn(nf.format(record.getMilk()))
+				.addColumn(nf.format(record.getOther2())).addColumn(nf.format(record.getProduce()))
+				.addColumn(record.getComment());
+		return row;
 	}
 
-	private void loadReport() throws ReportGenerationException {
+	@Override
+	public String getTitle() {
+		return "Donated Food Weight Record";
+	}
+
+	@Override
+	public ObservableList<TableColumn<ReportRow, String>> getColumns() {
+		return toTableColumns(cols);
+	}
+
+	@Override
+	public List<ReportRow> getRows() {
+		List<ReportRow> rows = new ArrayList<ReportRow>();
 		try {
 			FoodsDao foodsDao = ApplicationContext.getFoodsDao();
 
@@ -161,55 +163,31 @@ public class ReportDonatedFoodWeight extends ReportBase {
 
 			}
 
-			addTableRow("January", janRecord);
-			addTableRow("Febuary", febRecord);
-			addTableRow("March", marRecord);
-			addTableRow("QUARTER 1", q1Record);
+			rows.add(createTableRow("January", janRecord));
+			rows.add(createTableRow("Febuary", febRecord));
+			rows.add(createTableRow("March", marRecord));
+			rows.add(createTableRow("QUARTER 1", q1Record).setSummary(true));
 
-			addTableRow("April", aprRecord);
-			addTableRow("May", mayRecord);
-			addTableRow("June", junRecord);
-			addTableRow("QUARTER 2", q2Record);
+			rows.add(createTableRow("April", aprRecord));
+			rows.add(createTableRow("May", mayRecord));
+			rows.add(createTableRow("June", junRecord));
+			rows.add(createTableRow("QUARTER 2", q2Record).setSummary(true));
 
-			addTableRow("July", julRecord);
-			addTableRow("August", augRecord);
-			addTableRow("Sept", sepRecord);
-			addTableRow("QUARTER 3", q3Record);
+			rows.add(createTableRow("July", julRecord));
+			rows.add(createTableRow("August", augRecord));
+			rows.add(createTableRow("Sept", sepRecord));
+			rows.add(createTableRow("QUARTER 3", q3Record).setSummary(true));
 
-			addTableRow("October", octRecord);
-			addTableRow("November", novRecord);
-			addTableRow("December", decRecord);
-			addTableRow("QUARTER 4", q4Record);
+			rows.add(createTableRow("October", octRecord));
+			rows.add(createTableRow("November", novRecord));
+			rows.add(createTableRow("December", decRecord));
+			rows.add(createTableRow("QUARTER 4", q4Record).setSummary(true));
 
-			addTableRow("YEAR", yrRecord);
+//			rows.add(createTableRow("YEAR", yrRecord).setSummary(true));
 		} catch (ParseException ex) {
 			Logger.getLogger(ReportDonatedFoodWeight.class.getName()).log(Level.SEVERE, null, ex);
 		}
-
-		report.endTable();
+		return rows;
 	}
 
-	private void addTableRow(String firstCol, Food record) throws ReportGenerationException {
-		report.beginTableRow();
-		report.addTableCell(firstCol);
-		report.addTableCell(nf.format(record.getTotal()));
-		report.addTableCell(nf.format(record.getPickNSave()));
-		report.addTableCell(nf.format(record.getCommunity()));
-		report.addTableCell(nf.format(record.getNonTefap()));
-		report.addTableCell(nf.format(record.getTefap()));
-		report.addTableCell(nf.format(record.getSecondHarvest()));
-		report.addTableCell(nf.format(record.getSecondHarvestProduce()));
-		report.addTableCell(nf.format(record.getPantry()));
-		report.addTableCell(nf.format(record.getOther()));
-		report.addTableCell(nf.format(record.getNonFood()));
-		report.addTableCell(nf.format(record.getMilk()));
-		report.addTableCell(nf.format(record.getOther2()));
-		report.addTableCell(nf.format(record.getProduce()));
-		report.addTableCell(nf.format(record.getComment()));
-		report.endTableRow();
-	}
-
-	@Override
-	public void createFooter() {
-	}
 }

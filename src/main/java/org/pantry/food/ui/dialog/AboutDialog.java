@@ -15,7 +15,9 @@
 */
 package org.pantry.food.ui.dialog;
 
+import org.pantry.food.ApplicationContext;
 import org.pantry.food.Images;
+import org.pantry.food.Resources;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -32,10 +34,9 @@ public class AboutDialog implements IModalDialogController<Void, Void> {
 
 	@FXML
 	private void initialize() {
-		org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application
-				.getInstance(org.pantry.food.FoodPantryApp.class).getContext().getResourceMap(AboutDialog.class);
-		titleLabel.setText(resourceMap.getString("application.title"));
-		versionLabel.setText(resourceMap.getString("pplication.version"));
+		Resources resources = ApplicationContext.getResources();
+		titleLabel.setText(resources.getString("application.title"));
+		versionLabel.setText(resources.getString("application.version"));
 		imageLabel.setGraphic(Images.getImageView("about.png"));
 	}
 

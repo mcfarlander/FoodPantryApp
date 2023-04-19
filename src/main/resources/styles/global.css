@@ -107,3 +107,8 @@
 	-fx-font-size: 120%;
 	-fx-font-weight: bold;
 }
+
+.report-title {
+	-fx-font-size: 150%;
+	-fx-font-weight: bold;
+}

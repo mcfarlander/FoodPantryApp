@@ -34,9 +34,6 @@ public class ReportViewerDialogController implements IModalDialogController<Repo
 	private Button printBtn;
 
 	@FXML
-	private Button pdfBtn;
-
-	@FXML
 	private Label contentContainer;
 
 	private ModalDialog<ReportViewerDialogInput, Void> parent;
@@ -54,13 +51,6 @@ public class ReportViewerDialogController implements IModalDialogController<Repo
 //					e.printStackTrace();
 //					new Alert(AlertType.NONE, "Could not print! Check printer is on.").show();
 //				}
-			}
-		});
-
-		pdfBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				new Alert(AlertType.NONE, "Report saved at " + pdfFile.getAbsolutePath()).show();
 			}
 		});
 	}
