@@ -28,14 +28,11 @@ public class AboutDialog implements IModalDialogController<Void, Void> {
 	@FXML
 	private Label imageLabel;
 	@FXML
-	private Label titleLabel;
-	@FXML
 	private Label versionLabel;
 
 	@FXML
 	private void initialize() {
 		Resources resources = ApplicationContext.getResources();
-		titleLabel.setText(resources.getString("application.title"));
 		versionLabel.setText(resources.getString("application.version"));
 		imageLabel.setGraphic(Images.getImageView("about.png"));
 	}
@@ -46,7 +43,7 @@ public class AboutDialog implements IModalDialogController<Void, Void> {
 
 	@Override
 	public String getTitle() {
-		return "About";
+		return "About " + ApplicationContext.getResources().getString("application.title");
 	}
 
 	@Override

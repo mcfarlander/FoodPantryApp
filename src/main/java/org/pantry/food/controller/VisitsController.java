@@ -135,7 +135,7 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 
 	@Override
 	protected String getEntityTypeName() {
-		return "visitor";
+		return "visit";
 	}
 
 	@Override

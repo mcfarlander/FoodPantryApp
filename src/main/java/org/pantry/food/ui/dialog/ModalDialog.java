@@ -5,10 +5,12 @@ import java.io.IOException;
 import org.pantry.food.Fxmls;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -51,6 +53,12 @@ public class ModalDialog<I, O> {
 			stage.getIcons().add(icon);
 		}
 		stage.setTitle(controller.getTitle());
+
+		Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+		if (parent.getLayoutBounds().getHeight() >= screenSize.getHeight() - 25) {
+			stage.setHeight(screenSize.getHeight() - 25);
+			stage.setX(0);
+		}
 		stage.showAndWait();
 
 		return controller.getResponse();

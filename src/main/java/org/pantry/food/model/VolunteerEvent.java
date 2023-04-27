@@ -59,6 +59,7 @@ public class VolunteerEvent {
 		setVolunteerHours(other.getVolunteerHours());
 		setNotes(other.getNotes());
 		setEventDate(other.getEventDate());
+		monthHrs = other.getMonthHrs();
 	}
 
 	public int getVolunteerEventId() {
@@ -92,7 +93,7 @@ public class VolunteerEvent {
 	public double getVolunteerHours() {
 		String value = hoursProperty.get();
 		if (null == value) {
-			return -1;
+			return 0;
 		}
 		return Double.valueOf(value);
 	}
@@ -173,7 +174,8 @@ public class VolunteerEvent {
 	}
 
 	public void addMonthHrs(VolunteerEvent record) {
-		setVolunteerHours(getVolunteerHours() + record.getVolunteerHours()); // this will be the total
+		double recordHours = record.getVolunteerHours();
+		setVolunteerHours(getVolunteerHours() + recordHours); // this will be the total
 
 		// depending on the month, add to appropriate monthHrs array index
 		try {
@@ -183,7 +185,7 @@ public class VolunteerEvent {
 
 			int index = cal.get(Calendar.MONTH);
 
-			this.monthHrs[index] += record.getVolunteerHours();
+			monthHrs[index] += recordHours;
 			// System.out.println("index" + index + " adding:" + record.getVolunteerHours()
 			// + " recorded:" + this.monthHrs[index]);
 

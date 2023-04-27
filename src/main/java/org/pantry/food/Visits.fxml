@@ -14,24 +14,24 @@
    <children>
       <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label styleClass="content-header" text="Visitors">
+            <Label styleClass="content-header" text="Visits">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </Label>
             <HBox>
                <children>
-                  <Button id="addVisitBtn" fx:id="addBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Add Visitor">
+                  <Button id="addVisitBtn" fx:id="addBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Add Visit">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button id="editVisitBtn" fx:id="editBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Edit Visitor">
+                  <Button id="editVisitBtn" fx:id="editBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Edit Visit">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button id="deleteVisitBtn" fx:id="deleteBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Deactivate Visitor">
+                  <Button id="deleteVisitBtn" fx:id="deleteBtn" focusTraversable="false" mnemonicParsing="false" styleClass="record-action" text="Deactivate Visit">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin>

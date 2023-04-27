@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -36,35 +37,10 @@ import org.pantry.food.ui.common.DataFiles;
 public class Backup {
 	private final static Logger log = LogManager.getLogger(Backup.class.getName());
 
-	private boolean backupCustomers = true;
-	private boolean backupVisits = true;
-	private boolean backupDonations = true;
-	private boolean backupLegacyVolunteers = true;
-	private boolean backupVolunteers = true;
-	private boolean backupVolunteerEvents = true;
+	private List<BackupKey> backupKeys;
 
-	public void setBackupCustomers(boolean bbackup) {
-		backupCustomers = bbackup;
-	}
-
-	public void setBackupVisits(boolean bbackup) {
-		backupVisits = bbackup;
-	}
-
-	public void setBackupDonations(boolean bbackup) {
-		backupDonations = bbackup;
-	}
-
-	public void setBackupLegacyVolunteers(boolean bbackup) {
-		backupLegacyVolunteers = bbackup;
-	}
-
-	public void setBackupVolunteers(boolean bbackup) {
-		backupVolunteers = bbackup;
-	}
-
-	public void setBackupVolunteerEvents(boolean bbackup) {
-		backupVolunteerEvents = bbackup;
+	public Backup(List<BackupKey> backupKeys) {
+		this.backupKeys = backupKeys;
 	}
 
 	/**
@@ -82,7 +58,6 @@ public class Backup {
 		}
 
 		return startDir;
-
 	}
 
 	/**
@@ -97,7 +72,6 @@ public class Backup {
 		String archiveFile = startDir + "/" + "PantryBackup_" + Integer.toString(cal.get(Calendar.MONTH)) + ".zip";
 
 		archiveFiles(startDirPrime, archiveFile, false);
-
 	}
 
 	/**
@@ -113,155 +87,38 @@ public class Backup {
 				+ Integer.toString(cal.get(Calendar.MONTH)) + Integer.toString(cal.get(Calendar.DAY_OF_MONTH)) + ".zip";
 
 		return archiveFiles(startDir, archiveFile, true);
-
 	}
 
 	/**
-	 * Archives a specific file.
+	 * Archives to a specific file
 	 * 
-	 * @param startDir
-	 * @param archiveFilePath
-	 * @param deleteOld
+	 * @param startDir        directory in which the zip file should be created
+	 * @param archiveFilePath path to the new zip file
+	 * @param deleteOld       delete CSV files after archiving
 	 * @return
 	 * @throws IOException
 	 */
 	public String archiveFiles(String startDir, String archiveFilePath, boolean deleteOld) throws IOException {
-		String customersFile = startDir + "/" + DataFiles.getInstance().getCsvFileCustomers();
-		String visitsFile = startDir + "/" + DataFiles.getInstance().getCsvFileVisits();
-		String foodRecordFile = startDir + "/" + DataFiles.getInstance().getCsvFileFoodRecord();
-		String volunteerHoursFile = startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerHours();
-		String volunteersFile = startDir + "/" + DataFiles.getInstance().getCsvFileVolunteers();
-		String volunteerEventsFile = startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerEvents();
+		log.info("creating archive {}", archiveFilePath);
 
-		byte[] buf = new byte[1024];
+		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(archiveFilePath));
 
-		log.info("creating archive:" + archiveFilePath);
-
-		FileOutputStream fos = new FileOutputStream(archiveFilePath);
-		ZipOutputStream zos = new ZipOutputStream(fos);
-
-		File file1 = new File(customersFile);
-		if (backupCustomers && file1.exists()) {
-			log.info("Adding customer file to archive:" + file1.getName());
-			FileInputStream in = new FileInputStream(file1);
-			ZipEntry ze = new ZipEntry(file1.getName());
-			zos.putNextEntry(ze);
-
-			// Transfer bytes from the file to the ZIP file
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				zos.write(buf, 0, len);
-			}
-
-			zos.closeEntry();
-			in.close();
-			if (deleteOld) {
-				file1.delete(); // delete the curren file
-			}
-		}
-
-		File file2 = new File(visitsFile);
-		if (backupVisits && file2.exists()) {
-			log.info("Adding visits file to archive:" + file2.getName());
-			FileInputStream in = new FileInputStream(file2);
-			ZipEntry ze = new ZipEntry(file2.getName());
-			zos.putNextEntry(ze);
-
-			// Transfer bytes from the file to the ZIP file
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				zos.write(buf, 0, len);
-			}
-
-			zos.closeEntry();
-			in.close();
-
-			if (deleteOld) {
-				file2.delete(); // delete the current file
-			}
-		}
-
-		File file3 = new File(foodRecordFile);
-		if (backupDonations && file3.exists()) {
-			log.info("Adding food record file to archive:" + file3.getName());
-			FileInputStream in = new FileInputStream(file3);
-			ZipEntry ze = new ZipEntry(file3.getName());
-			zos.putNextEntry(ze);
-
-			// Transfer bytes from the file to the ZIP file
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				zos.write(buf, 0, len);
-			}
-
-			zos.closeEntry();
-			in.close();
-
-			if (deleteOld) {
-				file3.delete(); // delete the current file
-			}
-		}
-
-		File file4 = new File(volunteerHoursFile);
-		if (backupLegacyVolunteers && file4.exists()) {
-			log.info("Adding volunteer hours file to archive:" + file4.getName());
-			FileInputStream in = new FileInputStream(file4);
-			ZipEntry ze = new ZipEntry(file4.getName());
-			zos.putNextEntry(ze);
-
-			// Transfer bytes from the file to the ZIP file
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				zos.write(buf, 0, len);
-			}
-
-			zos.closeEntry();
-			in.close();
-
-			if (deleteOld) {
-				file4.delete(); // delete the current file
-			}
-		}
-
-		File file5 = new File(volunteersFile);
-		if (backupVolunteers && file5.exists()) {
-			log.info("Adding volunteers file to archive:" + file5.getName());
-			FileInputStream in = new FileInputStream(file5);
-			ZipEntry ze = new ZipEntry(file5.getName());
-			zos.putNextEntry(ze);
-
-			// Transfer bytes from the file to the ZIP file
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				zos.write(buf, 0, len);
-			}
-
-			zos.closeEntry();
-			in.close();
-
-			if (deleteOld) {
-				file5.delete(); // delete the current file
-			}
-		}
-
-		File file6 = new File(volunteerEventsFile);
-		if (backupVolunteerEvents && file6.exists()) {
-			log.info("Adding volunteer events file to archive:" + file6.getName());
-			FileInputStream in = new FileInputStream(file6);
-			ZipEntry ze = new ZipEntry(file6.getName());
-			zos.putNextEntry(ze);
-
-			// Transfer bytes from the file to the ZIP file
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				zos.write(buf, 0, len);
-			}
-
-			zos.closeEntry();
-			in.close();
-
-			if (deleteOld) {
-				file6.delete(); // delete the current file
+		for (BackupKey key : backupKeys) {
+			if (BackupKey.CUSTOMERS.equals(key)) {
+				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileCustomers()), zos, deleteOld);
+			} else if (BackupKey.DONATIONS.equals(key)) {
+				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileFoodRecord()), zos, deleteOld);
+			} else if (BackupKey.LEGACY_VOLUNTEERS.equals(key)) {
+				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerHours()), zos,
+						deleteOld);
+			} else if (BackupKey.VISITS.equals(key)) {
+				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileFoodRecord()), zos, deleteOld);
+			} else if (BackupKey.VOLUNTEER_EVENTS.equals(key)) {
+				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerEvents()), zos,
+						deleteOld);
+			} else if (BackupKey.VOLUNTEERS.equals(key)) {
+				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerEvents()), zos,
+						deleteOld);
 			}
 		}
 
@@ -269,11 +126,40 @@ public class Backup {
 			zos.close();
 		} catch (java.util.zip.ZipException zi) {
 			// do nothing here
-			log.info("Error creating archive:" + zi.getMessage());
+			log.info("Error creating archive", zi);
 		}
 
 		return startDir + "/" + archiveFilePath;
+	}
 
+	/**
+	 * Archives a file
+	 * 
+	 * @param file                file to archive
+	 * @param archiveOutputStream output stream of existing zip file
+	 * @param deleteOld           delete files after archiving them
+	 * @throws IOException
+	 */
+	protected void archiveFile(File file, ZipOutputStream archiveOutputStream, boolean deleteOld) throws IOException {
+		if (file.exists()) {
+			log.info("Adding {} file to archive", file.getName());
+			FileInputStream in = new FileInputStream(file);
+			ZipEntry ze = new ZipEntry(file.getName());
+			archiveOutputStream.putNextEntry(ze);
+
+			// Transfer bytes from the file to the ZIP file
+			byte[] buf = new byte[1024];
+			int len;
+			while ((len = in.read(buf)) > 0) {
+				archiveOutputStream.write(buf, 0, len);
+			}
+
+			archiveOutputStream.closeEntry();
+			in.close();
+			if (deleteOld) {
+				file.delete();
+			}
+		}
 	}
 
 } // end of class

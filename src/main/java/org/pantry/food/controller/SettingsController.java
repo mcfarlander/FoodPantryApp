@@ -16,6 +16,7 @@
 package org.pantry.food.controller;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +33,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
@@ -74,9 +76,30 @@ public class SettingsController implements IModalDialogController<Void, Void> {
 
 			@Override
 			public void handle(ActionEvent event) {
+				Alert alert = new Alert(AlertType.CONFIRMATION,
+						"Are you sure you want to archive the files? You will be prompted for files to archive.",
+						ButtonType.YES, ButtonType.NO);
+				Optional<ButtonType> result = alert.showAndWait();
+				if (ButtonType.NO.equals(result.get())) {
+					return;
+				}
+
+//				try {
+//					log.info("Starting archiving");
+//					// Launch SelectBackupOptionsDialog here
+//
+//					String archiveFile = "";
+//					log.info("Archive to file {} complete", archiveFile);
+//
+//					new Alert(AlertType.INFORMATION, "Archive created OK. File can be found at:" + archiveFile).show();
+//				} catch (IOException ex) {
+//					log.error("Could not archive!", ex);
+//					new Alert(AlertType.INFORMATION, "Unable to archive files. See log files for details.").show();
+//				}
 			}
 
 		});
+
 	}
 
 	@Override

@@ -135,7 +135,7 @@ public class ReportViewerController extends AbstractController<Visit, AddEditVis
 
 	@Override
 	protected String getEntityTypeName() {
-		return "visitor";
+		return "visit";
 	}
 
 	@Override

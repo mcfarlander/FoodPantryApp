@@ -102,6 +102,10 @@
  	-fx-graphic: url(../icons/user_delete.png);
 }
 
+#openReportBtn {
+ 	-fx-graphic: url(../icons/report_go.png);
+}
+
 /* Heading labels in the Settings dialog */
 .settings-heading {
 	-fx-font-size: 120%;
@@ -111,4 +115,10 @@
 .report-title {
 	-fx-font-size: 150%;
 	-fx-font-weight: bold;
+}
+
+.report-table .column-header-background .filler, 
+.report-table .column-resize-line,
+.report-table .table-column .label {
+	-fx-background-color: #E5E5E5;
 }

@@ -2,6 +2,7 @@ package org.pantry.food.reports;
 
 import java.util.List;
 
+import org.pantry.food.Images;
 import org.pantry.food.util.DateUtil;
 
 import javafx.collections.FXCollections;
@@ -10,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 
 /**
  * Common template functionality for generic data reports
@@ -34,24 +36,16 @@ public abstract class AbstractReportStrategy {
 		return DateUtil.getCurrentDateStringFourDigitYear();
 	}
 
-	protected ObservableList<TableColumn<ReportRow, String>> toTableColumns(String... titles) {
-		ObservableList<TableColumn<ReportRow, String>> cols = FXCollections.observableArrayList();
-		int index = 0;
-		for (String title : titles) {
-			TableColumn<ReportRow, String> col = new TableColumn<>(title);
-			col.setCellValueFactory(new PropertyValueFactory(String.valueOf(index)));
-			cols.add(col);
-			index++;
-		}
-		return cols;
-	}
-
 	/**
 	 * Provides an opportunity for subclasses to customize additional tables or
 	 * report elements
 	 */
 	public void init() {
 
+	}
+
+	public Image getIcon() {
+		return Images.getIcon("table.png");
 	}
 
 	/**
@@ -72,5 +66,17 @@ public abstract class AbstractReportStrategy {
 	 * @return all data table rows to be added to the primary table
 	 */
 	public abstract List<ReportRow> getRows();
+
+	protected ObservableList<TableColumn<ReportRow, String>> toTableColumns(String... titles) {
+		ObservableList<TableColumn<ReportRow, String>> cols = FXCollections.observableArrayList();
+		int index = 0;
+		for (String title : titles) {
+			TableColumn<ReportRow, String> col = new TableColumn<>(title);
+			col.setCellValueFactory(new PropertyValueFactory(String.valueOf(index)));
+			cols.add(col);
+			index++;
+		}
+		return cols;
+	}
 
 }

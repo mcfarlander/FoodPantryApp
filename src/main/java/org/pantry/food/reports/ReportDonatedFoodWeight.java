@@ -51,18 +51,6 @@ public class ReportDonatedFoodWeight extends AbstractReportStrategy {
 		nf.setMaximumFractionDigits(1);
 	}
 
-	private ReportRow createTableRow(String firstCol, Food record) {
-		ReportRow row = new ReportRow().addColumn(firstCol).addColumn(nf.format(record.getTotal()))
-				.addColumn(nf.format(record.getPickNSave())).addColumn(nf.format(record.getCommunity()))
-				.addColumn(nf.format(record.getNonTefap())).addColumn(nf.format(record.getTefap()))
-				.addColumn(nf.format(record.getSecondHarvest())).addColumn(nf.format(record.getSecondHarvestProduce()))
-				.addColumn(nf.format(record.getPantry())).addColumn(nf.format(record.getOther()))
-				.addColumn(nf.format(record.getNonFood())).addColumn(nf.format(record.getMilk()))
-				.addColumn(nf.format(record.getOther2())).addColumn(nf.format(record.getProduce()))
-				.addColumn(record.getComment());
-		return row;
-	}
-
 	@Override
 	public String getTitle() {
 		return "Donated Food Weight Record";
@@ -183,11 +171,23 @@ public class ReportDonatedFoodWeight extends AbstractReportStrategy {
 			rows.add(createTableRow("December", decRecord));
 			rows.add(createTableRow("QUARTER 4", q4Record).setSummary(true));
 
-//			rows.add(createTableRow("YEAR", yrRecord).setSummary(true));
+			rows.add(createTableRow("YEAR", yrRecord).setSummary(true));
 		} catch (ParseException ex) {
 			Logger.getLogger(ReportDonatedFoodWeight.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return rows;
+	}
+
+	private ReportRow createTableRow(String firstCol, Food record) {
+		ReportRow row = new ReportRow().addColumn(firstCol).addColumn(nf.format(record.getTotal()))
+				.addColumn(nf.format(record.getPickNSave())).addColumn(nf.format(record.getCommunity()))
+				.addColumn(nf.format(record.getNonTefap())).addColumn(nf.format(record.getTefap()))
+				.addColumn(nf.format(record.getSecondHarvest())).addColumn(nf.format(record.getSecondHarvestProduce()))
+				.addColumn(nf.format(record.getPantry())).addColumn(nf.format(record.getOther()))
+				.addColumn(nf.format(record.getNonFood())).addColumn(nf.format(record.getMilk()))
+				.addColumn(nf.format(record.getOther2())).addColumn(nf.format(record.getProduce()))
+				.addColumn(record.getComment());
+		return row;
 	}
 
 }
