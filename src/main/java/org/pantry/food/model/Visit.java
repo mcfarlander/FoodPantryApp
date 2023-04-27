@@ -25,9 +25,9 @@ import javafx.beans.property.SimpleStringProperty;
  * @author Dave Johnson
  */
 public class Visit {
-	private SimpleStringProperty visitIdProperty = new SimpleStringProperty();
+	private SimpleStringProperty idProperty = new SimpleStringProperty();
 	private SimpleStringProperty householdIdProperty = new SimpleStringProperty();
-	private SimpleIntegerProperty visitorWeekNumberProperty = new SimpleIntegerProperty();
+	private SimpleIntegerProperty weekNumberProperty = new SimpleIntegerProperty();
 	private SimpleBooleanProperty newCustomerProperty = new SimpleBooleanProperty();
 	private SimpleStringProperty numberAdultsProperty = new SimpleStringProperty();
 	private SimpleStringProperty numberKidsProperty = new SimpleStringProperty();
@@ -35,7 +35,7 @@ public class Visit {
 	private SimpleBooleanProperty workingIncomeProperty = new SimpleBooleanProperty();
 	private SimpleBooleanProperty noIncomeProperty = new SimpleBooleanProperty();
 	private SimpleBooleanProperty otherIncomeProperty = new SimpleBooleanProperty();
-	private SimpleStringProperty visitDateProperty = new SimpleStringProperty();
+	private SimpleStringProperty dateProperty = new SimpleStringProperty();
 	private SimpleBooleanProperty activeProperty = new SimpleBooleanProperty();
 
 	public Visit() {
@@ -46,9 +46,9 @@ public class Visit {
 			return;
 		}
 
-		setVisitId(other.getVisitId());
+		setId(other.getId());
 		setHouseholdId(other.getHouseholdId());
-		setVisitorWeekNumber(other.getVisitorWeekNumber());
+		setWeekNumber(other.getWeekNumber());
 		setNewCustomer(other.isNewCustomer());
 		setNumberAdults(other.getNumberAdults());
 		setNumberKids(other.getNumberKids());
@@ -56,20 +56,20 @@ public class Visit {
 		setWorkingIncome(other.isWorkingIncome());
 		setOtherIncome(other.isOtherIncome());
 		setNoIncome(other.isNoIncome());
-		setVisitDate(other.getVisitDate());
+		setDate(other.getDate());
 		setActive(other.isActive());
 	}
 
-	public int getVisitId() {
-		String value = visitIdProperty.get();
+	public int getId() {
+		String value = idProperty.get();
 		if (null == value) {
 			return -1;
 		}
 		return Integer.valueOf(value);
 	}
 
-	public void setVisitId(int id) {
-		visitIdProperty.set(String.valueOf(id));
+	public void setId(int id) {
+		idProperty.set(String.valueOf(id));
 	}
 
 	public int getHouseholdId() {
@@ -128,20 +128,20 @@ public class Visit {
 		numberSeniorsProperty.set(String.valueOf(numberSeniors));
 	}
 
-	public int getVisitorWeekNumber() {
-		return visitorWeekNumberProperty.get();
+	public int getWeekNumber() {
+		return weekNumberProperty.get();
 	}
 
-	public void setVisitorWeekNumber(int visitorWeekNumber) {
-		visitorWeekNumberProperty.set(visitorWeekNumber);
+	public void setWeekNumber(int weekNumber) {
+		weekNumberProperty.set(weekNumber);
 	}
 
-	public String getVisitDate() {
-		return visitDateProperty.get();
+	public String getDate() {
+		return dateProperty.get();
 	}
 
-	public void setVisitDate(String visitDate) {
-		visitDateProperty.set(visitDate);
+	public void setDate(String visitDate) {
+		dateProperty.set(visitDate);
 	}
 
 	public boolean isWorkingIncome() {
@@ -176,16 +176,16 @@ public class Visit {
 		activeProperty.set(active);
 	}
 
-	public SimpleStringProperty visitIdProperty() {
-		return visitIdProperty;
+	public SimpleStringProperty idProperty() {
+		return idProperty;
 	}
 
 	public SimpleStringProperty householdIdProperty() {
 		return householdIdProperty;
 	}
 
-	public SimpleIntegerProperty visitorWeekNumberProperty() {
-		return visitorWeekNumberProperty;
+	public SimpleIntegerProperty weekNumberProperty() {
+		return weekNumberProperty;
 	}
 
 	public SimpleBooleanProperty newCustomerProperty() {
@@ -216,38 +216,12 @@ public class Visit {
 		return otherIncomeProperty;
 	}
 
-	public SimpleStringProperty visitDateProperty() {
-		return visitDateProperty;
+	public SimpleStringProperty dateProperty() {
+		return dateProperty;
 	}
 
 	public SimpleBooleanProperty activeProperty() {
 		return activeProperty;
-	}
-
-	/**
-	 * Helper for setting a line in the csv file.
-	 * 
-	 * @return
-	 */
-	public String[] getCvsEntry() {
-		String[] entry = { "" + this.getVisitId(), "" + this.getHouseholdId(), "" + this.isNewCustomer(),
-				"" + this.getNumberAdults(), "" + this.getNumberKids(), "" + this.getNumberSeniors(),
-				"" + this.isWorkingIncome(), "" + this.isOtherIncome(), "" + this.isNoIncome(),
-				"" + this.getVisitDate(), "" + this.getVisitorWeekNumber(), "" + this.isActive() };
-
-		return entry;
-	}
-
-	/**
-	 * Helper method to return an object to a jtable model.
-	 * 
-	 * @return
-	 */
-	public Object[] getVisitObject() {
-		return new Object[] { this.getVisitId(), this.getHouseholdId(), this.isNewCustomer(), this.getNumberAdults(),
-				this.getNumberKids(), this.getNumberSeniors(), this.isWorkingIncome(), this.isOtherIncome(),
-				this.isNoIncome(), this.getVisitDate(), this.getVisitorWeekNumber(), this.isActive() };
-
 	}
 
 }

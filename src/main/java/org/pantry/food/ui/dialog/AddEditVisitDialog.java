@@ -334,7 +334,7 @@ public class AddEditVisitDialog extends javax.swing.JDialog {
     DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
     
 
-    public void setVisitorList(ArrayList<String> customers){
+    public void setVisitList(ArrayList<String> customers){
 
         String nothingStr = "";
         this.cboHouseholdId.addItem(makeObj(nothingStr).toString());
@@ -361,7 +361,7 @@ public class AddEditVisitDialog extends javax.swing.JDialog {
         this.chkWorkingIncome.setSelected(this.visit.isWorkingIncome());
         this.chkOtherIncome.setSelected(this.visit.isOtherIncome());
         this.chkNoIncome.setSelected(this.visit.isNoIncome());
-        this.txtDate.setText(this.visit.getVisitDate());
+        this.txtDate.setText(this.visit.getDate());
     }
 
     private void generateVisit(){
@@ -375,7 +375,7 @@ public class AddEditVisitDialog extends javax.swing.JDialog {
         this.visit.setOtherIncome(this.chkOtherIncome.isSelected());
         this.visit.setNoIncome(this.chkNoIncome.isSelected());
 
-        this.visit.setVisitDate(this.txtDate.getText());
+        this.visit.setDate(this.txtDate.getText());
 
         //Date date = new Date();
         //this.visit.setVisitDate(dateFormat.format(date));
@@ -390,7 +390,7 @@ public class AddEditVisitDialog extends javax.swing.JDialog {
             Logger.getLogger(AddEditVisitDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        this.visit.setVisitorWeekNumber(weekNumber);
+        this.visit.setWeekNumber(weekNumber);
 
         this.visit.setActive(true);
 

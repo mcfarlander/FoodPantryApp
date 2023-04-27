@@ -35,7 +35,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 
 /**
- * Create a report for the visitors to the pantry for a given month.
+ * Create a report for the visits to the pantry for a given month.
  * 
  * @author mcfarland_davej
  */
@@ -86,7 +86,7 @@ public class ReportMonthlySummary extends AbstractReportStrategy {
 			VisitsDao visitsDao = ApplicationContext.getVisitsDao();
 			for (Visit vis : visitsDao.getAll()) {
 				if (vis.isActive()) {
-					Date testDate = dateFormat.parse(vis.getVisitDate());
+					Date testDate = dateFormat.parse(vis.getDate());
 					testCal.setTime(testDate);
 
 					if (testCal.get(Calendar.MONTH) == this.monthSelected) {
@@ -115,13 +115,13 @@ public class ReportMonthlySummary extends AbstractReportStrategy {
 
 						boolean bFound = false;
 						for (int j = 0; j < weekNumbers.size(); j++) {
-							if (Integer.parseInt(weekNumbers.get(j).toString()) == vis.getVisitorWeekNumber()) {
+							if (Integer.parseInt(weekNumbers.get(j).toString()) == vis.getWeekNumber()) {
 								bFound = true;
 							}
 						}
 
 						if (!bFound) {
-							weekNumbers.add(String.valueOf(vis.getVisitorWeekNumber()));
+							weekNumbers.add(String.valueOf(vis.getWeekNumber()));
 						}
 					}
 				}
@@ -142,7 +142,7 @@ public class ReportMonthlySummary extends AbstractReportStrategy {
 				int weekSumNoIncome = 0;
 
 				for (Visit visit : monthVisits) {
-					if (visit.getVisitorWeekNumber() == iWeekNumber) {
+					if (visit.getWeekNumber() == iWeekNumber) {
 						weekSumHouse++;
 
 						if (visit.isNewCustomer()) {
@@ -165,11 +165,11 @@ public class ReportMonthlySummary extends AbstractReportStrategy {
 							weekSumNoIncome++;
 						}
 
-						if (visit.getVisitorWeekNumber() <= 0) {
+						if (visit.getWeekNumber() <= 0) {
 							Calendar cal = Calendar.getInstance();
-							cal.setTime(dateFormat.parse(visit.getVisitDate()));
+							cal.setTime(dateFormat.parse(visit.getDate()));
 							cal.setMinimalDaysInFirstWeek(1);
-							visit.setVisitorWeekNumber(cal.get(Calendar.WEEK_OF_YEAR));
+							visit.setWeekNumber(cal.get(Calendar.WEEK_OF_YEAR));
 						}
 
 						// show the visit info on the table
@@ -225,7 +225,7 @@ public class ReportMonthlySummary extends AbstractReportStrategy {
 		row.addColumn(String.valueOf(getYesNo(record.isWorkingIncome())));
 		row.addColumn(String.valueOf(getYesNo(record.isOtherIncome())));
 		row.addColumn(String.valueOf(getYesNo(record.isNoIncome())));
-		row.addColumn("Week " + record.getVisitorWeekNumber());
+		row.addColumn("Week " + record.getWeekNumber());
 
 		return row;
 	}

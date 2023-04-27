@@ -85,7 +85,7 @@ public class VisitsDao extends AbstractCsvDao<Visit> {
 
 	@Override
 	protected int getId(Visit entity) {
-		return entity.getVisitId();
+		return entity.getId();
 	}
 
 	@Override

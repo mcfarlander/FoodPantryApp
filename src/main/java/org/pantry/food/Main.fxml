@@ -20,14 +20,14 @@
                 <Menu id="help" mnemonicParsing="false" text="Help" />
               </menus>
             </MenuBar>
-            <HBox fx:id="buttonBar" fillHeight="false">
+            <HBox fx:id="buttonBar" fillHeight="false" focusTraversable="true">
                <children>
                   <Button fx:id="customersBtn" mnemonicParsing="false" text="Customers">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="visitsBtn" mnemonicParsing="false" text="Visitors">
+                  <Button fx:id="visitsBtn" mnemonicParsing="false" text="Visits">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>

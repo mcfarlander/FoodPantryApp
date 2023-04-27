@@ -96,16 +96,16 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 				// focus on the visit date box
 				calculateAndSetWeekNumber();
 
-				boolean isNew = savedVisit.getVisitId() <= 0;
+				boolean isNew = savedVisit.getId() <= 0;
 				log.info("Attempting to save {} visit record {}", isNew ? "new" : "existing",
-						isNew ? savedVisit.getVisitId() : "");
+						isNew ? savedVisit.getId() : "");
 
 				// Attempt to save the record
 				// We only ever use the CustomersDao in this handler, so no reason to make it
 				// available to the rest of this class
 				VisitsDao dao = ApplicationContext.getVisitsDao();
 				if (isNew) {
-					savedVisit.setVisitId(dao.getNextId());
+					savedVisit.setId(dao.getNextId());
 					savedVisit.setActive(true);
 					dao.add(savedVisit);
 				} else {
@@ -163,10 +163,10 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 		otherIncomeChk.selectedProperty().bindBidirectional(savedVisit.otherIncomeProperty());
 		noIncomeChk.selectedProperty().bindBidirectional(savedVisit.noIncomeProperty());
 
-		visitDateText.textProperty().bindBidirectional(savedVisit.visitDateProperty());
+		visitDateText.textProperty().bindBidirectional(savedVisit.dateProperty());
 
 		// Bind the input validators
-		// Note: By Sue's request, some visitors can get entered without a customer
+		// Note: By Sue's request, some visits can get entered without a customer
 		// number
 		log.debug("Binding input validators");
 		ComboInputValidator comboValidator = new ComboInputValidator(householdIdCbo).add(new RegexValidator("[0-9]|"));
@@ -250,7 +250,7 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 				visitDateText.setText(DateUtil.formatDateFourDigitYear(visitDate));
 			}
 			int weekNumber = visitDate.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
-			savedVisit.setVisitorWeekNumber(weekNumber);
+			savedVisit.setWeekNumber(weekNumber);
 		} catch (ParseException e) {
 			log.error("Invalid visit date - date {} could not be parsed", dateStr, e);
 			new Alert(AlertType.WARNING, "Invalid visit date").show();

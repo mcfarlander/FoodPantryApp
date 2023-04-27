@@ -45,7 +45,7 @@
                <children>
                   <TableView fx:id="dataTable" focusTraversable="false">
                     <columns>
-                      <TableColumn id="visitId" editable="false" minWidth="-1.0" prefWidth="55.5" styleClass="numeric" text="Visit ID" />
+                      <TableColumn id="id" editable="false" minWidth="-1.0" prefWidth="55.5" styleClass="numeric" text="Visit ID" />
                       <TableColumn id="householdId" editable="false" minWidth="-1.0" prefWidth="85.5" styleClass="numeric" text="Household ID" />
                         <TableColumn id="newCustomer" editable="false" minWidth="-1.0" prefWidth="51.5" text="New?" />
                         <TableColumn id="numberAdults" editable="false" minWidth="-1.0" prefWidth="72.0" styleClass="numeric" text="# Adults" />
@@ -54,8 +54,8 @@
                         <TableColumn id="workingIncome" editable="false" minWidth="-1.0" prefWidth="110.0" text="Working Income" />
                         <TableColumn id="otherIncome" editable="false" minWidth="-1.0" prefWidth="91.5" text="Other Income" />
                         <TableColumn id="noIncome" editable="false" minWidth="-1.0" prefWidth="77.5" text="No Income" />
-                        <TableColumn id="visitDate" editable="false" minWidth="-1.0" prefWidth="119.5" text="Date" />
-                        <TableColumn id="visitorWeekNumber" editable="false" minWidth="-1.0" styleClass="numeric" text="Week #" />
+                        <TableColumn id="date" editable="false" minWidth="-1.0" prefWidth="119.5" text="Date" />
+                        <TableColumn id="weekNumber" editable="false" minWidth="-1.0" styleClass="numeric" text="Week #" />
                     </columns>
                   </TableView>
                </children>

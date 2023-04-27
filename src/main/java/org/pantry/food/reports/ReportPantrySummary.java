@@ -203,7 +203,7 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 		List<Visit> visits = ApplicationContext.getVisitsDao().getAll();
 
 		for (Visit visit : visits) {
-			Date thedate = dateFormat.parse(visit.getVisitDate());
+			Date thedate = dateFormat.parse(visit.getDate());
 			mydate.setTime(thedate);
 
 			if ((mydate.get(Calendar.MONTH) == monthSelected) && visit.isActive()) {

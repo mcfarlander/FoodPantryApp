@@ -80,7 +80,7 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 				boolean canAdd = false;
 				LocalDate visitDate;
 				try {
-					visitDate = DateUtil.toDate(visit.getVisitDate());
+					visitDate = DateUtil.toDate(visit.getDate());
 
 					if (visit.isActive() && now.getYear() == visitDate.getYear()
 							&& now.getMonthValue() == visitDate.getMonthValue()) {
@@ -96,9 +96,9 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 						canAdd = true;
 					}
 				} catch (ParseException e) {
-					log.error("Could not parse date " + visit.getVisitDate(), e);
+					log.error("Could not parse date " + visit.getDate(), e);
 					Alert alert = new Alert(AlertType.ERROR,
-							"Could not parse date for visit ID " + visit.getVisitId() + ", skipping");
+							"Could not parse date for visit ID " + visit.getId() + ", skipping");
 					alert.show();
 				}
 

@@ -20,7 +20,7 @@ public class VisitRowMapper implements ArrayRowMapper<Visit> {
 	@Override
 	public Visit map(String[] row) {
 		Visit visit = new Visit();
-		visit.setVisitId(Integer.parseInt(row[VISITID]));
+		visit.setId(Integer.parseInt(row[VISITID]));
 		visit.setHouseholdId(Integer.parseInt(row[HOUSEHOLDID]));
 		visit.setNewCustomer(Boolean.parseBoolean(row[NEW]));
 		visit.setNumberAdults(Integer.parseInt(row[NUMBER_ADULTS]));
@@ -29,18 +29,18 @@ public class VisitRowMapper implements ArrayRowMapper<Visit> {
 		visit.setWorkingIncome(Boolean.parseBoolean(row[WORKING_INCOME]));
 		visit.setOtherIncome(Boolean.parseBoolean(row[OTHER_INCOME]));
 		visit.setNoIncome(Boolean.parseBoolean(row[NO_INCOME]));
-		visit.setVisitDate(row[DATE]);
-		visit.setVisitorWeekNumber(Integer.parseInt(row[WEEK_NUMBER]));
+		visit.setDate(row[DATE]);
+		visit.setWeekNumber(Integer.parseInt(row[WEEK_NUMBER]));
 		visit.setActive(Boolean.parseBoolean(row[ACTIVE]));
 
 		return visit;
 	}
 
 	public String[] toCsvRow(Visit visit) {
-		return new String[] { "" + visit.getVisitId(), "" + visit.getHouseholdId(), "" + visit.isNewCustomer(),
+		return new String[] { "" + visit.getId(), "" + visit.getHouseholdId(), "" + visit.isNewCustomer(),
 				"" + visit.getNumberAdults(), "" + visit.getNumberKids(), "" + visit.getNumberSeniors(),
 				"" + visit.isWorkingIncome(), "" + visit.isOtherIncome(), "" + visit.isNoIncome(),
-				"" + visit.getVisitDate(), "" + visit.getVisitorWeekNumber(), "" + visit.isActive() };
+				"" + visit.getDate(), "" + visit.getWeekNumber(), "" + visit.isActive() };
 	}
 
 }
