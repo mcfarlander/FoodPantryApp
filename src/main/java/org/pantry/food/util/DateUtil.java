@@ -10,6 +10,7 @@ public class DateUtil {
 	private static DateTimeFormatter dateFormatInput = DateTimeFormatter.ofPattern("M/d/y");
 	private static DateTimeFormatter dateFormatOutput = DateTimeFormatter.ofPattern("MM/dd/yy");
 	private static DateTimeFormatter dateFormatOutputFourDigitYear = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+	private static DateTimeFormatter dateFormatDatestamp = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 	// Reusable but immutable LocalDate instance so we don't have to create a new
 	// one every time we call getMonthName
 	private static final LocalDate getMonthNameDate = LocalDate.now();
@@ -45,6 +46,10 @@ public class DateUtil {
 
 	public static String getCurrentDateStringFourDigitYear() {
 		return dateFormatOutputFourDigitYear.format(LocalDate.now());
+	}
+
+	public static String getDatestamp() {
+		return dateFormatDatestamp.format(LocalDate.now());
 	}
 
 	public static int getCurrentMonth() {

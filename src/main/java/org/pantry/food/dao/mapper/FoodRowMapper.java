@@ -12,11 +12,11 @@ public class FoodRowMapper implements ArrayRowMapper<Food> {
 	private static final int TEFAP = 5;
 	private static final int SECONDHARVEST = 6;
 	private static final int PANTRY = 7;
-	private static final int OTHER = 8;
+	private static final int PANTRYNONFOOD = 8;
 	private static final int COMMENT = 9;
 	private static final int NONFOOD = 10;
 	private static final int MILK = 11;
-	private static final int OTHER2 = 12;
+	private static final int PANTRY_PRODUCE = 12;
 	private static final int PRODUCE = 13;
 	private static final int DONATION = 14;
 	private static final int DONOR = 15;
@@ -45,11 +45,11 @@ public class FoodRowMapper implements ArrayRowMapper<Food> {
 		record.setTefap(Double.parseDouble(row[TEFAP]));
 		record.setSecondHarvest(Double.parseDouble(row[SECONDHARVEST]));
 		record.setPantry(Double.parseDouble(row[PANTRY]));
-		record.setOther(Double.parseDouble(row[OTHER]));
+		record.setPantryNonFood(Double.parseDouble(row[PANTRYNONFOOD]));
 		record.setComment(row[COMMENT]);
 		record.setNonFood(Double.parseDouble(row[NONFOOD]));
 		record.setMilk(Double.parseDouble(row[MILK]));
-		record.setOther2(Double.parseDouble(row[OTHER2]));
+		record.setPantryProduce(Double.parseDouble(row[PANTRY_PRODUCE]));
 		record.setProduce(Double.parseDouble(row[PRODUCE]));
 
 		// if the file has the donor update, use it
@@ -81,9 +81,9 @@ public class FoodRowMapper implements ArrayRowMapper<Food> {
 				String.valueOf(customer.getPickNSave()), String.valueOf(customer.getCommunity()),
 				String.valueOf(customer.getNonTefap()), String.valueOf(customer.getTefap()),
 				String.valueOf(customer.getSecondHarvest()), String.valueOf(customer.getPantry()),
-				String.valueOf(customer.getOther()), String.valueOf(customer.getComment()),
+				String.valueOf(customer.getPantryNonFood()), String.valueOf(customer.getComment()),
 				String.valueOf(customer.getNonFood()), String.valueOf(customer.getMilk()),
-				String.valueOf(customer.getOther2()), String.valueOf(customer.getProduce()),
+				String.valueOf(customer.getPantryProduce()), String.valueOf(customer.getProduce()),
 				String.valueOf(customer.isDonation()), String.valueOf(customer.getDonorName()),
 				String.valueOf(customer.getDonorAddress()), String.valueOf(customer.getDonorEmail()),
 				String.valueOf(customer.getSecondHarvestProduce()) };

@@ -58,7 +58,8 @@
                         <TableColumn id="comment" editable="false" minWidth="-1.0" prefWidth="112.5" text="Comment" />
                         <TableColumn id="nonFood" editable="false" minWidth="-1.0" prefWidth="70.0" styleClass="numeric" text="Non-Food" />
                         <TableColumn id="milk" editable="false" minWidth="-1.0" prefWidth="44.0" styleClass="numeric" text="Milk" />
-                        <TableColumn id="produce" editable="false" minWidth="-1.0" prefWidth="98.0" styleClass="numeric" text="Pantry Produce" />
+                        <TableColumn id="pantryProduce" editable="false" minWidth="-1.0" prefWidth="98.0" styleClass="numeric" text="Pantry Produce" />
+                        <TableColumn id="produce" editable="false" minWidth="-1.0" prefWidth="98.0" styleClass="numeric" text="Produce" />
                         <TableColumn id="donation" editable="false" minWidth="-1.0" prefWidth="60.0" text="Donation" />
                         <TableColumn id="donorName" editable="false" minWidth="-1.0" prefWidth="150.5" text="Donor" />
                         <TableColumn id="donorAddress" editable="false" minWidth="-1.0" prefWidth="172.0" text="Address" />

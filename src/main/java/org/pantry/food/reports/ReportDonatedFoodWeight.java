@@ -183,9 +183,9 @@ public class ReportDonatedFoodWeight extends AbstractReportStrategy {
 				.addColumn(nf.format(record.getPickNSave())).addColumn(nf.format(record.getCommunity()))
 				.addColumn(nf.format(record.getNonTefap())).addColumn(nf.format(record.getTefap()))
 				.addColumn(nf.format(record.getSecondHarvest())).addColumn(nf.format(record.getSecondHarvestProduce()))
-				.addColumn(nf.format(record.getPantry())).addColumn(nf.format(record.getOther()))
+				.addColumn(nf.format(record.getPantry())).addColumn(nf.format(record.getPantryNonFood()))
 				.addColumn(nf.format(record.getNonFood())).addColumn(nf.format(record.getMilk()))
-				.addColumn(nf.format(record.getOther2())).addColumn(nf.format(record.getProduce()))
+				.addColumn(nf.format(record.getPantryProduce())).addColumn(nf.format(record.getProduce()))
 				.addColumn(record.getComment());
 		return row;
 	}

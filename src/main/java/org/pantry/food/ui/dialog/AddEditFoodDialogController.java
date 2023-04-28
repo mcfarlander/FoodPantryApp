@@ -71,6 +71,8 @@ public class AddEditFoodDialogController implements IModalDialogController<AddEd
 	@FXML
 	private TextField milkText;
 	@FXML
+	private TextField pantryProduceText;
+	@FXML
 	private TextField produceText;
 	@FXML
 	private TextField dateText;
@@ -173,8 +175,9 @@ public class AddEditFoodDialogController implements IModalDialogController<AddEd
 		pantryText.textProperty().bindBidirectional(savedFood.pantryProperty());
 		pantryNonFoodText.textProperty().bindBidirectional(savedFood.pantryNonFoodProperty());
 		nonFoodText.textProperty().bindBidirectional(savedFood.nonFoodProperty());
-		milkText.textProperty().bindBidirectional(savedFood.milkProperty());
+		pantryProduceText.textProperty().bindBidirectional(savedFood.pantryProduceProperty());
 		produceText.textProperty().bindBidirectional(savedFood.produceProperty());
+		milkText.textProperty().bindBidirectional(savedFood.milkProperty());
 
 		dateText.textProperty().bindBidirectional(savedFood.entryDateProperty());
 		commentsText.textProperty().bindBidirectional(savedFood.commentProperty());

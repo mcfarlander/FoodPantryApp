@@ -40,11 +40,11 @@ public class FoodsDao extends AbstractCsvDao<Food> {
 	private static final String Col_Tefap = "tefap";
 	private static final String Col_SecondHarvest = "secondharvest";
 	private static final String Col_Pantry = "pantry";
-	private static final String Col_Other = "other";
+	private static final String Col_PantryNonFood = "pantry nonfood";
 	private static final String Col_Comment = "comment";
 	private static final String Col_NonFood = "nonfood";
 	private static final String Col_Milk = "milk";
-	private static final String Col_Other2 = "other2";
+	private static final String Col_PantryProduce = "pantry produce";
 	private static final String Col_Produce = "produce";
 	private static final String Col_Donation = "donation";
 	private static final String Col_Donor = "donor";
@@ -76,8 +76,8 @@ public class FoodsDao extends AbstractCsvDao<Food> {
 	@Override
 	protected String[] getCsvHeader() {
 		return new String[] { Col_RecordId, Col_EntryDate, Col_PickNSave, Col_Community, Col_NonTefap, Col_Tefap,
-				Col_SecondHarvest, Col_Pantry, Col_Other, Col_Comment, Col_NonFood, Col_Milk, Col_Other2, Col_Produce,
-				Col_Donation, Col_Donor, Col_DonorAddress, Col_DonorEmail, Col_SecondHarvestProduce };
+				Col_SecondHarvest, Col_Pantry, Col_PantryNonFood, Col_Comment, Col_NonFood, Col_Milk, Col_PantryProduce,
+				Col_Produce, Col_Donation, Col_Donor, Col_DonorAddress, Col_DonorEmail, Col_SecondHarvestProduce };
 	}
 
 }

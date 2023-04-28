@@ -356,10 +356,10 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 				.addColumn(""));
 		rows.add(new ReportRow().addColumn(" - Non-Food").addColumn(String.valueOf(nf.format(totals.getNonFood())))
 				.addColumn(""));
-		rows.add(new ReportRow().addColumn(" - Pantry Non-Food").addColumn(String.valueOf(nf.format(totals.getOther())))
-				.addColumn(""));
-		rows.add(new ReportRow().addColumn(" - Pantry Produce").addColumn(String.valueOf(nf.format(totals.getOther2())))
-				.addColumn(""));
+		rows.add(new ReportRow().addColumn(" - Pantry Non-Food")
+				.addColumn(String.valueOf(nf.format(totals.getPantryNonFood()))).addColumn(""));
+		rows.add(new ReportRow().addColumn(" - Pantry Produce")
+				.addColumn(String.valueOf(nf.format(totals.getPantryProduce()))).addColumn(""));
 		rows.add(new ReportRow().addColumn(" - Produce").addColumn(String.valueOf(nf.format(totals.getProduce())))
 				.addColumn(""));
 		rows.add(new ReportRow().addColumn(" - Pantry Purchases")

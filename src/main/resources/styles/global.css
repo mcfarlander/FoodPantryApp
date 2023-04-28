@@ -106,6 +106,16 @@
  	-fx-graphic: url(../icons/report_go.png);
 }
 
+#reportExcelExportBtn {
+ 	-fx-graphic: url(../icons/excel.png);
+ 	-fx-background-size: 16 16;
+}
+
+#reportExcelExportBtn .image-view {
+ 	-fx-scale-x: .5;
+ 	-fx-scale-y: .5;
+}
+
 /* Heading labels in the Settings dialog */
 .settings-heading {
 	-fx-font-size: 120%;

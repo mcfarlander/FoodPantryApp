@@ -34,11 +34,10 @@ public class Food {
 	private SimpleStringProperty secondHarvestProperty = new SimpleStringProperty("0");
 	private SimpleStringProperty secondHarvestProduceProperty = new SimpleStringProperty("0");
 	private SimpleStringProperty pantryProperty = new SimpleStringProperty("0");
-	private SimpleStringProperty otherProperty = new SimpleStringProperty("0");
 	private SimpleStringProperty pantryNonFoodProperty = new SimpleStringProperty("0");
 	private SimpleStringProperty nonFoodProperty = new SimpleStringProperty("0");
 	private SimpleStringProperty milkProperty = new SimpleStringProperty("0");
-	private SimpleStringProperty other2Property = new SimpleStringProperty("0");
+	private SimpleStringProperty pantryProduceProperty = new SimpleStringProperty("0");
 	private SimpleStringProperty produceProperty = new SimpleStringProperty("0");
 	private SimpleStringProperty commentProperty = new SimpleStringProperty("");
 	private SimpleBooleanProperty donationProperty = new SimpleBooleanProperty();
@@ -63,11 +62,10 @@ public class Food {
 		setSecondHarvest(other.getSecondHarvest());
 		setSecondHarvestProduce(other.getSecondHarvestProduce());
 		setPantry(other.getPantry());
-		setOther(other.getOther());
 		setPantryNonFood(other.getPantryNonFood());
 		setNonFood(other.getNonFood());
 		setMilk(other.getMilk());
-		setOther2(other.getOther2());
+		setPantryProduce(other.getPantryProduce());
 		setProduce(other.getProduce());
 		setComment(other.getComment());
 		setDonation(other.isDonation());
@@ -238,48 +236,16 @@ public class Food {
 		pantryProperty.set(String.valueOf(pantry));
 	}
 
-	/**
-	 * Gets the other.
-	 *
-	 * @return the other
-	 */
-	public double getOther() {
-		String value = otherProperty.get();
+	public double getPantryProduce() {
+		String value = pantryProduceProperty.get();
 		if (null == value) {
 			return -1;
 		}
 		return Double.valueOf(value);
 	}
 
-	/**
-	 * Sets the other.
-	 *
-	 * @param other the new other
-	 */
-	public void setOther(double other) {
-		otherProperty.set(String.valueOf(other));
-	}
-
-	/**
-	 * Gets the other 2.
-	 *
-	 * @return the other 2
-	 */
-	public double getOther2() {
-		String value = other2Property.get();
-		if (null == value) {
-			return -1;
-		}
-		return Double.valueOf(value);
-	}
-
-	/**
-	 * Sets the other 2.
-	 *
-	 * @param other2 the new other 2
-	 */
-	public void setOther2(double other2) {
-		other2Property.set(String.valueOf(other2));
+	public void setPantryProduce(double pantryProduce) {
+		pantryProduceProperty.set(String.valueOf(pantryProduce));
 	}
 
 	/**
@@ -508,10 +474,6 @@ public class Food {
 		return pantryProperty;
 	}
 
-	public SimpleStringProperty otherProperty() {
-		return otherProperty;
-	}
-
 	public SimpleStringProperty nonFoodProperty() {
 		return nonFoodProperty;
 	}
@@ -520,16 +482,16 @@ public class Food {
 		return pantryNonFoodProperty;
 	}
 
-	public SimpleStringProperty milkProperty() {
-		return milkProperty;
-	}
-
-	public SimpleStringProperty other2Property() {
-		return other2Property;
+	public SimpleStringProperty pantryProduceProperty() {
+		return pantryProduceProperty;
 	}
 
 	public SimpleStringProperty produceProperty() {
 		return produceProperty;
+	}
+
+	public SimpleStringProperty milkProperty() {
+		return milkProperty;
 	}
 
 	public SimpleStringProperty commentProperty() {
@@ -560,9 +522,9 @@ public class Food {
 	public Object[] getFoodRecordObject() {
 
 		return new Object[] { getFoodId(), getEntryDate(), getPickNSave(), getCommunity(), getNonTefap(), getTefap(),
-				getSecondHarvest(), getSecondHarvestProduce(), getPantry(), getOther(), getComment(), getNonFood(),
-				getMilk(), -getOther2(), getProduce(), isDonation(), getDonorName(), getDonorAddress(),
-				getDonorEmail() };
+				getSecondHarvest(), getSecondHarvestProduce(), getPantry(), getPantryNonFood(), getComment(),
+				getNonFood(), getMilk(), -getPantryProduce(), getProduce(), isDonation(), getDonorName(),
+				getDonorAddress(), getDonorEmail() };
 	}
 
 	/**
@@ -578,10 +540,9 @@ public class Food {
 		setSecondHarvest(getSecondHarvest() + record.getSecondHarvest());
 		setSecondHarvestProduce(getSecondHarvestProduce() + record.getSecondHarvestProduce());
 		setPantry(getPantry() + record.getPantry());
-		setOther(getOther() + record.getOther());
 		setNonFood(getNonFood() + record.getNonFood());
 		setMilk(getMilk() + record.getMilk());
-		setOther2(getOther2() + record.getOther2());
+		setPantryProduce(getPantryProduce() + record.getPantryProduce());
 		setProduce(getProduce() + record.getProduce());
 
 		if (record.getComment().length() > 0) {
@@ -596,8 +557,8 @@ public class Food {
 	 */
 	public double getTotal() {
 		return getPickNSave() + getCommunity() + getNonTefap() + getTefap() + getSecondHarvest()
-				+ getSecondHarvestProduce() + getPantry() + getOther() + getNonFood() + getMilk() + getOther2()
-				+ getProduce();
+				+ getSecondHarvestProduce() + getPantry() + getPantryNonFood() + getNonFood() + getMilk()
+				+ getPantryProduce() + getProduce();
 	}
 
 }
