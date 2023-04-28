@@ -55,10 +55,12 @@ public class SelectBackupOptionsDialogController implements IModalDialogControll
 			@Override
 			public void handle(ActionEvent event) {
 				try {
-					runBackup();
+					String archivePath = runBackup();
 
 					isOk = true;
 					parent.close();
+
+					new Alert(AlertType.INFORMATION, "Archive created OK. File can be found at: " + archivePath).show();
 				} catch (IOException e) {
 					String message = "Could not run backup: " + e.getMessage();
 					log.error(message, e);
@@ -101,7 +103,6 @@ public class SelectBackupOptionsDialogController implements IModalDialogControll
 
 	@Override
 	public Image getIcon() {
-//		return Images.getImageView("cart.png").getImage();
 		return null;
 	}
 
@@ -110,7 +111,7 @@ public class SelectBackupOptionsDialogController implements IModalDialogControll
 		this.parent = parent;
 	}
 
-	protected void runBackup() throws IOException {
+	protected String runBackup() throws IOException {
 		List<BackupKey> backupKeys = new ArrayList<>();
 
 		for (Node node : checkboxesContainer.getChildren()) {
@@ -118,7 +119,7 @@ public class SelectBackupOptionsDialogController implements IModalDialogControll
 		}
 
 		Backup backup = new Backup(backupKeys);
-		backup.archiveFiles();
+		return backup.archiveFiles();
 	}
 
 }

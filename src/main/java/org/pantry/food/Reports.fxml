@@ -29,7 +29,6 @@
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
@@ -52,13 +51,8 @@
                      </children>
                   </HBox>
                   <RadioButton id="food.weight" mnemonicParsing="false" text="Donated Food Weight Report" toggleGroup="$radios" GridPane.rowIndex="1" />
-                  <RadioButton id="volunteer.events" mnemonicParsing="false" text="Volunteer Events" toggleGroup="$radios" GridPane.rowIndex="3" />
-                  <RadioButton id="volunteer.hours" mnemonicParsing="false" text="Volunteer Hours" GridPane.rowIndex="2">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="radios1" />
-                     </toggleGroup>
-                  </RadioButton>
-                  <RadioButton id="pantry.report" mnemonicParsing="false" text="Pantry Report Summary" toggleGroup="$radios" GridPane.rowIndex="4" />
+                  <RadioButton id="volunteer.events" mnemonicParsing="false" text="Volunteer Events" toggleGroup="$radios" GridPane.rowIndex="2" />
+                  <RadioButton id="pantry.report" mnemonicParsing="false" text="Pantry Report Summary" toggleGroup="$radios" GridPane.rowIndex="3" />
                </children>
                <VBox.margin>
                   <Insets left="20.0" />

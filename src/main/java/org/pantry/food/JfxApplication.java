@@ -16,6 +16,7 @@
 package org.pantry.food;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.pantry.food.actions.AboutMenuItem;
 import org.pantry.food.actions.CustomersMenuItem;
@@ -26,6 +27,8 @@ import org.pantry.food.actions.SettingsMenuItem;
 import org.pantry.food.actions.VisitsMenuItem;
 import org.pantry.food.actions.VolunteerEventsMenuItem;
 import org.pantry.food.actions.VolunteersMenuItem;
+import org.pantry.food.backup.Backup;
+import org.pantry.food.backup.BackupKey;
 import org.pantry.food.ui.dialog.ModalDialog;
 
 import javafx.application.Application;
@@ -46,7 +49,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 /**
- * The main class of the application.
+ * Main entry point
+ *
  */
 public class JfxApplication extends Application {
 
@@ -140,6 +144,17 @@ public class JfxApplication extends Application {
 
 		// Show the Customers view by default
 		MenuActions.get(CustomersMenuItem.ACTION_ID).getOnAction().handle(new ActionEvent());
+
+		// Create an accumulative backup file for the current month every time the
+		// application is closed
+		ApplicationContext.addApplicationCloseListener(() -> {
+			try {
+				Backup backup = new Backup(Arrays.asList(BackupKey.values()));
+				backup.createBackupForCurrentMonth();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	protected void createMenuItems(UiMainContext context) {

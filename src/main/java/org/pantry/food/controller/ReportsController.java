@@ -5,19 +5,17 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.reports.AbstractReportStrategy;
-import org.pantry.food.reports.IReportBase;
 import org.pantry.food.reports.ReportDonatedFoodWeight;
 import org.pantry.food.reports.ReportMonthlySummary;
 import org.pantry.food.reports.ReportPantrySummary;
 import org.pantry.food.reports.ReportVolunteerEvents;
+import org.pantry.food.reports.ReportVolunteerHours;
 import org.pantry.food.ui.dialog.ModalDialog;
 import org.pantry.food.util.DateUtil;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -73,21 +71,6 @@ public class ReportsController {
 		return getSelectedReport(radio);
 	}
 
-	private String savePdf(IReportBase report) {
-		log.info("Saving report");
-		try {
-			String path = report.savePdf();
-			String message = "Saved to " + path;
-			outputLabel.setText(message);
-			log.info(message);
-			return path;
-		} catch (IOException e) {
-			log.error("Could not save report as PDF", e);
-			new Alert(AlertType.NONE, "Could not save:\r\n" + e).show();
-		}
-		return null;
-	}
-
 	private AbstractReportStrategy getSelectedReport(RadioButton radio) {
 		AbstractReportStrategy reportStrategy = null;
 		switch (radio.getId()) {
@@ -100,8 +83,7 @@ public class ReportsController {
 			reportStrategy = new ReportDonatedFoodWeight();
 			break;
 		case "volunteer.hours":
-			// Volunteer Hours report has been replaced with Volunteer Events
-//			reportStrategy = new ReportVolunteerHours();
+			reportStrategy = new ReportVolunteerHours();
 			break;
 		case "volunteer.events":
 			reportStrategy = new ReportVolunteerEvents();

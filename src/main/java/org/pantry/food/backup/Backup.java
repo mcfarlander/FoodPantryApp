@@ -66,31 +66,38 @@ public class Backup {
 	 * @throws IOException
 	 */
 	public void createBackupForCurrentMonth() throws IOException {
+		log.info("Starting month backup");
 		String startDirPrime = new java.io.File(".").getCanonicalPath();
 		String startDir = createBackupFolder();
 		Calendar cal = Calendar.getInstance();
 		String archiveFile = startDir + "/" + "PantryBackup_" + Integer.toString(cal.get(Calendar.MONTH)) + ".zip";
 
 		archiveFiles(startDirPrime, archiveFile, false);
+		log.info("Month backup completed successfully");
 	}
 
 	/**
-	 * Archives each of all the files to a directory with the current date-time.
+	 * Archives each of all the files to a zip with the current date-time and then
+	 * deletes the files. Used for an end-of-year process where every customer
+	 * receives a new ID for the following year.
 	 * 
 	 * @return
 	 * @throws IOException
 	 */
 	public String archiveFiles() throws IOException {
-		String startDir = new java.io.File(".").getCanonicalPath();
+		log.info("Starting year-end backup and purge");
+		String startDir = new File(".").getCanonicalPath();
 		Calendar cal = Calendar.getInstance();
-		String archiveFile = startDir + "/" + "PantryArchive_" + Integer.toString(cal.get(Calendar.YEAR))
-				+ Integer.toString(cal.get(Calendar.MONTH)) + Integer.toString(cal.get(Calendar.DAY_OF_MONTH)) + ".zip";
+		String archiveFile = startDir + "/" + "PantryArchive_" + String.valueOf(cal.get(Calendar.YEAR))
+				+ String.valueOf(cal.get(Calendar.MONTH)) + String.valueOf(cal.get(Calendar.DAY_OF_MONTH)) + ".zip";
 
-		return archiveFiles(startDir, archiveFile, true);
+		String archivePath = archiveFiles(startDir, archiveFile, true);
+		log.info("Year-end backup and purge completed successfully. File is {}", archivePath);
+		return archivePath;
 	}
 
 	/**
-	 * Archives to a specific file
+	 * Archives a specific file
 	 * 
 	 * @param startDir        directory in which the zip file should be created
 	 * @param archiveFilePath path to the new zip file
@@ -98,7 +105,7 @@ public class Backup {
 	 * @return
 	 * @throws IOException
 	 */
-	public String archiveFiles(String startDir, String archiveFilePath, boolean deleteOld) throws IOException {
+	private String archiveFiles(String startDir, String archiveFilePath, boolean deleteOld) throws IOException {
 		log.info("creating archive {}", archiveFilePath);
 
 		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(archiveFilePath));
@@ -112,13 +119,12 @@ public class Backup {
 				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerHours()), zos,
 						deleteOld);
 			} else if (BackupKey.VISITS.equals(key)) {
-				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileFoodRecord()), zos, deleteOld);
+				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVisits()), zos, deleteOld);
 			} else if (BackupKey.VOLUNTEER_EVENTS.equals(key)) {
 				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerEvents()), zos,
 						deleteOld);
 			} else if (BackupKey.VOLUNTEERS.equals(key)) {
-				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerEvents()), zos,
-						deleteOld);
+				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteers()), zos, deleteOld);
 			}
 		}
 
@@ -140,7 +146,7 @@ public class Backup {
 	 * @param deleteOld           delete files after archiving them
 	 * @throws IOException
 	 */
-	protected void archiveFile(File file, ZipOutputStream archiveOutputStream, boolean deleteOld) throws IOException {
+	private void archiveFile(File file, ZipOutputStream archiveOutputStream, boolean deleteOld) throws IOException {
 		if (file.exists()) {
 			log.info("Adding {} file to archive", file.getName());
 			FileInputStream in = new FileInputStream(file);

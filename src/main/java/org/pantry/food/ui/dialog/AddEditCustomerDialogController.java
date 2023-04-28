@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
@@ -237,6 +238,48 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 			private int calculateAge(LocalDate birthdate) {
 				return (int) ChronoUnit.YEARS.between(birthdate, LocalDate.now());
 			}
+		});
+
+		ageText.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean wasFocused, Boolean isFocused) {
+				String birthdateStr = birthdateText.getText();
+				// We only want to calculate the birthdate from age if focus is lost and the
+				// birthdate hasn't been manually entered yet, or if the entered birthdate is
+				// January 1st
+				if (wasFocused && !isFocused && (null == birthdateStr || birthdateStr.isBlank())) {
+					String ageStr = ageText.getText();
+					if (StringUtils.isBlank(ageStr)) {
+						return;
+					}
+
+					// Determine if birthdate is January 1st
+					if (DateUtil.isDate(birthdateStr)) {
+						try {
+							LocalDate date = DateUtil.toDate(birthdateStr);
+							if (date.getMonthValue() == 1 && date.getDayOfMonth() == 1) {
+								// Entered birthdate is January 1, so user wants a generic birthdate and no age
+								return;
+							}
+						} catch (ParseException e) {
+							log.error("Invalid birthdate - {} could not be parsed as date", birthdateStr, e);
+							birthdateText.setText("");
+						}
+					}
+
+					try {
+						int age = Integer.valueOf(ageStr);
+						LocalDate birthdate = LocalDate.now().minusYears(age);
+						birthdateText.setText(DateUtil.formatDateFourDigitYear(birthdate));
+						validStatusTracker.checkAll();
+					} catch (NumberFormatException e) {
+						log.error("Invalid age - {} could not be parsed as integer", ageStr, e);
+						new Alert(AlertType.WARNING, "Cannot calculate birthdate from age " + ageStr).show();
+					}
+				}
+			}
+
 		});
 
 		// If this is a customer add, pre-select the New, Active, and Month Registered

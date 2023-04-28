@@ -31,7 +31,6 @@ import org.pantry.food.ui.common.DataFiles;
  *
  */
 public class VolunteerEventsDao extends AbstractCsvDao<VolunteerEvent> {
-
 	private static final String Col_VolunteerEventId = "volunteereventid";
 	private static final String Col_EventName = "event_name";
 	private static final String Col_VolunteerName = "volunteer";

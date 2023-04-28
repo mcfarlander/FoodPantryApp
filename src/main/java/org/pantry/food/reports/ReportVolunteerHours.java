@@ -19,125 +19,112 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
 import org.pantry.food.dao.VolunteerHourDao;
 import org.pantry.food.model.VolunteerHour;
 
-import net.sf.nervalreports.core.ReportGenerationException;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
 
 /**
  * Create a report on the actual volunteering at the pantry.
  * 
  * @author davej
  */
-public class ReportVolunteerHours extends ReportBase {
+public class ReportVolunteerHours extends AbstractReportStrategy {
+	private static final Logger log = LogManager.getLogger(ReportVolunteerHours.class);
 	private DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-	NumberFormat nf = NumberFormat.getInstance();
+	final NumberFormat nf = NumberFormat.getInstance();
 
 	private String[] cols = new String[] { "Month", "Number Adults", "Total Adult Hrs", "Number Students",
 			"Total Student Hrs", "Comments" };
 
 	public ReportVolunteerHours() {
-		setReportName("Volunteer_Hours");
-		setReportTitle("Summary Of Volunteer Hours");
-		setReportDescription(dateFormat.format(Calendar.getInstance().getTime()));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.pantry.food.reports.ReportBase#createReportTable()
-	 */
-	@Override
-	public void buildReport() throws ReportGenerationException {
 		nf.setMaximumFractionDigits(1);
-
-		// create the basic table
-		report.beginTable(cols.length);
-		report.beginTableHeaderRow();
-		for (int x = 0; x < cols.length; x++) {
-			report.addTableHeaderCell(cols[x]);
-		}
-		report.endTableHeaderRow();
-
-		// create rest of the data rows
-		loadReport();
-
-		// finish the table
-		report.endTable();
 	}
 
 	@Override
-	public void createFooter() {
-
+	public String getTitle() {
+		return "Summary Of Volunteer Hours";
 	}
 
-	private void loadReport() throws ReportGenerationException {
+	@Override
+	public ObservableList<TableColumn<ReportRow, String>> getColumns() {
+		return toTableColumns(cols);
+	}
+
+	@Override
+	public List<ReportRow> getRows() {
+		List<ReportRow> rows = new ArrayList<>();
+
+		VolunteerHourDao hourDao = ApplicationContext.getVolunteerHourDao();
+
+		// use the POJO to store the working sums
+		VolunteerHour janRecord = new VolunteerHour();
+		VolunteerHour febRecord = new VolunteerHour();
+		VolunteerHour marRecord = new VolunteerHour();
+		VolunteerHour aprRecord = new VolunteerHour();
+		VolunteerHour mayRecord = new VolunteerHour();
+		VolunteerHour junRecord = new VolunteerHour();
+		VolunteerHour julRecord = new VolunteerHour();
+		VolunteerHour augRecord = new VolunteerHour();
+		VolunteerHour sepRecord = new VolunteerHour();
+		VolunteerHour octRecord = new VolunteerHour();
+		VolunteerHour novRecord = new VolunteerHour();
+		VolunteerHour decRecord = new VolunteerHour();
+
+		Calendar cal = Calendar.getInstance();
+
+		String date = "";
 		try {
-			VolunteerHourDao hourDao = ApplicationContext.getVolunteerHourDao();
-
-			// use the POJO to store the working sums
-			VolunteerHour janRecord = new VolunteerHour();
-			VolunteerHour febRecord = new VolunteerHour();
-			VolunteerHour marRecord = new VolunteerHour();
-			VolunteerHour aprRecord = new VolunteerHour();
-			VolunteerHour mayRecord = new VolunteerHour();
-			VolunteerHour junRecord = new VolunteerHour();
-			VolunteerHour julRecord = new VolunteerHour();
-			VolunteerHour augRecord = new VolunteerHour();
-			VolunteerHour sepRecord = new VolunteerHour();
-			VolunteerHour octRecord = new VolunteerHour();
-			VolunteerHour novRecord = new VolunteerHour();
-			VolunteerHour decRecord = new VolunteerHour();
-
-			Calendar cal = Calendar.getInstance();
-
 			for (VolunteerHour record : hourDao.getAll()) {
+				date = record.getEntryDate();
 				Date testDate = dateFormat.parse(record.getEntryDate());
 				cal.setTime(testDate);
 
 				switch (cal.get(Calendar.MONTH)) {
 
-				case 0:
+				case Calendar.JANUARY:
 					janRecord.addToCurrent(record);
 					break;
-				case 1:
+				case Calendar.FEBRUARY:
 					febRecord.addToCurrent(record);
 					break;
-				case 2:
+				case Calendar.MARCH:
 					marRecord.addToCurrent(record);
 					break;
-				case 3:
+				case Calendar.APRIL:
 					aprRecord.addToCurrent(record);
 					break;
-				case 4:
+				case Calendar.MAY:
 					mayRecord.addToCurrent(record);
 					break;
-				case 5:
+				case Calendar.JUNE:
 					junRecord.addToCurrent(record);
 					break;
-				case 6:
+				case Calendar.JULY:
 					julRecord.addToCurrent(record);
 					break;
-				case 7:
+				case Calendar.AUGUST:
 					augRecord.addToCurrent(record);
 					break;
-				case 8:
+				case Calendar.SEPTEMBER:
 					sepRecord.addToCurrent(record);
 					break;
-				case 9:
+				case Calendar.OCTOBER:
 					octRecord.addToCurrent(record);
 					break;
-				case 10:
+				case Calendar.NOVEMBER:
 					novRecord.addToCurrent(record);
 					break;
-				case 11:
+				case Calendar.DECEMBER:
 					decRecord.addToCurrent(record);
 					break;
 				default:
@@ -145,49 +132,55 @@ public class ReportVolunteerHours extends ReportBase {
 				}
 			}
 
-			addTableRow("January", janRecord);
-			addTableRow("Febuary", febRecord);
-			addTableRow("March", marRecord);
+			rows.add(createTableRow("January", janRecord));
+			rows.add(createTableRow("Febuary", febRecord));
+			rows.add(createTableRow("March", marRecord));
 
-			addBlankRow();
+			rows.add(createBlankRow());
 
-			addTableRow("April", aprRecord);
-			addTableRow("May", mayRecord);
-			addTableRow("June", junRecord);
+			rows.add(createTableRow("April", aprRecord));
+			rows.add(createTableRow("May", mayRecord));
+			rows.add(createTableRow("June", junRecord));
 
-			addBlankRow();
+			rows.add(createBlankRow());
 
-			addTableRow("July", julRecord);
-			addTableRow("August", augRecord);
-			addTableRow("September", sepRecord);
+			rows.add(createTableRow("July", julRecord));
+			rows.add(createTableRow("August", augRecord));
+			rows.add(createTableRow("September", sepRecord));
 
-			addBlankRow();
+			rows.add(createBlankRow());
 
-			addTableRow("October", octRecord);
-			addTableRow("November", novRecord);
-			addTableRow("December", decRecord);
+			rows.add(createTableRow("October", octRecord));
+			rows.add(createTableRow("November", novRecord));
+			rows.add(createTableRow("December", decRecord));
 
-			addBlankRow();
+			rows.add(createBlankRow());
 		} catch (ParseException ex) {
-			Logger.getLogger(ReportVolunteerHours.class.getName()).log(Level.SEVERE, null, ex);
+			log.error("Could not parse date " + date, ex);
 		}
+
+		return rows;
 	}
 
-	private void addTableRow(String month, VolunteerHour hours) throws ReportGenerationException {
-		report.beginTableRow();
-		report.addTableCell(month);
-		report.addTableCell(nf.format(hours.getNumberAdults()));
-		report.addTableCell(nf.format(hours.getNumberAdultHours()));
-		report.addTableCell(nf.format(hours.getNumberStudents()));
-		report.addTableCell(nf.format(hours.getNumberStudentHours()));
-		report.addTableCell(hours.getComment());
-		report.endTableRow();
+	private ReportRow createTableRow(String month, VolunteerHour hours) {
+		ReportRow row = new ReportRow();
+		row.addColumn(month);
+		row.addColumn(nf.format(hours.getNumberAdults()));
+		row.addColumn(nf.format(hours.getNumberAdultHours()));
+		row.addColumn(nf.format(hours.getNumberStudents()));
+		row.addColumn(nf.format(hours.getNumberStudentHours()));
+		row.addColumn(hours.getComment());
+
+		return row;
 	}
 
-	private void addBlankRow() throws ReportGenerationException {
-		report.beginTableRow();
-		report.addTableRow(Arrays.asList("", "", "", "", "", ""));
-		report.endTableRow();
+	private ReportRow createBlankRow() {
+		ReportRow row = new ReportRow();
+		for (int x = 1; x <= 6; x++) {
+			row.addColumn("");
+		}
+
+		return row;
 	}
 
 }

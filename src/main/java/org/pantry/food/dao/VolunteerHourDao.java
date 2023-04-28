@@ -16,20 +16,12 @@
 package org.pantry.food.dao;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.pantry.food.dao.mapper.ArrayRowMapper;
+import org.pantry.food.dao.mapper.VolunteerHourRowMapper;
 import org.pantry.food.model.VolunteerHour;
 import org.pantry.food.ui.common.DataFiles;
-
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
 
 /**
  * A class to contain all the logic to map between a file of volunteer hours and
@@ -37,34 +29,7 @@ import com.opencsv.CSVWriter;
  * 
  * @author mcfarland_davej
  */
-public class VolunteerHourDao implements CsvDao<VolunteerHour> {
-	private final static Logger log = LogManager.getLogger(VolunteerHourDao.class.getName());
-
-	private String startDir = "";
-
-	private List<VolunteerHour> csvList = new ArrayList<VolunteerHour>();
-
-	@Override
-	public List<VolunteerHour> getAll() {
-		return this.csvList;
-	}
-
-	public int getCvsCount() {
-		return this.csvList.size();
-	}
-
-	public void setStartDir(String sDir) {
-		this.startDir = sDir;
-	}
-
-	private static final int VOLUNTEERHOURID = 0;
-	private static final int NUMBER_ADULTS = 1;
-	private static final int HOURS_ADULTS = 2;
-	private static final int NUMBER_STUDENTS = 3;
-	private static final int HOURS_STUDENTS = 4;
-	private static final int COMMENT = 5;
-	private static final int ENTRY_DATE = 6;
-
+public class VolunteerHourDao extends AbstractCsvDao<VolunteerHour> {
 	private static final String Col_VolunteerHourId = "volunteerhourid";
 	private static final String Col_Num_Adults = "num_adults";
 	private static final String Col_Hrs_Adults = "hrs_adults";
@@ -73,143 +38,39 @@ public class VolunteerHourDao implements CsvDao<VolunteerHour> {
 	private static final String Col_Comment = "comment";
 	private static final String Col_EntryDate = "entrydate";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.pantry.food.dao.CsvDao#readCsvFile()
-	 */
-	public List<VolunteerHour> read() throws FileNotFoundException, IOException {
-		log.info("VolunteerHourDao.readCsvFile");
+	private final String[] csvHeader = { Col_VolunteerHourId, Col_Num_Adults, Col_Hrs_Adults, Col_Num_Students,
+			Col_Hrs_Students, Col_Comment, Col_EntryDate };
 
-		if (startDir.length() == 0) {
-			startDir = new java.io.File(".").getCanonicalPath();
-		}
-
-		File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerHours());
-		csvList = new ArrayList<VolunteerHour>();
-
-		if (file.exists()) {
-			// read in the whole file into a list
-			FileReader fr = new FileReader(file);
-			CSVReader reader = new CSVReader(fr);
-
-			String[] nextLine;
-			boolean firstLine = true;
-			while ((nextLine = reader.readNext()) != null) {
-				// nextLine[] is an array of values from the line
-				if (!firstLine) {
-					VolunteerHour record = new VolunteerHour();
-					record.setVolunteerHourId(Integer.parseInt(nextLine[VOLUNTEERHOURID]));
-					record.setNumberAdults(Integer.parseInt(nextLine[NUMBER_ADULTS]));
-					record.setNumberAdultHours(Float.parseFloat(nextLine[HOURS_ADULTS]));
-					record.setNumberStudents(Integer.parseInt(nextLine[NUMBER_STUDENTS]));
-					record.setNumberStudentHours(Float.parseFloat(nextLine[HOURS_STUDENTS]));
-					record.setComment(nextLine[COMMENT]);
-					record.setEntryDate(nextLine[ENTRY_DATE]);
-					csvList.add(record);
-				} else {
-					firstLine = !firstLine;
-				}
-			}
-
-			reader.close();
-		} else {
-			log.info("Volunteer Hours cvs file NOT found");
-		}
-
-		return csvList;
-	} // end of readCsvFile
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.pantry.food.dao.CsvDao#saveCsvFile()
-	 */
-	public void persist() throws IOException {
-		log.info("VolunteerHourDao.saveCsvFile");
-
-		if (startDir.length() == 0) {
-			startDir = new java.io.File(".").getCanonicalPath();
-		}
-
-		File file = new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerHours());
-
-		if (file.exists()) {
-			file.delete();
-		}
-
-		FileWriter fw = new FileWriter(file);
-		CSVWriter writer = new CSVWriter(fw);
-
-		// add the column titles
-		String[] titles = { Col_VolunteerHourId, Col_Num_Adults, Col_Hrs_Adults, Col_Num_Students, Col_Hrs_Students,
-				Col_Comment, Col_EntryDate };
-
-		writer.writeNext(titles);
-
-		for (int i = 0; i < csvList.size(); i++) {
-			VolunteerHour record = csvList.get(i);
-			writer.writeNext(record.getCvsEntry());
-
-		}
-
-		writer.close();
-	}
-
-	/*
-	 * Adds a visit object to the list (in memory).
-	 */
-	public void add(VolunteerHour vol) {
-		csvList.add(vol);
-	}
-
-	public void edit(VolunteerHour vol) {
-		for (int i = 0; i < csvList.size(); i++) {
-
-			VolunteerHour testRecord = csvList.get(i);
-
-			if (testRecord.getVolunteerHourId() == vol.getVolunteerHourId()) {
-
-				testRecord.setNumberAdults(vol.getNumberAdults());
-				testRecord.setNumberAdultHours(vol.getNumberAdultHours());
-				testRecord.setNumberStudents(vol.getNumberStudents());
-				testRecord.setNumberStudentHours(vol.getNumberStudentHours());
-				testRecord.setComment(vol.getComment());
-				testRecord.setEntryDate(vol.getEntryDate());
-
-				break;
-			}
-		}
-
-	} // end of edit
-
-	public void deactivate(VolunteerHour vol) {
-		for (int i = 0; i < csvList.size(); i++) {
-			VolunteerHour testRecord = csvList.get(i);
-			if (testRecord.getVolunteerHourId() == vol.getVolunteerHourId()) {
-				csvList.remove(i);
-				break;
-			}
-		}
-
-	} // end of deactivate
+	private File csvFile;
 
 	@Override
-	public int getNextId() {
-		// TODO Auto-generated method stub
-		return -1;
+	protected void setDeactivated(VolunteerHour entity) {
+		super.delete(entity);
 	}
 
 	@Override
-	public void addFileChangedListener(FileChangedListener listener) {
-		// TODO Auto-generated method stub
-
+	protected ArrayRowMapper<VolunteerHour> getRowMapper() {
+		return new VolunteerHourRowMapper();
 	}
 
 	@Override
-	public void delete(VolunteerHour entity) {
-		// TODO Auto-generated method stub
+	protected int getId(VolunteerHour entity) {
+		return entity.getVolunteerHourId();
+	}
 
+	@Override
+	protected File getCsvFile() throws IOException {
+		if (null == csvFile) {
+			csvFile = new File(new java.io.File(".").getCanonicalPath(),
+					DataFiles.getInstance().getCsvFileVolunteerHours());
+		}
+
+		return csvFile;
+	}
+
+	@Override
+	protected String[] getCsvHeader() {
+		return csvHeader;
 	}
 
 }
