@@ -28,9 +28,9 @@ import org.pantry.food.model.Volunteer;
 import org.pantry.food.model.VolunteerEvent;
 import org.pantry.food.ui.ValidStatusTracker;
 import org.pantry.food.ui.validation.ComboFocusValidator;
+import org.pantry.food.ui.validation.DateValidator;
 import org.pantry.food.ui.validation.NotBlankValidator;
 import org.pantry.food.ui.validation.NotNegativeValidator;
-import org.pantry.food.ui.validation.RegexValidator;
 import org.pantry.food.ui.validation.TextInputFocusValidator;
 
 import javafx.event.ActionEvent;
@@ -170,8 +170,7 @@ public class AddEditVolunteerEventDialogController
 				.add(new NotNegativeValidator());
 		volunteerHoursText.focusedProperty().addListener(textValidator);
 
-		textValidator = new TextInputFocusValidator(dateText)
-				.add(new RegexValidator("[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}"));
+		textValidator = new TextInputFocusValidator(dateText).add(new DateValidator());
 		dateText.focusedProperty().addListener(textValidator);
 
 		validStatusTracker.add(eventNameText, volunteerCbo, volunteerHoursText, dateText);

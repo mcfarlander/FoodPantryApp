@@ -34,9 +34,9 @@ import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.model.Customer;
 import org.pantry.food.ui.ValidStatusTracker;
 import org.pantry.food.ui.validation.ComboInputValidator;
+import org.pantry.food.ui.validation.DateValidator;
 import org.pantry.food.ui.validation.NotBlankValidator;
 import org.pantry.food.ui.validation.NumericValidator;
-import org.pantry.food.ui.validation.RegexValidator;
 import org.pantry.food.ui.validation.TextInputFocusValidator;
 import org.pantry.food.util.DateUtil;
 import org.pantry.food.util.NumberUtil;
@@ -194,8 +194,7 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 		householdIdCbo.getSelectionModel().selectedItemProperty().addListener(comboValidator);
 
 		// Birthdate must comply with typical date format
-		textValidator = new TextInputFocusValidator(birthdateText)
-				.add(new RegexValidator("[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}"));
+		textValidator = new TextInputFocusValidator(birthdateText).add(new DateValidator());
 		birthdateText.focusedProperty().addListener(textValidator);
 		// Calculate the person's age when the birthdate changes
 		birthdateText.focusedProperty().addListener(new ChangeListener<Boolean>() {

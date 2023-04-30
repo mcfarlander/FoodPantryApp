@@ -26,6 +26,7 @@ import org.pantry.food.dao.FoodsDao;
 import org.pantry.food.model.Donor;
 import org.pantry.food.model.Food;
 import org.pantry.food.ui.ValidStatusTracker;
+import org.pantry.food.ui.validation.DateValidator;
 import org.pantry.food.ui.validation.NotBlankValidator;
 import org.pantry.food.ui.validation.NotNegativeValidator;
 import org.pantry.food.ui.validation.RegexValidator;
@@ -232,7 +233,7 @@ public class AddEditFoodDialogController implements IModalDialogController<AddEd
 		produceText.focusedProperty().addListener(textValidator);
 
 		textValidator = new TextInputFocusValidator(dateText).add(new NotBlankValidator())
-				.add(new RegexValidator("[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}"));
+				.add(new DateValidator());
 		dateText.focusedProperty().addListener(textValidator);
 
 		// Only show donor section if Is Donation is checked
