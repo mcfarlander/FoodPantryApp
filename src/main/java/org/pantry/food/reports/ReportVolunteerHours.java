@@ -15,20 +15,26 @@
 */
 package org.pantry.food.reports;
 
-import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
-import org.pantry.food.dao.VolunteerHourDao;
+import org.pantry.food.dao.VolunteerEventsDao;
+import org.pantry.food.dao.VolunteersDao;
+import org.pantry.food.model.Volunteer;
+import org.pantry.food.model.VolunteerEvent;
 import org.pantry.food.model.VolunteerHour;
+import org.pantry.food.util.DateUtil;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -40,7 +46,6 @@ import javafx.scene.control.TableColumn;
  */
 public class ReportVolunteerHours extends AbstractReportStrategy {
 	private static final Logger log = LogManager.getLogger(ReportVolunteerHours.class);
-	private DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	final NumberFormat nf = NumberFormat.getInstance();
 
 	private String[] cols = new String[] { "Month", "Number Adults", "Total Adult Hrs", "Number Students",
@@ -64,97 +69,79 @@ public class ReportVolunteerHours extends AbstractReportStrategy {
 	public List<ReportRow> getRows() {
 		List<ReportRow> rows = new ArrayList<>();
 
-		VolunteerHourDao hourDao = ApplicationContext.getVolunteerHourDao();
+		VolunteersDao volunteersDao = ApplicationContext.getVolunteersDao();
+		VolunteerEventsDao eventsDao = ApplicationContext.getVolunteerEventsDao();
 
-		// use the POJO to store the working sums
-		VolunteerHour janRecord = new VolunteerHour();
-		VolunteerHour febRecord = new VolunteerHour();
-		VolunteerHour marRecord = new VolunteerHour();
-		VolunteerHour aprRecord = new VolunteerHour();
-		VolunteerHour mayRecord = new VolunteerHour();
-		VolunteerHour junRecord = new VolunteerHour();
-		VolunteerHour julRecord = new VolunteerHour();
-		VolunteerHour augRecord = new VolunteerHour();
-		VolunteerHour sepRecord = new VolunteerHour();
-		VolunteerHour octRecord = new VolunteerHour();
-		VolunteerHour novRecord = new VolunteerHour();
-		VolunteerHour decRecord = new VolunteerHour();
-
-		Calendar cal = Calendar.getInstance();
+		List<String> studentVolunteers = new ArrayList<>();
+		Map<String, VolunteerHour> monthToHours = new HashMap<>();
 
 		String date = "";
 		try {
-			for (VolunteerHour record : hourDao.getAll()) {
-				date = record.getEntryDate();
-				Date testDate = dateFormat.parse(record.getEntryDate());
-				cal.setTime(testDate);
-
-				switch (cal.get(Calendar.MONTH)) {
-
-				case Calendar.JANUARY:
-					janRecord.addToCurrent(record);
-					break;
-				case Calendar.FEBRUARY:
-					febRecord.addToCurrent(record);
-					break;
-				case Calendar.MARCH:
-					marRecord.addToCurrent(record);
-					break;
-				case Calendar.APRIL:
-					aprRecord.addToCurrent(record);
-					break;
-				case Calendar.MAY:
-					mayRecord.addToCurrent(record);
-					break;
-				case Calendar.JUNE:
-					junRecord.addToCurrent(record);
-					break;
-				case Calendar.JULY:
-					julRecord.addToCurrent(record);
-					break;
-				case Calendar.AUGUST:
-					augRecord.addToCurrent(record);
-					break;
-				case Calendar.SEPTEMBER:
-					sepRecord.addToCurrent(record);
-					break;
-				case Calendar.OCTOBER:
-					octRecord.addToCurrent(record);
-					break;
-				case Calendar.NOVEMBER:
-					novRecord.addToCurrent(record);
-					break;
-				case Calendar.DECEMBER:
-					decRecord.addToCurrent(record);
-					break;
-				default:
-					break;
+			// First separate volunteer names into students and everyone else ("Adults")
+			for (Volunteer volunteer : volunteersDao.getAll()) {
+				if ("Student".equalsIgnoreCase(volunteer.getType())) {
+					studentVolunteers.add(volunteer.getName().toLowerCase());
 				}
 			}
 
-			rows.add(createTableRow("January", janRecord));
-			rows.add(createTableRow("Febuary", febRecord));
-			rows.add(createTableRow("March", marRecord));
+			// Now spin through the volunteer events and tally up the adult hours and
+			// student hours for each month
+			for (VolunteerEvent event : eventsDao.getAll()) {
+				if (event.getVolunteerHours() <= 0) {
+					// Since this is a summary report, skip any entries that have no hours
+					continue;
+				}
 
-			rows.add(createBlankRow());
+				// Figure out which month bucket to put these hours into
+				date = event.getEventDate();
+				LocalDate eventDate = DateUtil.toDate(date);
+				String monthName = DateUtil.getMonthName(eventDate.getMonthValue());
 
-			rows.add(createTableRow("April", aprRecord));
-			rows.add(createTableRow("May", mayRecord));
-			rows.add(createTableRow("June", junRecord));
+				// Figure out if this is student hours or adult hours
+				VolunteerHour hours = new VolunteerHour();
+				if (studentVolunteers.contains(event.getVolunteerName().toLowerCase())) {
+					hours.setNumberStudents(1);
+					hours.setNumberStudentHours((float) event.getVolunteerHours());
+				} else {
+					hours.setNumberAdults(1);
+					hours.setNumberAdultHours((float) event.getVolunteerHours());
+				}
+				hours.setComment(event.getNotes());
 
-			rows.add(createBlankRow());
+				// Update month tally if it already exists, or create a new one if it doesn't
+				VolunteerHour monthHours = monthToHours.get(monthName);
+				if (null == monthHours) {
+					monthHours = new VolunteerHour();
+					monthToHours.put(monthName, monthHours);
+				}
+				monthHours.addToCurrent(hours);
+			}
 
-			rows.add(createTableRow("July", julRecord));
-			rows.add(createTableRow("August", augRecord));
-			rows.add(createTableRow("September", sepRecord));
+			Locale locale = Locale.getDefault();
+			VolunteerHour grandTotalHours = new VolunteerHour();
+			// Create a row for every possible month
+			for (Month month : Month.values()) {
+				// Create a blank row above this row if it's the first month of a quarter
+				// Except for January, the first month we display
+				if (month.equals(month.firstMonthOfQuarter()) && !month.equals(Month.JANUARY)) {
+					createBlankRow();
+				}
 
-			rows.add(createBlankRow());
+				// First see if there's an entry for this month
+				String monthName = month.getDisplayName(TextStyle.SHORT, locale);
+				VolunteerHour hours = monthToHours.get(monthName);
+				if (null == hours) {
+					// Use all zeros instead
+					hours = new VolunteerHour();
+				}
 
-			rows.add(createTableRow("October", octRecord));
-			rows.add(createTableRow("November", novRecord));
-			rows.add(createTableRow("December", decRecord));
+				rows.add(createTableRow(monthName, hours));
 
-			rows.add(createBlankRow());
+				// Add this monthly record to the grand total
+				grandTotalHours.addToCurrent(hours);
+			}
+
+			rows.add(createTableRow("Totals", grandTotalHours).setSummary(true));
 		} catch (ParseException ex) {
 			log.error("Could not parse date " + date, ex);
 		}
