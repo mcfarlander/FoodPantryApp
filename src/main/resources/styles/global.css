@@ -1,0 +1,134 @@
+.button:default {
+    -fx-base: derive(-fx-accent, 120%);
+}
+
+/* Make panel headings a little bigger to signify importance */
+.content-header {
+	-fx-font-size: 120%;
+	-fx-font-weight: bold;
+}
+
+/* Make action buttons within the context of a data record really big so they're easy targets */
+.button.record-action {
+	-fx-margin-left: 20;
+	-fx-min-height: 60;
+	-fx-font-weight: bold;	
+}
+
+/* Make checkboxes in dialogs bigger so they're easy targets */
+.dialog .check-box > .box,
+.dialog .check-box > .box > .mark {
+    -fx-padding: 5px;
+}
+
+/* Align dialog action buttons to the right of the dialog */ 
+.dialog-action-container {
+	-fx-alignment: center-right;
+	-fx-spacing: 20;
+}
+
+/* Make dialog action buttons bigger so they're easy targets */
+.dialog-action-container .button {
+	-fx-min-height: 40;
+	-fx-min-width: 90;
+}
+
+.dialog-action-container .button.save {
+	-fx-graphic: url(../icons/accept.png);
+}
+
+.dialog-action-container .button.cancel {
+	-fx-graphic: url(../icons/cancel.png);
+}
+
+/* Add a red border to invalid inputs */
+.text-field.error,
+.combo-box.error {
+	-fx-border-color: red;
+}
+
+/* Right-align table columns containing numbers */
+.table-column.numeric,
+.textfield.numeric {
+	-fx-alignment: CENTER-RIGHT;
+}
+
+/* Button Icons */
+#addCustomerBtn {
+ 	-fx-graphic: url(../icons/table_add.png);
+}
+
+#editCustomerBtn {
+ 	-fx-graphic: url(../icons/table_edit.png);
+}
+
+#deleteCustomerBtn {
+ 	-fx-graphic: url(../icons/table_delete.png);
+}
+
+#addVisitBtn {
+ 	-fx-graphic: url(../icons/cart_add.png);
+}
+
+#editVisitBtn {
+ 	-fx-graphic: url(../icons/cart_edit.png);
+}
+
+#deleteVisitBtn {
+ 	-fx-graphic: url(../icons/cart_delete.png);
+}
+
+#addFoodBtn {
+ 	-fx-graphic: url(../icons/tag_blue_add.png);
+}
+
+#editFoodBtn {
+ 	-fx-graphic: url(../icons/tag_blue_edit.png);
+}
+
+#deleteFoodBtn {
+ 	-fx-graphic: url(../icons/tag_blue_delete.png);
+}
+
+#addVolunteerBtn {
+ 	-fx-graphic: url(../icons/user_add.png);
+}
+
+#editVolunteerBtn {
+ 	-fx-graphic: url(../icons/user_edit.png);
+}
+
+#deleteVolunteerBtn {
+ 	-fx-graphic: url(../icons/user_delete.png);
+}
+
+#openReportBtn {
+ 	-fx-graphic: url(../icons/report_go.png);
+}
+
+#reportExcelExportBtn {
+ 	-fx-graphic: url(../icons/excel.png);
+ 	-fx-background-size: 16 16;
+}
+
+#reportExcelExportBtn .image-view {
+ 	-fx-scale-x: .5;
+ 	-fx-scale-y: .5;
+}
+
+/* Heading labels in the Settings dialog */
+.settings-heading {
+	-fx-font-size: 120%;
+	-fx-font-weight: bold;
+}
+
+.report-title {
+	-fx-font-size: 150%;
+	-fx-font-weight: bold;
+}
+
+.report-table .column-header-background .filler, 
+.report-table .column-resize-line,
+.report-table .table-column .label {
+	-fx-background-color: #E5E5E5;
+}

@@ -44,5 +44,11 @@ Version 1.36a
 Version 1.37
 	Added food record column for second harvest produce.
 	Modified CSV and reporting for new column.
+Version 1.38
+	Renamed Other and Other2 columns.
+	Added automatic birthdate calculation when age is provided.
+Version 1.39
+	Refactored UI to use JavaFX.
+	Refactored to use Maven dependencies.
 	
 	

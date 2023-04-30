@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefWidth="475.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pantry.food.controller.SettingsController">
+   <children>
+      <VBox fx:id="controlsBox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label styleClass="settings-heading" text="Customers">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </Label>
+            <CheckBox id="customers.show.inactive" fx:id="showInactiveCustomersChk" mnemonicParsing="false" styleClass="settings-input" text="Check to show inactive customers in list">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </CheckBox>
+            <Label styleClass="settings-heading" text="Visits">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <CheckBox id="visits.show.inactive" fx:id="showInactiveVisitsChk" mnemonicParsing="false" styleClass="settings-input" text="Check to show inactive visits in list">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </CheckBox>
+            <CheckBox id="visits.show.all" fx:id="showAllVisitsChk" mnemonicParsing="false" styleClass="settings-input" text="Check to show all visits (yearly). Uncheck to show only current month visits.">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </CheckBox>
+            <Label styleClass="settings-heading" text="Volunteers">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <CheckBox id="events.show.all" fx:id="showAllEventsChk" mnemonicParsing="false" styleClass="settings-input" text="Check to show all volunteer events">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </CheckBox>
+            <Label styleClass="settings-heading" text="File Maintenance">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <Button fx:id="archiveBtn" mnemonicParsing="false" styleClass="settings-input" text="Archive Current Data Files">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>
