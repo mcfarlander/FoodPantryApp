@@ -169,7 +169,8 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 		// Note: By Sue's request, some visits can get entered without a customer
 		// number
 		log.debug("Binding input validators");
-		ComboInputValidator comboValidator = new ComboInputValidator(householdIdCbo).add(new RegexValidator("[0-9]|"));
+		ComboInputValidator comboValidator = new ComboInputValidator(householdIdCbo)
+				.add(new RegexValidator("[0-9]{1,}"));
 		householdIdCbo.getSelectionModel().selectedItemProperty().addListener(comboValidator);
 
 		TextInputFocusValidator textValidator = new TextInputFocusValidator(numAdultsText)
