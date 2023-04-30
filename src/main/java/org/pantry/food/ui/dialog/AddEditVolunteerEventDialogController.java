@@ -26,12 +26,12 @@ import org.pantry.food.Images;
 import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.model.Volunteer;
 import org.pantry.food.model.VolunteerEvent;
-import org.pantry.food.ui.ValidStatusTracker;
 import org.pantry.food.ui.validation.ComboFocusValidator;
 import org.pantry.food.ui.validation.DateValidator;
 import org.pantry.food.ui.validation.NotBlankValidator;
 import org.pantry.food.ui.validation.NotNegativeValidator;
 import org.pantry.food.ui.validation.TextInputFocusValidator;
+import org.pantry.food.ui.validation.ValidStatusTracker;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

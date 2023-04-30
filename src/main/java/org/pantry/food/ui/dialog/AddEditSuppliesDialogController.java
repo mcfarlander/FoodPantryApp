@@ -22,15 +22,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
 import org.pantry.food.Images;
-import org.pantry.food.dao.FoodsDao;
+import org.pantry.food.dao.SuppliesDao;
 import org.pantry.food.model.Donor;
-import org.pantry.food.model.Food;
-import org.pantry.food.ui.ValidStatusTracker;
+import org.pantry.food.model.Supplies;
 import org.pantry.food.ui.validation.DateValidator;
 import org.pantry.food.ui.validation.NotBlankValidator;
 import org.pantry.food.ui.validation.NotNegativeValidator;
-import org.pantry.food.ui.validation.RegexValidator;
 import org.pantry.food.ui.validation.TextInputFocusValidator;
+import org.pantry.food.ui.validation.ValidStatusTracker;
 import org.pantry.food.util.DateUtil;
 import org.pantry.food.util.ValidationStyleUtil;
 
@@ -48,8 +47,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 
-public class AddEditFoodDialogController implements IModalDialogController<AddEditFoodDialogInput, Food> {
-	private static final Logger log = LogManager.getLogger(AddEditFoodDialogController.class.getName());
+public class AddEditSuppliesDialogController implements IModalDialogController<AddEditSuppliesDialogInput, Supplies> {
+	private static final Logger log = LogManager.getLogger(AddEditSuppliesDialogController.class.getName());
 
 	@FXML
 	private TextField pickNSaveText;
@@ -95,11 +94,11 @@ public class AddEditFoodDialogController implements IModalDialogController<AddEd
 	@FXML
 	private Button cancelBtn;
 
-	private ModalDialog<AddEditFoodDialogInput, Food> parent;
-	private AddEditFoodDialogInput input;
+	private ModalDialog<AddEditSuppliesDialogInput, Supplies> parent;
+	private AddEditSuppliesDialogInput input;
 	private boolean isSaved = false;
 	private ValidStatusTracker validStatusTracker;
-	private Food savedFood = null;
+	private Supplies savedFood = null;
 
 	@FXML
 	private void initialize() {
@@ -117,16 +116,16 @@ public class AddEditFoodDialogController implements IModalDialogController<AddEd
 					return;
 				}
 
-				boolean isNew = savedFood.getFoodId() <= 0;
+				boolean isNew = savedFood.getId() <= 0;
 				log.info("Attempting to save {} food record {}", isNew ? "new" : "existing",
-						isNew ? savedFood.getFoodId() : "");
+						isNew ? savedFood.getId() : "");
 
 				// Attempt to save the record
 				// We only ever use the CustomersDao in this handler, so no reason to make it
 				// available to the rest of this class
-				FoodsDao dao = ApplicationContext.getFoodsDao();
+				SuppliesDao dao = ApplicationContext.getSuppliesDao();
 				if (isNew) {
-					savedFood.setFoodId(dao.getNextId());
+					savedFood.setId(dao.getNextId());
 					dao.add(savedFood);
 				} else {
 					dao.edit(savedFood);
@@ -160,11 +159,11 @@ public class AddEditFoodDialogController implements IModalDialogController<AddEd
 	}
 
 	@Override
-	public void setInput(AddEditFoodDialogInput input) {
+	public void setInput(AddEditSuppliesDialogInput input) {
 		this.input = input;
-		boolean isNew = null == input.getFood();
+		boolean isNew = null == input.getSupplies();
 		log.info("Opening dialog to {} a food record", isNew ? "add" : "edit");
-		savedFood = new Food(input.getFood());
+		savedFood = new Supplies(input.getSupplies());
 
 		// Bind all the inputs to their Food properties
 		pickNSaveText.textProperty().bindBidirectional(savedFood.pickNSaveProperty());
@@ -232,8 +231,7 @@ public class AddEditFoodDialogController implements IModalDialogController<AddEd
 		textValidator = new TextInputFocusValidator(produceText).add(new NotNegativeValidator());
 		produceText.focusedProperty().addListener(textValidator);
 
-		textValidator = new TextInputFocusValidator(dateText).add(new NotBlankValidator())
-				.add(new DateValidator());
+		textValidator = new TextInputFocusValidator(dateText).add(new NotBlankValidator()).add(new DateValidator());
 		dateText.focusedProperty().addListener(textValidator);
 
 		// Only show donor section if Is Donation is checked
@@ -292,14 +290,14 @@ public class AddEditFoodDialogController implements IModalDialogController<AddEd
 	@Override
 	public String getTitle() {
 		String type = "Add";
-		if (null != input.getFood()) {
+		if (null != input.getSupplies()) {
 			type = "Edit";
 		}
 		return type + " Donor";
 	}
 
 	@Override
-	public Food getResponse() {
+	public Supplies getResponse() {
 		return isSaved ? savedFood : null;
 	}
 
@@ -314,7 +312,7 @@ public class AddEditFoodDialogController implements IModalDialogController<AddEd
 	}
 
 	@Override
-	public void setModalDialogParent(ModalDialog<AddEditFoodDialogInput, Food> parent) {
+	public void setModalDialogParent(ModalDialog<AddEditSuppliesDialogInput, Supplies> parent) {
 		this.parent = parent;
 	}
 

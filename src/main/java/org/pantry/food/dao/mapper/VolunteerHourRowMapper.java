@@ -1,8 +1,8 @@
 package org.pantry.food.dao.mapper;
 
-import org.pantry.food.model.VolunteerHour;
+import org.pantry.food.model.VolunteerHoursSummary;
 
-public class VolunteerHourRowMapper implements ArrayRowMapper<VolunteerHour> {
+public class VolunteerHourRowMapper implements ArrayRowMapper<VolunteerHoursSummary> {
 
 	private static final int VOLUNTEERHOURID = 0;
 	private static final int NUMBER_ADULTS = 1;
@@ -13,8 +13,8 @@ public class VolunteerHourRowMapper implements ArrayRowMapper<VolunteerHour> {
 	private static final int ENTRY_DATE = 6;
 
 	@Override
-	public VolunteerHour map(String[] row) {
-		VolunteerHour hour = new VolunteerHour();
+	public VolunteerHoursSummary map(String[] row) {
+		VolunteerHoursSummary hour = new VolunteerHoursSummary();
 		hour.setVolunteerHourId(Integer.parseInt(row[VOLUNTEERHOURID]));
 		hour.setNumberAdults(Integer.parseInt(row[NUMBER_ADULTS]));
 		hour.setNumberAdultHours(Float.parseFloat(row[HOURS_ADULTS]));
@@ -26,7 +26,7 @@ public class VolunteerHourRowMapper implements ArrayRowMapper<VolunteerHour> {
 		return hour;
 	}
 
-	public String[] toCsvRow(VolunteerHour hour) {
+	public String[] toCsvRow(VolunteerHoursSummary hour) {
 		return new String[] { String.valueOf(hour.getVolunteerHourId()), String.valueOf(hour.getNumberAdults()),
 				String.valueOf(hour.getNumberAdultHours()), String.valueOf(hour.getNumberStudents()),
 				String.valueOf(hour.getNumberStudentHours()), String.valueOf(hour.getComment()),

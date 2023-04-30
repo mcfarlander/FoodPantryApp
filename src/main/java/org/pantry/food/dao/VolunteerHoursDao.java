@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.pantry.food.dao.mapper.ArrayRowMapper;
 import org.pantry.food.dao.mapper.VolunteerHourRowMapper;
-import org.pantry.food.model.VolunteerHour;
+import org.pantry.food.model.VolunteerHoursSummary;
 import org.pantry.food.ui.common.DataFiles;
 
 /**
@@ -29,7 +29,7 @@ import org.pantry.food.ui.common.DataFiles;
  * 
  * @author mcfarland_davej
  */
-public class VolunteerHourDao extends AbstractCsvDao<VolunteerHour> {
+public class VolunteerHoursDao extends AbstractCsvDao<VolunteerHoursSummary> {
 	private static final String Col_VolunteerHourId = "volunteerhourid";
 	private static final String Col_Num_Adults = "num_adults";
 	private static final String Col_Hrs_Adults = "hrs_adults";
@@ -44,17 +44,17 @@ public class VolunteerHourDao extends AbstractCsvDao<VolunteerHour> {
 	private File csvFile;
 
 	@Override
-	protected void setDeactivated(VolunteerHour entity) {
+	protected void setDeactivated(VolunteerHoursSummary entity) {
 		super.delete(entity);
 	}
 
 	@Override
-	protected ArrayRowMapper<VolunteerHour> getRowMapper() {
+	protected ArrayRowMapper<VolunteerHoursSummary> getRowMapper() {
 		return new VolunteerHourRowMapper();
 	}
 
 	@Override
-	protected int getId(VolunteerHour entity) {
+	protected int getId(VolunteerHoursSummary entity) {
 		return entity.getVolunteerHourId();
 	}
 

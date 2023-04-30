@@ -45,9 +45,8 @@ public class ReportVolunteerEvents extends AbstractReportStrategy {
 	private String[] cols = new String[] { "Volunteer", "Type", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 			"Sep", "Oct", "Nov", "Dec", "Total" };
 
-	private VolunteersDao volunteersDao = ApplicationContext.getVolunteersDao(); // used to find the type of volunteer
-																					// based on voluneer's
-																					// name
+	// used to find the type of volunteer based on volunteer's name
+	private VolunteersDao volunteersDao = ApplicationContext.getVolunteersDao();
 
 	public ReportVolunteerEvents() {
 		nf.setMaximumFractionDigits(2);
@@ -55,7 +54,7 @@ public class ReportVolunteerEvents extends AbstractReportStrategy {
 
 	@Override
 	public String getTitle() {
-		return "Summary of Volunteer Events";
+		return "Volunteer Events Summary";
 	}
 
 	@Override
@@ -63,11 +62,6 @@ public class ReportVolunteerEvents extends AbstractReportStrategy {
 		return toTableColumns(cols);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.pantry.food.reports.ReportBase#createReportTable()
-	 */
 	@Override
 	public List<ReportRow> getRows() {
 		List<ReportRow> rows = new ArrayList<ReportRow>();
@@ -213,4 +207,4 @@ public class ReportVolunteerEvents extends AbstractReportStrategy {
 		return iReturn;
 	}
 
-} // end of class
+}

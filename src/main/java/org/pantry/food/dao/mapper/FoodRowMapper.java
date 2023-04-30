@@ -1,8 +1,8 @@
 package org.pantry.food.dao.mapper;
 
-import org.pantry.food.model.Food;
+import org.pantry.food.model.Supplies;
 
-public class FoodRowMapper implements ArrayRowMapper<Food> {
+public class FoodRowMapper implements ArrayRowMapper<Supplies> {
 
 	private static final int RECORDID = 0;
 	private static final int ENTRYDATE = 1;
@@ -25,7 +25,7 @@ public class FoodRowMapper implements ArrayRowMapper<Food> {
 	private static final int SECONDHARVEST_PRODUCE = 18;
 
 	@Override
-	public Food map(String[] row) {
+	public Supplies map(String[] row) {
 		boolean hasDonorUpdate = false;
 		boolean hasSecHarvestProduceUpdate = false;
 		if (row.length >= 18) {
@@ -36,8 +36,8 @@ public class FoodRowMapper implements ArrayRowMapper<Food> {
 			hasSecHarvestProduceUpdate = true;
 		}
 
-		Food record = new Food();
-		record.setFoodId(Integer.parseInt(row[RECORDID]));
+		Supplies record = new Supplies();
+		record.setId(Integer.parseInt(row[RECORDID]));
 		record.setEntryDate(row[ENTRYDATE]);
 		record.setPickNSave(Double.parseDouble(row[PICKNSAVE]));
 		record.setCommunity(Double.parseDouble(row[COMMUNITY]));
@@ -76,8 +76,8 @@ public class FoodRowMapper implements ArrayRowMapper<Food> {
 		return record;
 	}
 
-	public String[] toCsvRow(Food customer) {
-		return new String[] { String.valueOf(customer.getFoodId()), customer.getEntryDate(),
+	public String[] toCsvRow(Supplies customer) {
+		return new String[] { String.valueOf(customer.getId()), customer.getEntryDate(),
 				String.valueOf(customer.getPickNSave()), String.valueOf(customer.getCommunity()),
 				String.valueOf(customer.getNonTefap()), String.valueOf(customer.getTefap()),
 				String.valueOf(customer.getSecondHarvest()), String.valueOf(customer.getPantry()),

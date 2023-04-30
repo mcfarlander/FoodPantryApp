@@ -14,7 +14,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 
 /**
- * Common template functionality for generic data reports
+ * Common template functionality for generic data reports. Subclasses must
+ * override getTitle() to supply a report title. getColumns() must be overridden
+ * to supply the column header names and column order.
+ * 
+ * To add a row to the data table, update the protected `data` member.
  */
 public abstract class AbstractReportStrategy {
 

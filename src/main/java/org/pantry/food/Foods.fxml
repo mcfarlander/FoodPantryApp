@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pantry.food.controller.FoodsController">
+<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pantry.food.controller.SuppliesController">
    <children>
       <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -45,7 +45,7 @@
                <children>
                   <TableView fx:id="dataTable" focusTraversable="false">
                     <columns>
-                      <TableColumn id="foodId" editable="false" minWidth="-1.0" prefWidth="50.0" styleClass="numeric" text="Record" />
+                      <TableColumn id="id" editable="false" minWidth="-1.0" prefWidth="50.0" styleClass="numeric" text="Record" />
                       <TableColumn id="entryDate" editable="false" minWidth="-1.0" prefWidth="91.0" styleClass="numeric" text="Entry Date" />
                         <TableColumn id="pickNSave" editable="false" minWidth="-1.0" prefWidth="80.5" styleClass="numeric" text="Pick 'n' Save" />
                         <TableColumn id="community" editable="false" maxWidth="77.5" minWidth="-1.0" prefWidth="73.0" styleClass="numeric" text="Community" />

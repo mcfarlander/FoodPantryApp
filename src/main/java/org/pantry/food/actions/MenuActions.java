@@ -11,12 +11,13 @@ public class MenuActions {
 
 	/**
 	 * Adds or replaces a menu action with the ID returnd by item.getId()
+	 * 
 	 * @param item menu action to add or update
 	 */
 	public static void add(MenuItem item) {
 		INSTANCE.actions.put(item.getId(), item);
 	}
-	
+
 	public static MenuItem get(String id) {
 		return INSTANCE.actions.get(id);
 	}

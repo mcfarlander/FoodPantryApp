@@ -33,7 +33,8 @@ import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.model.Volunteer;
 import org.pantry.food.model.VolunteerEvent;
-import org.pantry.food.model.VolunteerHour;
+import org.pantry.food.model.VolunteerHoursSummary;
+import org.pantry.food.model.VolunteerType;
 import org.pantry.food.util.DateUtil;
 
 import javafx.collections.ObservableList;
@@ -57,7 +58,7 @@ public class ReportVolunteerHours extends AbstractReportStrategy {
 
 	@Override
 	public String getTitle() {
-		return "Summary Of Volunteer Hours";
+		return "Volunteer Hours Summary";
 	}
 
 	@Override
@@ -73,13 +74,13 @@ public class ReportVolunteerHours extends AbstractReportStrategy {
 		VolunteerEventsDao eventsDao = ApplicationContext.getVolunteerEventsDao();
 
 		List<String> studentVolunteers = new ArrayList<>();
-		Map<String, VolunteerHour> monthToHours = new HashMap<>();
+		Map<String, VolunteerHoursSummary> monthToHours = new HashMap<>();
 
 		String date = "";
 		try {
 			// First separate volunteer names into students and everyone else ("Adults")
 			for (Volunteer volunteer : volunteersDao.getAll()) {
-				if ("Student".equalsIgnoreCase(volunteer.getType())) {
+				if (VolunteerType.STUDENT.name().equalsIgnoreCase(volunteer.getType())) {
 					studentVolunteers.add(volunteer.getName().toLowerCase());
 				}
 			}
@@ -98,7 +99,7 @@ public class ReportVolunteerHours extends AbstractReportStrategy {
 				String monthName = DateUtil.getMonthName(eventDate.getMonthValue());
 
 				// Figure out if this is student hours or adult hours
-				VolunteerHour hours = new VolunteerHour();
+				VolunteerHoursSummary hours = new VolunteerHoursSummary();
 				if (studentVolunteers.contains(event.getVolunteerName().toLowerCase())) {
 					hours.setNumberStudents(1);
 					hours.setNumberStudentHours((float) event.getVolunteerHours());
@@ -109,16 +110,16 @@ public class ReportVolunteerHours extends AbstractReportStrategy {
 				hours.setComment(event.getNotes());
 
 				// Update month tally if it already exists, or create a new one if it doesn't
-				VolunteerHour monthHours = monthToHours.get(monthName);
+				VolunteerHoursSummary monthHours = monthToHours.get(monthName);
 				if (null == monthHours) {
-					monthHours = new VolunteerHour();
+					monthHours = new VolunteerHoursSummary();
 					monthToHours.put(monthName, monthHours);
 				}
 				monthHours.addToCurrent(hours);
 			}
 
 			Locale locale = Locale.getDefault();
-			VolunteerHour grandTotalHours = new VolunteerHour();
+			VolunteerHoursSummary grandTotalHours = new VolunteerHoursSummary();
 			// Create a row for every possible month
 			for (Month month : Month.values()) {
 				// Create a blank row above this row if it's the first month of a quarter
@@ -129,10 +130,10 @@ public class ReportVolunteerHours extends AbstractReportStrategy {
 
 				// First see if there's an entry for this month
 				String monthName = month.getDisplayName(TextStyle.SHORT, locale);
-				VolunteerHour hours = monthToHours.get(monthName);
+				VolunteerHoursSummary hours = monthToHours.get(monthName);
 				if (null == hours) {
 					// Use all zeros instead
-					hours = new VolunteerHour();
+					hours = new VolunteerHoursSummary();
 				}
 
 				rows.add(createTableRow(monthName, hours));
@@ -149,7 +150,7 @@ public class ReportVolunteerHours extends AbstractReportStrategy {
 		return rows;
 	}
 
-	private ReportRow createTableRow(String month, VolunteerHour hours) {
+	private ReportRow createTableRow(String month, VolunteerHoursSummary hours) {
 		ReportRow row = new ReportRow();
 		row.addColumn(month);
 		row.addColumn(nf.format(hours.getNumberAdults()));

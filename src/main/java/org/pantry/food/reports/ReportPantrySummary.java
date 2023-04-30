@@ -26,11 +26,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.pantry.food.ApplicationContext;
-import org.pantry.food.dao.FoodsDao;
+import org.pantry.food.dao.SuppliesDao;
 import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.model.Customer;
-import org.pantry.food.model.Food;
+import org.pantry.food.model.Supplies;
 import org.pantry.food.model.Visit;
 import org.pantry.food.model.VolunteerEvent;
 
@@ -48,7 +48,7 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 	private int monthSelected = 0;
 
 	public int getMonthSelected() {
-		return this.monthSelected;
+		return monthSelected;
 	}
 
 	public void setMonthSelected(int iMonth) {
@@ -325,12 +325,12 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 	}
 
 	private List<ReportRow> addDonationData() throws ParseException {
-		FoodsDao foodsDao = ApplicationContext.getFoodsDao();
-		Food totals = new Food();
+		SuppliesDao foodsDao = ApplicationContext.getSuppliesDao();
+		Supplies totals = new Supplies();
 		Calendar mydate = new GregorianCalendar();
 		List<ReportRow> rows = new ArrayList<>();
 
-		for (Food record : foodsDao.getAll()) {
+		for (Supplies record : foodsDao.getAll()) {
 			Date thedate = dateFormat.parse(record.getEntryDate());
 			mydate.setTime(thedate);
 
@@ -367,4 +367,4 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 		return rows;
 	}
 
-} // end of class
+}

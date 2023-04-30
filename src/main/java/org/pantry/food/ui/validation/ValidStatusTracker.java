@@ -1,4 +1,4 @@
-package org.pantry.food.ui;
+package org.pantry.food.ui.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -5,40 +5,35 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
 import org.pantry.food.dao.CsvDao;
-import org.pantry.food.dao.FoodsDao;
+import org.pantry.food.dao.SuppliesDao;
 import org.pantry.food.model.Donor;
-import org.pantry.food.model.Food;
+import org.pantry.food.model.Supplies;
 import org.pantry.food.ui.dialog.AbstractController;
-import org.pantry.food.ui.dialog.AddEditFoodDialogInput;
+import org.pantry.food.ui.dialog.AddEditSuppliesDialogInput;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class FoodsController extends AbstractController<Food, AddEditFoodDialogInput> {
+public class SuppliesController extends AbstractController<Supplies, AddEditSuppliesDialogInput> {
 
-	private final static Logger log = LogManager.getLogger(FoodsController.class);
-
-	private FoodsDao foodsDao = ApplicationContext.getFoodsDao();
-
+	private SuppliesDao suppliesDao = ApplicationContext.getSuppliesDao();
 	private List<Donor> donors = new ArrayList<>();
 
 	protected void init() {
 		for (TableColumn<?, ?> column : dataTable.getColumns()) {
 			// The ID of each column is the name of the corresponding property in the
-			// Food object
+			// Supplies object
 
 			// Boolean columns have to be treated differently if we want them to display a
 			// checkbox
 			if ("donation".equals(column.getId())) {
 				column.setCellFactory(col -> new CheckBoxTableCell<>());
 
-				TableColumn<Food, Boolean> col = (TableColumn<Food, Boolean>) column;
+				TableColumn<Supplies, Boolean> col = (TableColumn<Supplies, Boolean>) column;
 				col.setCellValueFactory(cellValue -> {
 					return new SimpleBooleanProperty(cellValue.getValue().isDonation());
 				});
@@ -49,11 +44,11 @@ public class FoodsController extends AbstractController<Food, AddEditFoodDialogI
 	}
 
 	/**
-	 * Replaces the current food list display with <code>foods</code>
+	 * Replaces the current list display with <code>supplies</code>
 	 * 
-	 * @param foods foods to display
+	 * @param supplies supplies to display
 	 */
-	protected void refreshTable(List<Food> foods) {
+	protected void refreshTable(List<Supplies> supplies) {
 		data.clear();
 		donors.clear();
 
@@ -63,18 +58,18 @@ public class FoodsController extends AbstractController<Food, AddEditFoodDialogI
 		}
 
 		Set<String> donorNames = new HashSet<>();
-		for (Food food : foods) {
-			data.add(food);
+		for (Supplies supply : supplies) {
+			data.add(supply);
 
-			if (food.isDonation()) {
-				String donorName = food.getDonorName();
+			if (supply.isDonation()) {
+				String donorName = supply.getDonorName();
 
 				// Compile a unique list of donors
 				if (null != donorName && !"".equals(donorName.trim())) {
 					donorName = donorName.trim();
 
 					if (!donorNames.contains(donorName)) {
-						donors.add(new Donor(donorName, food.getDonorAddress(), food.getDonorEmail()));
+						donors.add(new Donor(donorName, supply.getDonorAddress(), supply.getDonorEmail()));
 						donorNames.add(donorName);
 					}
 				}
@@ -84,20 +79,20 @@ public class FoodsController extends AbstractController<Food, AddEditFoodDialogI
 
 	@Override
 	protected String getAddEditDialogFxmlFile() {
-		return "ui/dialog/AddEditFoodDialog.fxml";
+		return "ui/dialog/AddEditSuppliesDialog.fxml";
 	}
 
 	@Override
-	protected AddEditFoodDialogInput getAddDialogInput() {
-		AddEditFoodDialogInput input = new AddEditFoodDialogInput();
+	protected AddEditSuppliesDialogInput getAddDialogInput() {
+		AddEditSuppliesDialogInput input = new AddEditSuppliesDialogInput();
 		input.setDonors(donors);
 		return input;
 	}
 
 	@Override
-	protected AddEditFoodDialogInput getEditDialogInput(Food food) {
-		AddEditFoodDialogInput input = getAddDialogInput();
-		input.setFood(food);
+	protected AddEditSuppliesDialogInput getEditDialogInput(Supplies supplies) {
+		AddEditSuppliesDialogInput input = getAddDialogInput();
+		input.setSupplies(supplies);
 		return input;
 	}
 
@@ -107,8 +102,8 @@ public class FoodsController extends AbstractController<Food, AddEditFoodDialogI
 	}
 
 	@Override
-	protected CsvDao<Food> getDao() {
-		return foodsDao;
+	protected CsvDao<Supplies> getDao() {
+		return suppliesDao;
 	}
 
 }

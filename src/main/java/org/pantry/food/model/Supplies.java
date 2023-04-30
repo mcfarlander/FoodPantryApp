@@ -15,6 +15,8 @@
 */
 package org.pantry.food.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -23,7 +25,7 @@ import javafx.beans.property.SimpleStringProperty;
  *
  * @author Dave Johnson
  */
-public class Food {
+public class Supplies {
 
 	private SimpleStringProperty idProperty = new SimpleStringProperty();
 	private SimpleStringProperty entryDateProperty = new SimpleStringProperty();
@@ -45,15 +47,15 @@ public class Food {
 	private SimpleStringProperty donorAddressProperty = new SimpleStringProperty();
 	private SimpleStringProperty donorEmailProperty = new SimpleStringProperty();
 
-	public Food() {
+	public Supplies() {
 	}
 
-	public Food(Food other) {
+	public Supplies(Supplies other) {
 		if (null == other) {
 			return;
 		}
 
-		setFoodId(other.getFoodId());
+		setId(other.getId());
 		setEntryDate(other.getEntryDate());
 		setPickNSave(other.getPickNSave());
 		setCommunity(other.getCommunity());
@@ -74,7 +76,7 @@ public class Food {
 		setDonorEmail(other.getDonorEmail());
 	}
 
-	public int getFoodId() {
+	public int getId() {
 		String value = idProperty.get();
 		if (null == value) {
 			return -1;
@@ -82,7 +84,7 @@ public class Food {
 		return Integer.valueOf(value);
 	}
 
-	public void setFoodId(int recordId) {
+	public void setId(int recordId) {
 		idProperty.set(String.valueOf(recordId));
 	}
 
@@ -515,24 +517,11 @@ public class Food {
 	}
 
 	/**
-	 * Helper method to return an object to the jtable model.
-	 *
-	 * @return the food record object
-	 */
-	public Object[] getFoodRecordObject() {
-
-		return new Object[] { getFoodId(), getEntryDate(), getPickNSave(), getCommunity(), getNonTefap(), getTefap(),
-				getSecondHarvest(), getSecondHarvestProduce(), getPantry(), getPantryNonFood(), getComment(),
-				getNonFood(), getMilk(), -getPantryProduce(), getProduce(), isDonation(), getDonorName(),
-				getDonorAddress(), getDonorEmail() };
-	}
-
-	/**
-	 * Adds the to current.
+	 * Adds a given record's counts to the current counts
 	 *
 	 * @param record the record
 	 */
-	public void addToCurrent(Food record) {
+	public void addToCurrent(Supplies record) {
 		setPickNSave(getPickNSave() + record.getPickNSave());
 		setCommunity(getCommunity() + record.getCommunity());
 		setNonTefap(getNonTefap() + record.getNonTefap());
@@ -545,13 +534,18 @@ public class Food {
 		setPantryProduce(getPantryProduce() + record.getPantryProduce());
 		setProduce(getProduce() + record.getProduce());
 
-		if (record.getComment().length() > 0) {
-			setComment(getComment() + record.getComment() + ", ");
+		if (!StringUtils.isBlank(record.getComment())) {
+			String comment = getComment();
+			if (!StringUtils.isBlank(comment)) {
+				comment += ", ";
+			}
+			comment += record.getComment();
+			setComment(comment);
 		}
 	}
 
 	/**
-	 * Gets the total.
+	 * Gets the total
 	 *
 	 * @return the total
 	 */

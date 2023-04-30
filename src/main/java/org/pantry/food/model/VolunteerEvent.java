@@ -27,7 +27,8 @@ import org.apache.logging.log4j.Logger;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * A POJO to describe a volunteer event.
+ * Models a volunteer event. An event is a number of hours a volunteer
+ * volunteers on a specific date.
  * 
  * @author mcfarland_davej
  *
@@ -147,30 +148,7 @@ public class VolunteerEvent {
 	}
 
 	public double[] getMonthHrs() {
-		return this.monthHrs;
-	}
-
-	/**
-	 * Helper for setting a line in the csv file.
-	 * 
-	 * @return
-	 */
-	public String[] getCvsEntry() {
-		String[] entry = { "" + this.getVolunteerEventId(), this.getEventName(), this.getVolunteerName(),
-				"" + this.getVolunteerHours(), this.getNotes(), this.getEventDate() };
-
-		return entry;
-	}
-
-	/**
-	 * Helper method to return an object to a jtable model.
-	 * 
-	 * @return
-	 */
-	public Object[] getVolunteerEventObject() {
-		return new Object[] { this.getVolunteerEventId(), this.getEventName(), this.getVolunteerName(),
-				this.getVolunteerHours(), this.getNotes(), this.getEventDate() };
-
+		return monthHrs;
 	}
 
 	public void addMonthHrs(VolunteerEvent record) {
@@ -186,13 +164,9 @@ public class VolunteerEvent {
 			int index = cal.get(Calendar.MONTH);
 
 			monthHrs[index] += recordHours;
-			// System.out.println("index" + index + " adding:" + record.getVolunteerHours()
-			// + " recorded:" + this.monthHrs[index]);
-
 		} catch (ParseException ex) {
 			log.error(ex);
 		}
-
 	}
 
-} // end of class
+}

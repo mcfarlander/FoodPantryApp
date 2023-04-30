@@ -27,11 +27,12 @@ import org.pantry.food.ApplicationContext;
 import org.pantry.food.Images;
 import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.model.Visit;
-import org.pantry.food.ui.ValidStatusTracker;
 import org.pantry.food.ui.validation.ComboInputValidator;
+import org.pantry.food.ui.validation.DateValidator;
 import org.pantry.food.ui.validation.NotNegativeValidator;
 import org.pantry.food.ui.validation.RegexValidator;
 import org.pantry.food.ui.validation.TextInputFocusValidator;
+import org.pantry.food.ui.validation.ValidStatusTracker;
 import org.pantry.food.util.DateUtil;
 
 import javafx.beans.value.ChangeListener;
@@ -184,8 +185,7 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 		numSeniorsText.focusedProperty().addListener(textValidator);
 
 		// Visit Date must comply with typical date format
-		textValidator = new TextInputFocusValidator(visitDateText)
-				.add(new RegexValidator("[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}"));
+		textValidator = new TextInputFocusValidator(visitDateText).add(new DateValidator());
 		visitDateText.focusedProperty().addListener(textValidator);
 		// Calculate the week number when the visit date changes
 		visitDateText.focusedProperty().addListener(new ChangeListener<Boolean>() {

@@ -352,4 +352,4 @@ public class ReportMonthlySummary extends AbstractReportStrategy {
 		}
 	}
 
-}// end of class
+}

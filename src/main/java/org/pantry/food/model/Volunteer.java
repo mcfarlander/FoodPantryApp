@@ -18,7 +18,7 @@ package org.pantry.food.model;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * A POJO to describe a volunteer
+ * Models a food bank volunteer
  * 
  * @author mcfarland_davej
  */
@@ -122,17 +122,6 @@ public class Volunteer {
 
 	public SimpleStringProperty noteProperty() {
 		return noteProperty;
-	}
-
-	/**
-	 * Helper method to return an object to a jtable model.
-	 * 
-	 * @return
-	 */
-	public Object[] getVolunteerObject() {
-		return new Object[] { this.getVolunteerId(), this.getName(), this.getPhone(), this.getEmail(), this.getType(),
-				this.getNote() };
-
 	}
 
 }

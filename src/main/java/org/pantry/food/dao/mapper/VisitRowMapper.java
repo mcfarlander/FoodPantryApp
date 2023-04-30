@@ -39,8 +39,8 @@ public class VisitRowMapper implements ArrayRowMapper<Visit> {
 	public String[] toCsvRow(Visit visit) {
 		return new String[] { "" + visit.getId(), "" + visit.getHouseholdId(), "" + visit.isNewCustomer(),
 				"" + visit.getNumberAdults(), "" + visit.getNumberKids(), "" + visit.getNumberSeniors(),
-				"" + visit.isWorkingIncome(), "" + visit.isOtherIncome(), "" + visit.isNoIncome(),
-				"" + visit.getDate(), "" + visit.getWeekNumber(), "" + visit.isActive() };
+				"" + visit.isWorkingIncome(), "" + visit.isOtherIncome(), "" + visit.isNoIncome(), "" + visit.getDate(),
+				"" + visit.getWeekNumber(), "" + visit.isActive() };
 	}
 
 }

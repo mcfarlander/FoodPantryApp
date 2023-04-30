@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pantry.food.dao.CustomersDao;
-import org.pantry.food.dao.FoodsDao;
+import org.pantry.food.dao.SuppliesDao;
 import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.dao.VolunteerEventsDao;
-import org.pantry.food.dao.VolunteerHourDao;
+import org.pantry.food.dao.VolunteerHoursDao;
 import org.pantry.food.dao.VolunteersDao;
 
 /**
@@ -22,10 +22,10 @@ public class ApplicationContext {
 	private Resources resources;
 	private CustomersDao customersDao;
 	private VisitsDao visitsDao;
-	private FoodsDao foodsDao;
+	private SuppliesDao foodsDao;
 	private VolunteersDao volunteersDao;
 	private VolunteerEventsDao volunteerEventsDao;
-	private VolunteerHourDao volunteerHourDao;
+	private VolunteerHoursDao volunteerHourDao;
 
 	private String copiedEventName = "";
 
@@ -76,9 +76,9 @@ public class ApplicationContext {
 		return INSTANCE.visitsDao;
 	}
 
-	public static FoodsDao getFoodsDao() {
+	public static SuppliesDao getSuppliesDao() {
 		if (null == INSTANCE.foodsDao) {
-			INSTANCE.foodsDao = new FoodsDao();
+			INSTANCE.foodsDao = new SuppliesDao();
 		}
 		return INSTANCE.foodsDao;
 	}
@@ -97,9 +97,9 @@ public class ApplicationContext {
 		return INSTANCE.volunteerEventsDao;
 	}
 
-	public static VolunteerHourDao getVolunteerHourDao() {
+	public static VolunteerHoursDao getVolunteerHourDao() {
 		if (null == INSTANCE.volunteerHourDao) {
-			INSTANCE.volunteerHourDao = new VolunteerHourDao();
+			INSTANCE.volunteerHourDao = new VolunteerHoursDao();
 		}
 		return INSTANCE.volunteerHourDao;
 	}

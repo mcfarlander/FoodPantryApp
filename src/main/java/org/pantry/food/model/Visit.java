@@ -20,7 +20,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
- * A POJO to describe a visit.
+ * Models a customer visit
  * 
  * @author Dave Johnson
  */
@@ -81,7 +81,7 @@ public class Visit {
 	}
 
 	public void setHouseholdId(int householdId) {
-		this.householdIdProperty.set(String.valueOf(householdId));
+		householdIdProperty.set(String.valueOf(householdId));
 	}
 
 	public boolean isNewCustomer() {

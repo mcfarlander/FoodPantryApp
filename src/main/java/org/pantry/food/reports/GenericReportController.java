@@ -26,6 +26,14 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 
+/**
+ * Displays a report consisting of at minimum a data table view. Export to Excel
+ * functionality is provided.
+ * 
+ * The report's details/rows are provided by the supplied
+ * {@link AbstractReportStrategy}. Rows that should be emphasized can supply an
+ * isSummary() value of true.
+ */
 public class GenericReportController implements IModalDialogController<AbstractReportStrategy, Void> {
 
 	private static final Logger log = LogManager.getLogger(GenericReportController.class);
@@ -80,7 +88,9 @@ public class GenericReportController implements IModalDialogController<AbstractR
 				super.updateItem(item, empty);
 				if (null != item && item.isSummary()) {
 					// Highlight summary rows
-					setStyle("-fx-font-weight: bold");
+					setStyle("-fx-font-weight: bold;-fx-font-size: 105%");
+				} else {
+					setStyle(null);
 				}
 			}
 

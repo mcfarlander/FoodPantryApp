@@ -16,60 +16,95 @@
 package org.pantry.food.ui.common;
 
 /**
- * Class to contain the CSV data file names and provide that information
- * to other classes uses in the application.
+ * Class to contain the CSV data file names and provide that information to
+ * other classes uses in the application.
  * 
  * Note: Singleton Pattern.
  * 
  * @author mcfarland_davej
  *
  */
-public class DataFiles
-{
-	
+public class DataFiles {
+
 	/** The instance of this class in the singleton pattern. */
-    private static DataFiles instance = null;
+	private static DataFiles instance = null;
 
-    /** Constructor shouldn't ever be used. */
-    protected DataFiles() {
-      // Exists only to defeat instantiation.
-    }
+	/** Constructor shouldn't ever be used. */
+	protected DataFiles() {
+		// Exists only to defeat instantiation.
+	}
 
-    /**
-     * Get the instance of DataFiles.
-     * @return	FormState	the singleton instance
-     */
-    public static DataFiles getInstance() {
-      if(instance == null) {
-         instance = new DataFiles();
-      }
-      return instance;
-    }
-    
-    // Data files used in the application
-    private String csvFileCustomers 			= "customers.csv";
-    private String csvFileVisits 				= "visitors.csv";
-    private String csvFileFoodRecord 			= "foodrecords.csv";
-    private String cvsFileVolunteerHours 		= "volunteerhours.csv";
-    private String cvsFileVolunteers 			= "volunteers.csv";			// regular volunteers
-    private String cvsFileVolunteerEvents 		= "volunteerevents.csv";	// regular volunteers hours
-    
-    public String getCsvFileCustomers() { return this.csvFileCustomers; }
-    public void setCsvFileCustomers(String sfile) { this.csvFileCustomers = sfile; }
-    
-    public String getCsvFileVisits() { return this.csvFileVisits; }
-    public void setCsvFileVisits(String sfile) { this.csvFileVisits = sfile; }
+	/**
+	 * Get the instance of DataFiles.
+	 * 
+	 * @return FormState the singleton instance
+	 */
+	public static DataFiles getInstance() {
+		if (instance == null) {
+			instance = new DataFiles();
+		}
+		return instance;
+	}
 
-    public String getCsvFileFoodRecord() { return this.csvFileFoodRecord; }
-    public void setCsvFileFoodRecord(String sfile) { this.csvFileFoodRecord = sfile; }
-    
-    public String getCsvFileVolunteerHours() { return this.cvsFileVolunteerHours; }
-    public void setCsvFileVolunteerHours(String sfile) { this.cvsFileVolunteerHours = sfile; }
+	// Data files used in the application
+	private String csvFileCustomers = "customers.csv";
+	private String csvFileVisits = "visitors.csv";
+	private String csvFileFoodRecord = "foodrecords.csv";
+	@Deprecated(forRemoval = true)
+	/**
+	 * Volunteer Hours is now calculated from volunteer events. Do not use this
+	 * file.
+	 */
+	private String cvsFileVolunteerHours = "volunteerhours.csv";
+	private String cvsFileVolunteers = "volunteers.csv"; // regular volunteers
+	private String cvsFileVolunteerEvents = "volunteerevents.csv"; // regular volunteers hours
 
-    public String getCsvFileVolunteers() { return this.cvsFileVolunteers; }
-    public void setCsvFileVolunteers(String sfile) { this.cvsFileVolunteers = sfile; }   
-    
-    public String getCsvFileVolunteerEvents() { return this.cvsFileVolunteerEvents; }
-    public void setCsvFileVolunteerEvents(String sfile) { this.cvsFileVolunteerEvents = sfile; }
-    
+	public String getCsvFileCustomers() {
+		return csvFileCustomers;
+	}
+
+	public void setCsvFileCustomers(String sfile) {
+		csvFileCustomers = sfile;
+	}
+
+	public String getCsvFileVisits() {
+		return csvFileVisits;
+	}
+
+	public void setCsvFileVisits(String sfile) {
+		csvFileVisits = sfile;
+	}
+
+	public String getCsvFileFoodRecord() {
+		return csvFileFoodRecord;
+	}
+
+	public void setCsvFileFoodRecord(String sfile) {
+		csvFileFoodRecord = sfile;
+	}
+
+	public String getCsvFileVolunteerHours() {
+		return cvsFileVolunteerHours;
+	}
+
+	public void setCsvFileVolunteerHours(String sfile) {
+		cvsFileVolunteerHours = sfile;
+	}
+
+	public String getCsvFileVolunteers() {
+		return cvsFileVolunteers;
+	}
+
+	public void setCsvFileVolunteers(String sfile) {
+		cvsFileVolunteers = sfile;
+	}
+
+	public String getCsvFileVolunteerEvents() {
+		return cvsFileVolunteerEvents;
+	}
+
+	public void setCsvFileVolunteerEvents(String sfile) {
+		cvsFileVolunteerEvents = sfile;
+	}
+
 }

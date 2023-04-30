@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
-import org.pantry.food.dao.FoodsDao;
-import org.pantry.food.model.Food;
+import org.pantry.food.dao.SuppliesDao;
+import org.pantry.food.model.Supplies;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -40,6 +40,7 @@ import javafx.scene.control.TableColumn;
  */
 public class ReportDonatedFoodWeight extends AbstractReportStrategy {
 
+	private static final Logger log = LogManager.getLogger(ReportDonatedFoodWeight.class);
 	private DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	private NumberFormat nf = NumberFormat.getInstance();
 
@@ -64,33 +65,35 @@ public class ReportDonatedFoodWeight extends AbstractReportStrategy {
 	@Override
 	public List<ReportRow> getRows() {
 		List<ReportRow> rows = new ArrayList<ReportRow>();
+		String entryDate = "";
 		try {
-			FoodsDao foodsDao = ApplicationContext.getFoodsDao();
+			SuppliesDao foodsDao = ApplicationContext.getSuppliesDao();
 
 			// use the POJO to store the working sums
-			Food janRecord = new Food();
-			Food febRecord = new Food();
-			Food marRecord = new Food();
-			Food aprRecord = new Food();
-			Food mayRecord = new Food();
-			Food junRecord = new Food();
-			Food julRecord = new Food();
-			Food augRecord = new Food();
-			Food sepRecord = new Food();
-			Food octRecord = new Food();
-			Food novRecord = new Food();
-			Food decRecord = new Food();
+			Supplies janRecord = new Supplies();
+			Supplies febRecord = new Supplies();
+			Supplies marRecord = new Supplies();
+			Supplies aprRecord = new Supplies();
+			Supplies mayRecord = new Supplies();
+			Supplies junRecord = new Supplies();
+			Supplies julRecord = new Supplies();
+			Supplies augRecord = new Supplies();
+			Supplies sepRecord = new Supplies();
+			Supplies octRecord = new Supplies();
+			Supplies novRecord = new Supplies();
+			Supplies decRecord = new Supplies();
 
-			Food q1Record = new Food();
-			Food q2Record = new Food();
-			Food q3Record = new Food();
-			Food q4Record = new Food();
-			Food yrRecord = new Food();
+			Supplies q1Record = new Supplies();
+			Supplies q2Record = new Supplies();
+			Supplies q3Record = new Supplies();
+			Supplies q4Record = new Supplies();
+			Supplies yrRecord = new Supplies();
 
 			Calendar cal = Calendar.getInstance();
 
-			for (Food record : foodsDao.getAll()) {
-				Date testDate = dateFormat.parse(record.getEntryDate());
+			for (Supplies record : foodsDao.getAll()) {
+				entryDate = record.getEntryDate();
+				Date testDate = dateFormat.parse(entryDate);
 				cal.setTime(testDate);
 
 				yrRecord.addToCurrent(record);
@@ -173,12 +176,12 @@ public class ReportDonatedFoodWeight extends AbstractReportStrategy {
 
 			rows.add(createTableRow("YEAR", yrRecord).setSummary(true));
 		} catch (ParseException ex) {
-			Logger.getLogger(ReportDonatedFoodWeight.class.getName()).log(Level.SEVERE, null, ex);
+			log.error("Could not parse date " + entryDate, ex);
 		}
 		return rows;
 	}
 
-	private ReportRow createTableRow(String firstCol, Food record) {
+	private ReportRow createTableRow(String firstCol, Supplies record) {
 		ReportRow row = new ReportRow().addColumn(firstCol).addColumn(nf.format(record.getTotal()))
 				.addColumn(nf.format(record.getPickNSave())).addColumn(nf.format(record.getCommunity()))
 				.addColumn(nf.format(record.getNonTefap())).addColumn(nf.format(record.getTefap()))

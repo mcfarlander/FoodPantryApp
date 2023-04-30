@@ -20,17 +20,16 @@ import java.io.IOException;
 
 import org.pantry.food.dao.mapper.ArrayRowMapper;
 import org.pantry.food.dao.mapper.FoodRowMapper;
-import org.pantry.food.model.Food;
+import org.pantry.food.model.Supplies;
 import org.pantry.food.ui.common.DataFiles;
 
 /**
- * A class to contain all the logic to map between a file of food records and
- * the FoodRecord class.
+ * Reads and writes food and non/food donation records
  * 
  * @author mcfarland_davej
  *
  */
-public class FoodsDao extends AbstractCsvDao<Food> {
+public class SuppliesDao extends AbstractCsvDao<Supplies> {
 
 	private static final String Col_RecordId = "recordid";
 	private static final String Col_EntryDate = "entrydate";
@@ -55,13 +54,13 @@ public class FoodsDao extends AbstractCsvDao<Food> {
 	private String startDir = "";
 
 	@Override
-	protected ArrayRowMapper<Food> getRowMapper() {
+	protected ArrayRowMapper<Supplies> getRowMapper() {
 		return new FoodRowMapper();
 	}
 
 	@Override
-	protected int getId(Food entity) {
-		return entity.getFoodId();
+	protected int getId(Supplies entity) {
+		return entity.getId();
 	}
 
 	@Override

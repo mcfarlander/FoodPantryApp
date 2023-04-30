@@ -32,12 +32,12 @@ import org.pantry.food.ApplicationContext;
 import org.pantry.food.Images;
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.model.Customer;
-import org.pantry.food.ui.ValidStatusTracker;
 import org.pantry.food.ui.validation.ComboInputValidator;
 import org.pantry.food.ui.validation.DateValidator;
 import org.pantry.food.ui.validation.NotBlankValidator;
 import org.pantry.food.ui.validation.NumericValidator;
 import org.pantry.food.ui.validation.TextInputFocusValidator;
+import org.pantry.food.ui.validation.ValidStatusTracker;
 import org.pantry.food.util.DateUtil;
 import org.pantry.food.util.NumberUtil;
 

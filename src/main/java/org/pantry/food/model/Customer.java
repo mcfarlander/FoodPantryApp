@@ -64,7 +64,7 @@ public class Customer {
 	}
 
 	public void setCustomerId(int custId) {
-		this.customerIdProperty.set(String.valueOf(custId));
+		customerIdProperty.set(String.valueOf(custId));
 	}
 
 	public int getHouseholdId() {
@@ -76,7 +76,7 @@ public class Customer {
 	}
 
 	public void setHouseholdId(int householdId) {
-		this.householdIdProperty.set(String.valueOf(householdId));
+		householdIdProperty.set(String.valueOf(householdId));
 	}
 
 	public int getPersonId() {
@@ -88,7 +88,7 @@ public class Customer {
 	}
 
 	public void setPersonId(int personId) {
-		this.personIdProperty.set(String.valueOf(personId));
+		personIdProperty.set(String.valueOf(personId));
 	}
 
 	public String getGender() {
@@ -96,7 +96,7 @@ public class Customer {
 	}
 
 	public void setGender(String gender) {
-		this.genderProperty.set(gender);
+		genderProperty.set(gender);
 	}
 
 	public String getBirthDate() {
@@ -104,7 +104,7 @@ public class Customer {
 	}
 
 	public void setBirthDate(String birthDate) {
-		this.birthDateProperty.set(birthDate);
+		birthDateProperty.set(birthDate);
 	}
 
 	public int getAge() {
@@ -116,7 +116,7 @@ public class Customer {
 	}
 
 	public void setAge(int age) {
-		this.ageProperty.set(String.valueOf(age));
+		ageProperty.set(String.valueOf(age));
 	}
 
 	public int getMonthRegistered() {
@@ -128,7 +128,7 @@ public class Customer {
 	}
 
 	public void setMonthRegistered(int monthRegistered) {
-		this.monthRegisteredProperty.set(String.valueOf(monthRegistered));
+		monthRegisteredProperty.set(String.valueOf(monthRegistered));
 	}
 
 	public boolean isNewCustomer() {
@@ -136,7 +136,7 @@ public class Customer {
 	}
 
 	public void setNewCustomer(boolean newCustomer) {
-		this.newCustomerProperty.set(newCustomer);
+		newCustomerProperty.set(newCustomer);
 	}
 
 	public String getComments() {
@@ -144,7 +144,7 @@ public class Customer {
 	}
 
 	public void setComments(String comments) {
-		this.commentsProperty.set(comments);
+		commentsProperty.set(comments);
 	}
 
 	public boolean isActive() {
@@ -152,7 +152,7 @@ public class Customer {
 	}
 
 	public void setActive(boolean active) {
-		this.activeProperty.set(active);
+		activeProperty.set(active);
 	}
 
 	public SimpleStringProperty customerIdProperty() {
@@ -195,15 +195,4 @@ public class Customer {
 		return activeProperty;
 	}
 
-	/**
-	 * Helper method to return an object to the jtable model.
-	 * 
-	 * @return
-	 */
-	public Object[] getCustomerObject() {
-		return new Object[] { customerIdProperty.get(), householdIdProperty.get(), personIdProperty.get(),
-				genderProperty.get(), birthDateProperty.get(), ageProperty.get(), monthRegisteredProperty.get(),
-				newCustomerProperty.get(), commentsProperty.get(), activeProperty.get() };
-	}
-
-} // end of class
+}
