@@ -22,7 +22,7 @@ public class DateUtil {
 		try {
 			LocalDate.parse(str, dateFormatInput);
 			toDate(str);
-		} catch (ParseException ex) {
+		} catch (Exception e) {
 			return false;
 		}
 		return true;

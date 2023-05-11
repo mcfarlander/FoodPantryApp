@@ -1,13 +1,24 @@
 package org.pantry.food.ui.validation;
 
+import org.pantry.food.util.DateUtil;
+
 /**
- * Validates that a string is non-null and is formatted like a date
+ * Validates that a string is non-null, is formatted like a date, and is a valid
+ * date
  *
  */
-public class DateValidator extends RegexValidator {
+public class DateValidator extends DateFormatValidator {
 
-	public DateValidator() {
-		super("[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}");
+	@Override
+	public Boolean validate(String input) {
+		// Must be non-blank and formatted like a date
+		Boolean valid = super.validate(input);
+		if (!valid) {
+			return valid;
+		}
+
+		// Must also be a parseable date
+		return valid && DateUtil.isDate(input);
 	}
 
 }
