@@ -29,7 +29,7 @@ import javafx.stage.Stage;
 
 public abstract class AbstractController<T, DIT> {
 
-	private static final Logger log = LogManager.getLogger();
+	private static final Logger log = LogManager.getLogger(AbstractController.class);
 
 	@FXML
 	protected Button addBtn;
