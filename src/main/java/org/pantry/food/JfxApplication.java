@@ -54,10 +54,6 @@ import javafx.stage.Stage;
  */
 public class JfxApplication extends Application {
 
-	public static void main(String[] args) {
-		Application.launch(JfxApplication.class, args);
-	}
-
 	@FXML
 	private MenuBar mnuBar;
 
