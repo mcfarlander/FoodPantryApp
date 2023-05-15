@@ -58,49 +58,48 @@ public abstract class AbstractCsvDao<T> implements CsvDao<T> {
 	public List<T> read() throws FileNotFoundException, IOException {
 		if (null == csvFile) {
 			csvFile = getCsvFile();
+			if (csvFile.createNewFile()) {
+				log.info("CSV file {} not found, created new empty file", csvFile.getAbsolutePath());
+			}
 		}
 
-		if (csvFile.exists()) {
-			// Watch for file changes on the data file and notify interested listeners
-			// The users often change the files manually and are then surprised when the
-			// program does not know about the changes.
-			if (null == fileWatcher) {
-				startFileWatcher(csvFile);
-			}
+		// Watch for file changes on the data file and notify interested listeners
+		// The users often change the files manually and are then surprised when the
+		// program does not know about the changes.
+		if (null == fileWatcher) {
+			startFileWatcher(csvFile);
+		}
 
-			log.info("CSV file found: {}", csvFile.getName());
-			// Read the whole file into a list
-			List<T> entityList = new ArrayList<>();
-			CSVReader reader = new CSVReader(new FileReader(csvFile));
+		log.info("CSV file found: {}", csvFile.getName());
+		// Read the whole file into a list
+		List<T> entityList = new ArrayList<>();
+		CSVReader reader = new CSVReader(new FileReader(csvFile));
 
-			String[] nextLine;
-			boolean firstLine = true;
-			while ((nextLine = reader.readNext()) != null) {
-				// nextLine[] is an array of values from the line
-				if (!firstLine) {
-					T entity = rowMapper.map(nextLine);
-					int id = getId(entity);
-					if (id > lastId.get()) {
-						lastId.set(id);
-					}
-					entityList.add(entity);
-					// Give subclass a chance to do further per-entity processing (e.g household
-					// IDs)
-					afterLineRead(entity);
-				} else {
-					firstLine = !firstLine;
+		String[] nextLine;
+		boolean firstLine = true;
+		while ((nextLine = reader.readNext()) != null) {
+			// nextLine[] is an array of values from the line
+			if (!firstLine) {
+				T entity = rowMapper.map(nextLine);
+				int id = getId(entity);
+				if (id > lastId.get()) {
+					lastId.set(id);
 				}
+				entityList.add(entity);
+				// Give subclass a chance to do further per-entity processing (e.g household
+				// IDs)
+				afterLineRead(entity);
+			} else {
+				firstLine = !firstLine;
 			}
-
-			reader.close();
-
-			entities = entityList;
-
-			// Give subclass a chance to do further post-processing (e.g. household IDs)
-			afterRead(entities);
-		} else {
-			log.info("CSV file {} NOT found", csvFile.getName());
 		}
+
+		reader.close();
+
+		entities = entityList;
+
+		// Give subclass a chance to do further post-processing (e.g. household IDs)
+		afterRead(entities);
 
 		return entities;
 	}
