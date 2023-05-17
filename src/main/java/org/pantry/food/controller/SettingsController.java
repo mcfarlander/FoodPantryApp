@@ -15,7 +15,6 @@
 */
 package org.pantry.food.controller;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -135,14 +134,8 @@ public class SettingsController implements IModalDialogController<Void, Void> {
 		public void handle(ActionEvent event) {
 			CheckBox checkBox = ((CheckBox) event.getSource());
 			resources.set(checkBox.getId(), String.valueOf(checkBox.isSelected()));
-			try {
-				resources.save();
-				// Notify any open data viewers that settings have changed
-				ApplicationContext.settingsChanged();
-			} catch (IOException e) {
-				log.error("Could not save properties file", e);
-				new Alert(AlertType.ERROR, "Could not save properties file\r\n" + e.getMessage());
-			}
+			// Notify any open data viewers that settings have changed
+			ApplicationContext.settingsChanged();
 		}
 	}
 
