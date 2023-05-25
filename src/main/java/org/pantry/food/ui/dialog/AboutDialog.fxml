@@ -30,6 +30,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <Label text="Version:">
@@ -44,9 +45,14 @@
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Label>
+                        <Label text="In Memory:" GridPane.rowIndex="3">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font></Label>
                         <Label fx:id="versionLabel" GridPane.columnIndex="1" />
                         <Label text="Dave Johnson" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="See Pantry Staff" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="inMemoryOfLabel" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                      </children>
                      <VBox.margin>
                         <Insets left="20.0" top="20.0" />
