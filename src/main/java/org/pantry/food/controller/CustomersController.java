@@ -12,6 +12,7 @@ import org.pantry.food.Resources;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.model.Customer;
+import org.pantry.food.ui.common.StringToDateComparator;
 import org.pantry.food.ui.common.StringToNumberComparator;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditCustomerDialogInput;
@@ -106,6 +107,7 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 	protected void configureColumn(TableColumn<?, ?> column) {
 		// The ID of each column is the name of the corresponding property in the
 		// Customer object
+		super.configureColumn(column);
 
 		if ("newCustomer".equals(column.getId()) || "active".equals(column.getId())) {
 			// Boolean columns have to be treated differently if we want them to display a
@@ -132,10 +134,9 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 			});
 		} else if ("customerId".equals(column.getId()) || "householdId".equals(column.getId())
 				|| "personId".equals(column.getId()) || "age".equals(column.getId())) {
-			super.configureColumn(column);
 			column.setComparator(StringToNumberComparator.getInstance());
-		} else {
-			super.configureColumn(column);
+		} else if ("birthDate".equals(column.getId())) {
+			column.setComparator(StringToDateComparator.getInstance());
 		}
 	}
 }

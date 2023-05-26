@@ -13,6 +13,7 @@ import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.model.VolunteerEvent;
+import org.pantry.food.ui.common.StringToDateComparator;
 import org.pantry.food.ui.common.StringToNumberComparator;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditVolunteerEventDialogInput;
@@ -97,6 +98,8 @@ public class VolunteerEventsController extends AbstractController<VolunteerEvent
 		super.configureColumn(column);
 		if ("volunteerEventId".equals(column.getId()) || "volunteerHours".equals(column.getId())) {
 			column.setComparator(StringToNumberComparator.getInstance());
+		} else if ("eventDate".equals(column.getId())) {
+			column.setComparator(StringToDateComparator.getInstance());
 		}
 	}
 
