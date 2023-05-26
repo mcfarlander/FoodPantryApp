@@ -2,6 +2,7 @@ package org.pantry.food.controller;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +21,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class VisitsController extends AbstractController<Visit, AddEditVisitDialogInput> {
 
@@ -29,40 +29,6 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 	private VisitsDao visitsDao = ApplicationContext.getVisitsDao();
 	private Resources resources = ApplicationContext.getResources();
 
-	protected void init() {
-		for (TableColumn<?, ?> column : dataTable.getColumns()) {
-			// The ID of each column is the name of the corresponding property in the
-			// Visit object
-
-			// Boolean columns have to be treated differently if we want them to display a
-			// checkbox
-			if ("newCustomer".equals(column.getId()) || "active".equals(column.getId())
-					|| "workingIncome".equals(column.getId()) || "otherIncome".equals(column.getId())
-					|| "noIncome".equals(column.getId())) {
-				column.setCellFactory(col -> new CheckBoxTableCell<>());
-
-				TableColumn<Visit, Boolean> col = (TableColumn<Visit, Boolean>) column;
-				col.setCellValueFactory(cellValue -> {
-					boolean value = false;
-					if ("newCustomer".equals(column.getId())) {
-						value = cellValue.getValue().isNewCustomer();
-					} else if ("workingIncome".equals(column.getId())) {
-						value = cellValue.getValue().isWorkingIncome();
-					} else if ("otherIncome".equals(column.getId())) {
-						value = cellValue.getValue().isOtherIncome();
-					} else if ("noIncome".equals(column.getId())) {
-						value = cellValue.getValue().isNoIncome();
-					} else {
-						value = cellValue.getValue().isActive();
-					}
-					return new SimpleBooleanProperty(value);
-				});
-			} else {
-				column.setCellValueFactory(new PropertyValueFactory<>(column.getId()));
-			}
-		}
-	}
-
 	/**
 	 * Replaces the current visit list display with <code>visits</code>
 	 * 
@@ -70,12 +36,11 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 	 */
 	protected void refreshTable(List<Visit> visits) {
 		try {
-			data.clear();
-
 			boolean showAll = resources.getBoolean("visits.show.all");
 			boolean showInactive = resources.getBoolean("visits.show.inactive");
 			LocalDate now = LocalDate.now();
 
+			List<Visit> newVisits = new ArrayList<>();
 			for (Visit visit : visits) {
 				boolean canAdd = false;
 				LocalDate visitDate;
@@ -103,9 +68,12 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 				}
 
 				if (canAdd) {
-					data.add(visit);
+					newVisits.add(visit);
 				}
 			}
+
+			data.clear();
+			data.addAll(newVisits);
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			log.error(ex);
 			Alert alert = new Alert(AlertType.ERROR,
@@ -141,6 +109,39 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 	@Override
 	protected CsvDao<Visit> getDao() {
 		return visitsDao;
+	}
+
+	@Override
+	protected void configureColumn(TableColumn<?, ?> column) {
+		// The ID of each column is the name of the corresponding property in the
+		// Visit object
+
+		if ("newCustomer".equals(column.getId()) || "active".equals(column.getId())
+				|| "workingIncome".equals(column.getId()) || "otherIncome".equals(column.getId())
+				|| "noIncome".equals(column.getId())) {
+			// Boolean columns have to be treated differently if we want them to display a
+			// checkbox
+			column.setCellFactory(col -> new CheckBoxTableCell<>());
+
+			TableColumn<Visit, Boolean> col = (TableColumn<Visit, Boolean>) column;
+			col.setCellValueFactory(cellValue -> {
+				boolean value = false;
+				if ("newCustomer".equals(column.getId())) {
+					value = cellValue.getValue().isNewCustomer();
+				} else if ("workingIncome".equals(column.getId())) {
+					value = cellValue.getValue().isWorkingIncome();
+				} else if ("otherIncome".equals(column.getId())) {
+					value = cellValue.getValue().isOtherIncome();
+				} else if ("noIncome".equals(column.getId())) {
+					value = cellValue.getValue().isNoIncome();
+				} else {
+					value = cellValue.getValue().isActive();
+				}
+				return new SimpleBooleanProperty(value);
+			});
+		} else {
+			super.configureColumn(column);
+		}
 	}
 
 }

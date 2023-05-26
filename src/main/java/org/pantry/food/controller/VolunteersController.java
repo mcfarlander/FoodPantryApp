@@ -8,27 +8,19 @@ import org.pantry.food.ApplicationContext;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.model.Volunteer;
+import org.pantry.food.ui.common.StringToNumberComparator;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditVolunteerDialogInput;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class VolunteersController extends AbstractController<Volunteer, AddEditVolunteerDialogInput> {
 
 	private final static Logger log = LogManager.getLogger(VolunteersController.class);
 
 	private VolunteersDao volunteerDao = ApplicationContext.getVolunteersDao();
-
-	protected void init() {
-		for (TableColumn<?, ?> column : dataTable.getColumns()) {
-			// The ID of each column is the name of the corresponding property in the
-			// Volunteer object
-			column.setCellValueFactory(new PropertyValueFactory<>(column.getId()));
-		}
-	}
 
 	/**
 	 * Replaces the current volunteer list display with <code>volunteers</code>
@@ -72,6 +64,14 @@ public class VolunteersController extends AbstractController<Volunteer, AddEditV
 	@Override
 	protected CsvDao<Volunteer> getDao() {
 		return volunteerDao;
+	}
+
+	@Override
+	protected void configureColumn(TableColumn<?, ?> column) {
+		super.configureColumn(column);
+		if ("volunteerId".equals(column.getId())) {
+			column.setComparator(StringToNumberComparator.getInstance());
+		}
 	}
 
 }

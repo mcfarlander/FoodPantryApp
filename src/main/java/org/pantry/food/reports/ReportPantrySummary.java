@@ -45,14 +45,12 @@ import javafx.scene.control.TableColumn;
  */
 public class ReportPantrySummary extends AbstractReportStrategy {
 
-	private int monthSelected = 0;
+	private int startMonth = 0;
+	private int endMonth = 0;
 
-	public int getMonthSelected() {
-		return monthSelected;
-	}
-
-	public void setMonthSelected(int iMonth) {
-		this.monthSelected = iMonth;
+	public void setDateRange(int startMonth, int endMonth) {
+		this.startMonth = startMonth;
+		this.endMonth = endMonth;
 	}
 
 	private DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -108,7 +106,8 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 		List<Customer> customers = ApplicationContext.getCustomersDao().getAll();
 		numberCustomers = customers.size();
 		for (Customer cust : customers) {
-			isFromMonth = (cust.getMonthRegistered() - 1 == monthSelected);
+			final int registeredMonthId = cust.getMonthRegistered() - 1;
+			isFromMonth = registeredMonthId >= startMonth && registeredMonthId <= endMonth;
 
 			if (cust.isNewCustomer()) {
 				if (cust.isActive()) {
@@ -179,8 +178,8 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 		}
 
 		rows.add(new ReportRow().addColumn("New Customers Month").addColumn(String.valueOf(numberMonthCustomers))
-				.addColumn("Adults:" + numberMonthAdults + " Seniors:" + numberMonthSeniors + " Children:"
-						+ numberMonthKids + " Households:" + distinctHouseholdsMonth.size()));
+				.addColumn("Adults: " + numberMonthAdults + " Seniors: " + numberMonthSeniors + " Children: "
+						+ numberMonthKids + " Households: " + distinctHouseholdsMonth.size()));
 		rows.add(new ReportRow().addColumn("New Customers YTD").addColumn(String.valueOf(numberCustomers))
 				.addColumn("Adults: " + numberNewAdults + " Seniors: " + numberNewSeniors + " Children: "
 						+ numberNewKids + " Households: " + distinctHouseholdsYtd.size()));
@@ -206,7 +205,8 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 			Date thedate = dateFormat.parse(visit.getDate());
 			mydate.setTime(thedate);
 
-			if ((mydate.get(Calendar.MONTH) == monthSelected) && visit.isActive()) {
+			final int visitMonth = mydate.get(Calendar.MONTH);
+			if (visitMonth >= startMonth && visitMonth <= endMonth && visit.isActive()) {
 				numberTotalVisits++;
 
 				bFound = false;
@@ -230,7 +230,8 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 			numberDistinctSeniors += visit.getNumberSeniors();
 		}
 
-		rows.add(new ReportRow().addColumn("Total Visits").addColumn(String.valueOf(numberTotalVisits)).addColumn(""));
+		rows.add(new ReportRow().addColumn("Total Visits").addColumn(String.valueOf(numberTotalVisits)).addColumn("")
+				.setSummary(true));
 		rows.add(new ReportRow().addColumn(" - Distinct Houses").addColumn(String.valueOf(numberDistinctHouseholds))
 				.addColumn(""));
 		rows.add(new ReportRow().addColumn(" - Distinct Adults").addColumn(String.valueOf(numberDistinctAdults))
@@ -263,7 +264,8 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 			Date thedate = dateFormat.parse(event.getEventDate());
 			mydate.setTime(thedate);
 
-			if (mydate.get(Calendar.MONTH) == monthSelected) {
+			final int visitMonth = mydate.get(Calendar.MONTH);
+			if (visitMonth >= startMonth && visitMonth <= endMonth) {
 				totalHours += event.getVolunteerHours();
 				bfound = false;
 
@@ -314,13 +316,14 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 		}
 
 		rows.add(new ReportRow().addColumn("Total Hours").addColumn(nf.format(totalHours))
-				.addColumn("Count:" + (distinctStudents.size() + distinctRegulars.size() + distinctOthers.size())));
+				.addColumn("Count: " + (distinctStudents.size() + distinctRegulars.size() + distinctOthers.size()))
+				.setSummary(true));
 		rows.add(new ReportRow().addColumn(" - Student Hours").addColumn(nf.format(totalStudentHours))
-				.addColumn("Count:" + distinctStudents.size()));
+				.addColumn("Count: " + distinctStudents.size()));
 		rows.add(new ReportRow().addColumn(" - Regular Hours").addColumn(nf.format(totalRegularHours))
-				.addColumn("Count:" + distinctRegulars.size()));
+				.addColumn("Count: " + distinctRegulars.size()));
 		rows.add(new ReportRow().addColumn(" - Other Hours").addColumn(nf.format(totalOtherHours))
-				.addColumn("Count:" + distinctOthers.size()));
+				.addColumn("Count: " + distinctOthers.size()));
 		return rows;
 	}
 
@@ -334,12 +337,14 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 			Date thedate = dateFormat.parse(record.getEntryDate());
 			mydate.setTime(thedate);
 
-			if (mydate.get(Calendar.MONTH) == monthSelected) {
+			final int visitMonth = mydate.get(Calendar.MONTH);
+			if (visitMonth >= startMonth && visitMonth <= endMonth) {
 				totals.addToCurrent(record);
 			}
 		}
 
-		rows.add(new ReportRow().addColumn("Total Donations").addColumn(nf.format(totals.getTotal())).addColumn(""));
+		rows.add(new ReportRow().addColumn("Total Donations").addColumn(nf.format(totals.getTotal())).setSummary(true)
+				.addColumn(""));
 		rows.add(new ReportRow().addColumn(" - Community").addColumn(String.valueOf(nf.format(totals.getCommunity())))
 				.addColumn(""));
 		rows.add(new ReportRow().addColumn(" - Pick N Save").addColumn(String.valueOf(nf.format(totals.getPickNSave())))

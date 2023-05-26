@@ -2,6 +2,7 @@ package org.pantry.food.controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,6 +12,7 @@ import org.pantry.food.Resources;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.model.Customer;
+import org.pantry.food.ui.common.StringToNumberComparator;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditCustomerDialogInput;
 import org.pantry.food.util.DateUtil;
@@ -21,7 +23,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class CustomersController extends AbstractController<Customer, AddEditCustomerDialogInput> {
 
@@ -31,37 +32,6 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 	private Resources resources = ApplicationContext.getResources();
 
 	public void init() {
-		for (TableColumn<?, ?> column : dataTable.getColumns()) {
-			// The ID of each column is the name of the corresponding property in the
-			// Customer object
-
-			// Boolean columns have to be treated differently if we want them to display a
-			// checkbox
-			if ("newCustomer".equals(column.getId()) || "active".equals(column.getId())) {
-				column.setCellFactory(col -> new CheckBoxTableCell<>());
-
-				TableColumn<Customer, Boolean> col = (TableColumn<Customer, Boolean>) column;
-				col.setCellValueFactory(cellValue -> {
-					boolean value = false;
-					if ("newCustomer".equals(column.getId())) {
-						value = cellValue.getValue().isNewCustomer();
-					} else {
-						value = cellValue.getValue().isActive();
-					}
-					return new SimpleBooleanProperty(value);
-				});
-			} else if ("monthRegistered".equals(column.getId())) {
-				TableColumn<Customer, String> col = (TableColumn<Customer, String>) column;
-				col.setCellValueFactory(cellValue -> {
-					int monthId = cellValue.getValue().getMonthRegistered();
-					String monthName = DateUtil.getMonthName(monthId);
-					return new SimpleStringProperty(monthName);
-				});
-			} else {
-				column.setCellValueFactory(new PropertyValueFactory<>(column.getId()));
-			}
-		}
-
 		try {
 			refreshTable(customerDao.read());
 		} catch (ArrayIndexOutOfBoundsException | FileNotFoundException ex) {
@@ -84,15 +54,17 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 	 */
 	protected void refreshTable(List<Customer> customers) {
 		try {
-			data.clear();
-
+			List<Customer> newCustomers = new ArrayList<>();
 			boolean showInactive = resources.getBoolean("customers.show.inactive");
 			for (Customer customer : customers) {
 				boolean canAdd = showInactive ? true : customer.isActive();
 				if (canAdd) {
-					data.add(customer);
+					newCustomers.add(customer);
 				}
 			}
+
+			data.clear();
+			data.addAll(newCustomers);
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			log.error(ex);
 			Alert alert = new Alert(AlertType.WARNING,
@@ -128,5 +100,42 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 	@Override
 	protected CsvDao<Customer> getDao() {
 		return customerDao;
+	}
+
+	@Override
+	protected void configureColumn(TableColumn<?, ?> column) {
+		// The ID of each column is the name of the corresponding property in the
+		// Customer object
+
+		if ("newCustomer".equals(column.getId()) || "active".equals(column.getId())) {
+			// Boolean columns have to be treated differently if we want them to display a
+			// checkbox
+			column.setCellFactory(col -> new CheckBoxTableCell<>());
+
+			TableColumn<Customer, Boolean> col = (TableColumn<Customer, Boolean>) column;
+			col.setCellValueFactory(cellValue -> {
+				boolean value = false;
+				if ("newCustomer".equals(column.getId())) {
+					value = cellValue.getValue().isNewCustomer();
+				} else {
+					value = cellValue.getValue().isActive();
+				}
+				return new SimpleBooleanProperty(value);
+			});
+		} else if ("monthRegistered".equals(column.getId())) {
+			// Show the month instead of the month's ID number
+			TableColumn<Customer, String> col = (TableColumn<Customer, String>) column;
+			col.setCellValueFactory(cellValue -> {
+				int monthId = cellValue.getValue().getMonthRegistered();
+				String monthName = DateUtil.getMonthName(monthId);
+				return new SimpleStringProperty(monthName);
+			});
+		} else if ("customerId".equals(column.getId()) || "householdId".equals(column.getId())
+				|| "personId".equals(column.getId()) || "age".equals(column.getId())) {
+			super.configureColumn(column);
+			column.setComparator(StringToNumberComparator.getInstance());
+		} else {
+			super.configureColumn(column);
+		}
 	}
 }

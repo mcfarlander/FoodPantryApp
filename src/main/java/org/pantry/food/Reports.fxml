@@ -28,33 +28,37 @@
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <RadioButton id="food.weight" mnemonicParsing="false" selected="true" text="Donated Food Weight Report">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="radios" />
+                     </toggleGroup></RadioButton>
+                  <RadioButton id="volunteer.events" mnemonicParsing="false" text="Volunteer Events" toggleGroup="$radios" GridPane.rowIndex="2" />
+                  <RadioButton id="volunteer.hours" mnemonicParsing="false" text="Volunteer Hours" toggleGroup="$radios" GridPane.rowIndex="1" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.rowIndex="3">
                      <children>
-                        <RadioButton id="monthly.summary" alignment="CENTER_LEFT" mnemonicParsing="false" selected="true" text="Monthly Summary for">
-                           <toggleGroup>
-                              <ToggleGroup fx:id="radios" />
-                           </toggleGroup>
+                        <RadioButton id="pantry.report" mnemonicParsing="false" text="Pantry Report Summary" toggleGroup="$radios">
                            <HBox.margin>
                               <Insets top="5.0" />
                            </HBox.margin>
                         </RadioButton>
-                        <ComboBox fx:id="monthCbo" prefWidth="100.0">
+                        <ComboBox fx:id="startMonthCbo" prefWidth="100.0" />
+                        <Label text="to">
                            <HBox.margin>
-                              <Insets left="20.0" />
+                              <Insets top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <ComboBox fx:id="endMonthCbo" prefWidth="100.0">
+                           <HBox.margin>
+                              <Insets />
                            </HBox.margin>
                         </ComboBox>
                      </children>
                   </HBox>
-                  <RadioButton id="food.weight" mnemonicParsing="false" text="Donated Food Weight Report" toggleGroup="$radios" GridPane.rowIndex="1" />
-                  <RadioButton id="volunteer.events" mnemonicParsing="false" text="Volunteer Events" toggleGroup="$radios" GridPane.rowIndex="3" />
-                  <RadioButton id="pantry.report" mnemonicParsing="false" text="Pantry Report Summary" toggleGroup="$radios" GridPane.rowIndex="4" />
-                  <RadioButton id="volunteer.hours" mnemonicParsing="false" text="Volunteer Hours" toggleGroup="$radios" GridPane.rowIndex="2" />
                </children>
                <VBox.margin>
                   <Insets left="20.0" />
