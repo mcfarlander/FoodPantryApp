@@ -61,7 +61,7 @@
                         <TableColumn id="secondHarvest" editable="false" minWidth="-1.0" prefWidth="84.0" styleClass="numeric" text="2nd Harvest" />
                         <TableColumn id="secondHarvestProduce" editable="false" minWidth="-1.0" prefWidth="128.0" styleClass="numeric" text="2nd Harvest Produce" />
                         <TableColumn id="pantry" editable="false" minWidth="-1.0" prefWidth="99.0" styleClass="numeric" text="Pantry Purchase" />
-                        <TableColumn id="nonFood" editable="false" minWidth="-1.0" prefWidth="111.5" styleClass="numeric" text="Pantry Non-Food" />
+                        <TableColumn id="other" editable="false" minWidth="-1.0" prefWidth="111.5" styleClass="numeric" text="Pantry Non-Food" />
                         <TableColumn id="comment" editable="false" minWidth="-1.0" prefWidth="112.5" text="Comment" />
                         <TableColumn id="nonFood" editable="false" minWidth="-1.0" prefWidth="70.0" styleClass="numeric" text="Non-Food" />
                         <TableColumn id="milk" editable="false" minWidth="-1.0" prefWidth="44.0" styleClass="numeric" text="Milk" />
