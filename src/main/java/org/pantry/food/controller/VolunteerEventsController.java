@@ -2,6 +2,7 @@ package org.pantry.food.controller;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -36,22 +37,24 @@ public class VolunteerEventsController extends AbstractController<VolunteerEvent
 	 */
 	protected void refreshTable(List<VolunteerEvent> events) {
 		try {
-			data.clear();
-
 			boolean showAll = resources.getBoolean("events.show.all");
 			LocalDate now = LocalDate.now();
+			List<VolunteerEvent> newEvents = new ArrayList<>();
 			for (VolunteerEvent event : events) {
 				LocalDate eventDate;
 				try {
 					eventDate = DateUtil.toDate(event.getEventDate());
 					if (showAll || (now.getMonthValue() == eventDate.getMonthValue()
 							&& now.getYear() == eventDate.getYear())) {
-						data.add(event);
+						newEvents.add(event);
 					}
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
 			}
+
+			data.clear();
+			data.addAll(newEvents);
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			log.error(ex);
 			Alert alert = new Alert(AlertType.ERROR,

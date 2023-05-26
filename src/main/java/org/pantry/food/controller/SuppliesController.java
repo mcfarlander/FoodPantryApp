@@ -36,7 +36,6 @@ public class SuppliesController extends AbstractController<Supplies, AddEditSupp
 	 * @param supplies supplies to display
 	 */
 	protected void refreshTable(List<Supplies> supplies) {
-		data.clear();
 		donors.clear();
 
 		Donor anon = new Donor("Anonymous");
@@ -44,9 +43,10 @@ public class SuppliesController extends AbstractController<Supplies, AddEditSupp
 			donors.add(anon);
 		}
 
+		List<Supplies> newSupplies = new ArrayList<>();
 		Set<String> donorNames = new HashSet<>();
 		for (Supplies supply : supplies) {
-			data.add(supply);
+			newSupplies.add(supply);
 
 			if (supply.isDonation()) {
 				String donorName = supply.getDonorName();
@@ -62,6 +62,9 @@ public class SuppliesController extends AbstractController<Supplies, AddEditSupp
 				}
 			}
 		}
+
+		data.clear();
+		data.addAll(newSupplies);
 	}
 
 	@Override

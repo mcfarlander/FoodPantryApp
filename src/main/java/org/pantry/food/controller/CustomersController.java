@@ -2,6 +2,7 @@ package org.pantry.food.controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -53,15 +54,17 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 	 */
 	protected void refreshTable(List<Customer> customers) {
 		try {
-			data.clear();
-
+			List<Customer> newCustomers = new ArrayList<>();
 			boolean showInactive = resources.getBoolean("customers.show.inactive");
 			for (Customer customer : customers) {
 				boolean canAdd = showInactive ? true : customer.isActive();
 				if (canAdd) {
-					data.add(customer);
+					newCustomers.add(customer);
 				}
 			}
+
+			data.clear();
+			data.addAll(newCustomers);
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			log.error(ex);
 			Alert alert = new Alert(AlertType.WARNING,

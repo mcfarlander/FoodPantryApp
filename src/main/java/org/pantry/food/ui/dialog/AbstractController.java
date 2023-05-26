@@ -13,6 +13,8 @@ import org.pantry.food.SettingsChangedListener;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.FileChangedListener;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,6 +24,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -41,6 +44,9 @@ public abstract class AbstractController<T, DIT> {
 
 	@FXML
 	protected Button deleteBtn;
+
+	@FXML
+	protected Label recordCountLabel;
 
 	@FXML
 	protected TableView<T> dataTable;
@@ -138,6 +144,15 @@ public abstract class AbstractController<T, DIT> {
 		init();
 
 		dataTable.setItems(data);
+
+		data.addListener(new InvalidationListener() {
+
+			@Override
+			public void invalidated(Observable observable) {
+				// Update the record count label
+				recordCountLabel.setText("Records: " + data.size());
+			}
+		});
 
 		try {
 			refreshTable(dao.read());
