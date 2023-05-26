@@ -1,6 +1,7 @@
 package org.pantry.food.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,37 +11,23 @@ import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.SuppliesDao;
 import org.pantry.food.model.Donor;
 import org.pantry.food.model.Supplies;
+import org.pantry.food.ui.common.StringToNumberComparator;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditSuppliesDialogInput;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class SuppliesController extends AbstractController<Supplies, AddEditSuppliesDialogInput> {
 
 	private SuppliesDao suppliesDao = ApplicationContext.getSuppliesDao();
 	private List<Donor> donors = new ArrayList<>();
+	private List<String> numericColumnIds = new ArrayList<>();
 
-	protected void init() {
-		for (TableColumn<?, ?> column : dataTable.getColumns()) {
-			// The ID of each column is the name of the corresponding property in the
-			// Supplies object
-
-			// Boolean columns have to be treated differently if we want them to display a
-			// checkbox
-			if ("donation".equals(column.getId())) {
-				column.setCellFactory(col -> new CheckBoxTableCell<>());
-
-				TableColumn<Supplies, Boolean> col = (TableColumn<Supplies, Boolean>) column;
-				col.setCellValueFactory(cellValue -> {
-					return new SimpleBooleanProperty(cellValue.getValue().isDonation());
-				});
-			} else {
-				column.setCellValueFactory(new PropertyValueFactory<>(column.getId()));
-			}
-		}
+	public SuppliesController() {
+		numericColumnIds.addAll(Arrays.asList("id", "pickNSave", "community", "nonTefap", "tefap", "secondHarvest",
+				"secondHarvestProduce", "pantry", "nonFood", "nonFoodPlaceholder", "milk", "pantryProduce", "produce"));
 	}
 
 	/**
@@ -104,6 +91,28 @@ public class SuppliesController extends AbstractController<Supplies, AddEditSupp
 	@Override
 	protected CsvDao<Supplies> getDao() {
 		return suppliesDao;
+	}
+
+	@Override
+	protected void configureColumn(TableColumn<?, ?> column) {
+		// The ID of each column is the name of the corresponding property in the
+		// Supplies object
+
+		if ("donation".equals(column.getId())) {
+			// Boolean columns have to be treated differently if we want them to display a
+			// checkbox
+			column.setCellFactory(col -> new CheckBoxTableCell<>());
+
+			TableColumn<Supplies, Boolean> col = (TableColumn<Supplies, Boolean>) column;
+			col.setCellValueFactory(cellValue -> {
+				return new SimpleBooleanProperty(cellValue.getValue().isDonation());
+			});
+		} else if (numericColumnIds.contains(column.getId())) {
+			super.configureColumn(column);
+			column.setComparator(StringToNumberComparator.getInstance());
+		} else {
+			super.configureColumn(column);
+		}
 	}
 
 }

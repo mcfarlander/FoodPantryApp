@@ -12,6 +12,7 @@ import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.model.VolunteerEvent;
+import org.pantry.food.ui.common.StringToNumberComparator;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditVolunteerEventDialogInput;
 import org.pantry.food.util.DateUtil;
@@ -19,7 +20,6 @@ import org.pantry.food.util.DateUtil;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class VolunteerEventsController extends AbstractController<VolunteerEvent, AddEditVolunteerEventDialogInput> {
 
@@ -28,14 +28,6 @@ public class VolunteerEventsController extends AbstractController<VolunteerEvent
 	private VolunteerEventsDao volunteerEventDao = ApplicationContext.getVolunteerEventsDao();
 	private VolunteersDao volunteersDao = ApplicationContext.getVolunteersDao();
 	private Resources resources = ApplicationContext.getResources();
-
-	protected void init() {
-		for (TableColumn<?, ?> column : dataTable.getColumns()) {
-			// The ID of each column is the name of the corresponding property in the
-			// Volunteer object
-			column.setCellValueFactory(new PropertyValueFactory<>(column.getId()));
-		}
-	}
 
 	/**
 	 * Replaces the current events list display with <code>events</code>
@@ -95,6 +87,14 @@ public class VolunteerEventsController extends AbstractController<VolunteerEvent
 	@Override
 	protected CsvDao<VolunteerEvent> getDao() {
 		return volunteerEventDao;
+	}
+
+	@Override
+	protected void configureColumn(TableColumn<?, ?> column) {
+		super.configureColumn(column);
+		if ("volunteerEventId".equals(column.getId()) || "volunteerHours".equals(column.getId())) {
+			column.setComparator(StringToNumberComparator.getInstance());
+		}
 	}
 
 }
