@@ -55,9 +55,9 @@ public class DataFiles {
 	 * Volunteer Hours is now calculated from volunteer events. Do not use this
 	 * file.
 	 */
-	private String cvsFileVolunteerHours = "volunteerhours.csv";
-	private String cvsFileVolunteers = "volunteers.csv"; // regular volunteers
-	private String cvsFileVolunteerEvents = "volunteerevents.csv"; // regular volunteers hours
+	private String csvFileVolunteerHours = "volunteerhours.csv";
+	private String csvFileVolunteers = "volunteers.csv"; // regular volunteers
+	private String csvFileVolunteerEvents = "volunteerevents.csv"; // regular volunteers hours
 
 	public String getCsvFileCustomers() {
 		return csvFileCustomers;
@@ -84,27 +84,27 @@ public class DataFiles {
 	}
 
 	public String getCsvFileVolunteerHours() {
-		return cvsFileVolunteerHours;
+		return csvFileVolunteerHours;
 	}
 
 	public void setCsvFileVolunteerHours(String sfile) {
-		cvsFileVolunteerHours = sfile;
+		csvFileVolunteerHours = sfile;
 	}
 
 	public String getCsvFileVolunteers() {
-		return cvsFileVolunteers;
+		return csvFileVolunteers;
 	}
 
 	public void setCsvFileVolunteers(String sfile) {
-		cvsFileVolunteers = sfile;
+		csvFileVolunteers = sfile;
 	}
 
 	public String getCsvFileVolunteerEvents() {
-		return cvsFileVolunteerEvents;
+		return csvFileVolunteerEvents;
 	}
 
 	public void setCsvFileVolunteerEvents(String sfile) {
-		cvsFileVolunteerEvents = sfile;
+		csvFileVolunteerEvents = sfile;
 	}
 
 }

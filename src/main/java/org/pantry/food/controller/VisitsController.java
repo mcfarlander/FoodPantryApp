@@ -12,6 +12,7 @@ import org.pantry.food.Resources;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.VisitsDao;
 import org.pantry.food.model.Visit;
+import org.pantry.food.ui.common.StringToDateComparator;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditVisitDialogInput;
 import org.pantry.food.util.DateUtil;
@@ -115,6 +116,7 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 	protected void configureColumn(TableColumn<?, ?> column) {
 		// The ID of each column is the name of the corresponding property in the
 		// Visit object
+		super.configureColumn(column);
 
 		if ("newCustomer".equals(column.getId()) || "active".equals(column.getId())
 				|| "workingIncome".equals(column.getId()) || "otherIncome".equals(column.getId())
@@ -139,8 +141,8 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 				}
 				return new SimpleBooleanProperty(value);
 			});
-		} else {
-			super.configureColumn(column);
+		} else if ("visitDate".equals(column.getId())) {
+			column.setComparator(StringToDateComparator.getInstance());
 		}
 	}
 

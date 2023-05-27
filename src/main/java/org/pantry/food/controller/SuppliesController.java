@@ -11,6 +11,7 @@ import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.SuppliesDao;
 import org.pantry.food.model.Donor;
 import org.pantry.food.model.Supplies;
+import org.pantry.food.ui.common.StringToDateComparator;
 import org.pantry.food.ui.common.StringToNumberComparator;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditSuppliesDialogInput;
@@ -100,6 +101,7 @@ public class SuppliesController extends AbstractController<Supplies, AddEditSupp
 	protected void configureColumn(TableColumn<?, ?> column) {
 		// The ID of each column is the name of the corresponding property in the
 		// Supplies object
+		super.configureColumn(column);
 
 		if ("donation".equals(column.getId())) {
 			// Boolean columns have to be treated differently if we want them to display a
@@ -111,10 +113,9 @@ public class SuppliesController extends AbstractController<Supplies, AddEditSupp
 				return new SimpleBooleanProperty(cellValue.getValue().isDonation());
 			});
 		} else if (numericColumnIds.contains(column.getId())) {
-			super.configureColumn(column);
 			column.setComparator(StringToNumberComparator.getInstance());
-		} else {
-			super.configureColumn(column);
+		} else if ("entryDate".equals(column.getId())) {
+			column.setComparator(StringToDateComparator.getInstance());
 		}
 	}
 

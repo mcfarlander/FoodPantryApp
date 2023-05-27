@@ -186,17 +186,11 @@ public class ReportVolunteerEvents extends AbstractReportStrategy {
 				String sType = volun.getType();
 				if ("Regular".equalsIgnoreCase(sType)) {
 					iReturn = REGULAR;
-				}
-
-				if ("Student".equalsIgnoreCase(sType)) {
+				} else if ("Student".equalsIgnoreCase(sType)) {
 					iReturn = STUDENT;
-				}
-
-				if ("Special".equalsIgnoreCase(sType)) {
+				} else if ("Special".equalsIgnoreCase(sType)) {
 					iReturn = SPECIAL;
-				}
-
-				if ("Other".equalsIgnoreCase(sType)) {
+				} else if ("Other".equalsIgnoreCase(sType)) {
 					iReturn = OTHER;
 				}
 

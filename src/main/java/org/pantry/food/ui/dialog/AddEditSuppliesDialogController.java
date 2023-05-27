@@ -234,6 +234,19 @@ public class AddEditSuppliesDialogController implements IModalDialogController<A
 		textValidator = new TextInputFocusValidator(dateText).add(new NotBlankValidator()).add(new DateValidator());
 		dateText.focusedProperty().addListener(textValidator);
 
+		// Show donor section at load time if the underlying data indicates there is a
+		// donor record
+		if (savedFood.isDonation()) {
+			for (Donor donor : input.getDonors()) {
+				String donorName = savedFood.getDonorName();
+				if (donorName.equalsIgnoreCase(donor.getName())) {
+					donorCbo.getSelectionModel().select(donor);
+					break;
+				}
+			}
+			donationGrd.setVisible(true);
+		}
+
 		// Only show donor section if Is Donation is checked
 		donationChk.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
