@@ -83,6 +83,7 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 	protected AddEditCustomerDialogInput getAddDialogInput() {
 		AddEditCustomerDialogInput input = new AddEditCustomerDialogInput();
 		input.setHouseholdIds(customerDao.getHouseholdIds());
+		input.setHouseholdToPersonMap(customerDao.getHouseholdToPersonMap());
 		return input;
 	}
 

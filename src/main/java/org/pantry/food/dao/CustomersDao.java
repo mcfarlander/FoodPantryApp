@@ -18,8 +18,10 @@ package org.pantry.food.dao;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.pantry.food.dao.mapper.ArrayRowMapper;
@@ -52,7 +54,9 @@ public class CustomersDao extends AbstractCsvDao<Customer> {
 	private String startDir = "";
 	private NumberAsStringComparator numberAsStringComparator = new NumberAsStringComparator();
 	private List<String> householdIds = new ArrayList<>();
+	private Map<Integer, List<Integer>> householdToPersonMap = new HashMap<>();
 	private Set<String> tempHouseHoldIds = new HashSet<>();
+	private Map<Integer, List<Integer>> tempHouseholdToPersonMap = new HashMap<>();
 
 	/**
 	 * IDs of every household in the customer list
@@ -61,6 +65,13 @@ public class CustomersDao extends AbstractCsvDao<Customer> {
 	 */
 	public List<String> getHouseholdIds() {
 		return householdIds;
+	}
+
+	/**
+	 * @return map of each household ID to its associated persons
+	 */
+	public Map<Integer, List<Integer>> getHouseholdToPersonMap() {
+		return householdToPersonMap;
 	}
 
 	@Override
@@ -96,6 +107,12 @@ public class CustomersDao extends AbstractCsvDao<Customer> {
 	@Override
 	protected void afterLineRead(Customer entity) {
 		tempHouseHoldIds.add(String.valueOf(entity.getHouseholdId()));
+		List<Integer> personIds = tempHouseholdToPersonMap.get(entity.getHouseholdId());
+		if (null == personIds) {
+			personIds = new ArrayList<>();
+			tempHouseholdToPersonMap.put(entity.getHouseholdId(), personIds);
+		}
+		personIds.add(entity.getPersonId());
 	}
 
 	@Override
@@ -105,6 +122,9 @@ public class CustomersDao extends AbstractCsvDao<Customer> {
 		householdIds.addAll(tempHouseHoldIds);
 		householdIds.sort(numberAsStringComparator);
 		tempHouseHoldIds.clear();
+
+		getHouseholdToPersonMap().putAll(tempHouseholdToPersonMap);
+		tempHouseholdToPersonMap.clear();
 	}
 
 }

@@ -296,6 +296,29 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 		validStatusTracker.add(householdIdCbo, personIdText, genderCbo, birthdateText, ageText, monthRegisteredCbo,
 				newChk, activeChk);
 		saveBtn.disableProperty().bind(validStatusTracker.validProperty().not());
+
+		if (isNew) {
+			// Pre-populate the person ID input - increment highest-known ID by one - when
+			// the household ID combo changes
+			householdIdCbo.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+				if (null == newValue) {
+					return;
+				}
+				Map<Integer, List<Integer>> householdToPersonMap = input.getHouseholdToPersonMap();
+				if (null != householdToPersonMap) {
+					List<Integer> persons = householdToPersonMap.get(Integer.valueOf(newValue));
+					int lastId = 0;
+					if (null != persons) {
+						for (int personId : persons) {
+							if (personId > lastId) {
+								lastId = personId;
+							}
+						}
+					}
+					savedCustomer.setPersonId(lastId + 1);
+				}
+			});
+		}
 	}
 
 	@Override
