@@ -51,6 +51,8 @@ public class SettingsController implements IModalDialogController<Void, Void> {
 	@FXML
 	private CheckBox showAllEventsChk;
 	@FXML
+	private Button updateAgesBtn;
+	@FXML
 	private Button archiveBtn;
 
 	private Resources resources;
@@ -70,6 +72,24 @@ public class SettingsController implements IModalDialogController<Void, Void> {
 				checkbox.addEventHandler(ActionEvent.ACTION, listener);
 			}
 		}
+		
+		updateAgesBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				Alert alert = new Alert(AlertType.CONFIRMATION,
+						"This will update the customer ages based on their birtday. Continue?",
+						ButtonType.YES, ButtonType.NO);
+				Optional<ButtonType> result = alert.showAndWait();
+				if (ButtonType.NO.equals(result.get())) {
+					return;
+				}
+				
+				// perform the action!
+				log.info("Updating customer ages based on their reported birthdates");
+			}
+			
+		});
 
 		archiveBtn.setOnAction(new EventHandler<ActionEvent>() {
 
