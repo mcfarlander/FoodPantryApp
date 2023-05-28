@@ -2,6 +2,7 @@ package org.pantry.food.controller;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,8 @@ import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.dao.VolunteersDao;
 import org.pantry.food.model.VolunteerEvent;
+import org.pantry.food.ui.common.StringToDateComparator;
+import org.pantry.food.ui.common.StringToNumberComparator;
 import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditVolunteerEventDialogInput;
 import org.pantry.food.util.DateUtil;
@@ -19,7 +22,6 @@ import org.pantry.food.util.DateUtil;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class VolunteerEventsController extends AbstractController<VolunteerEvent, AddEditVolunteerEventDialogInput> {
 
@@ -29,14 +31,6 @@ public class VolunteerEventsController extends AbstractController<VolunteerEvent
 	private VolunteersDao volunteersDao = ApplicationContext.getVolunteersDao();
 	private Resources resources = ApplicationContext.getResources();
 
-	protected void init() {
-		for (TableColumn<?, ?> column : dataTable.getColumns()) {
-			// The ID of each column is the name of the corresponding property in the
-			// Volunteer object
-			column.setCellValueFactory(new PropertyValueFactory<>(column.getId()));
-		}
-	}
-
 	/**
 	 * Replaces the current events list display with <code>events</code>
 	 * 
@@ -44,22 +38,24 @@ public class VolunteerEventsController extends AbstractController<VolunteerEvent
 	 */
 	protected void refreshTable(List<VolunteerEvent> events) {
 		try {
-			data.clear();
-
 			boolean showAll = resources.getBoolean("events.show.all");
 			LocalDate now = LocalDate.now();
+			List<VolunteerEvent> newEvents = new ArrayList<>();
 			for (VolunteerEvent event : events) {
 				LocalDate eventDate;
 				try {
 					eventDate = DateUtil.toDate(event.getEventDate());
 					if (showAll || (now.getMonthValue() == eventDate.getMonthValue()
 							&& now.getYear() == eventDate.getYear())) {
-						data.add(event);
+						newEvents.add(event);
 					}
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
 			}
+
+			data.clear();
+			data.addAll(newEvents);
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			log.error(ex);
 			Alert alert = new Alert(AlertType.ERROR,
@@ -95,6 +91,16 @@ public class VolunteerEventsController extends AbstractController<VolunteerEvent
 	@Override
 	protected CsvDao<VolunteerEvent> getDao() {
 		return volunteerEventDao;
+	}
+
+	@Override
+	protected void configureColumn(TableColumn<?, ?> column) {
+		super.configureColumn(column);
+		if ("volunteerEventId".equals(column.getId()) || "volunteerHours".equals(column.getId())) {
+			column.setComparator(StringToNumberComparator.getInstance());
+		} else if ("eventDate".equals(column.getId())) {
+			column.setComparator(StringToDateComparator.getInstance());
+		}
 	}
 
 }

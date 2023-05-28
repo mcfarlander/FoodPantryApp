@@ -31,7 +31,10 @@ public class ReportsController {
 	private ToggleGroup radios;
 
 	@FXML
-	private ComboBox<String> monthCbo;
+	private ComboBox<String> startMonthCbo;
+
+	@FXML
+	private ComboBox<String> endMonthCbo;
 
 	@FXML
 	private Button printBtn;
@@ -61,8 +64,11 @@ public class ReportsController {
 			}
 		});
 
-		monthCbo.getItems().addAll("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Dec");
-		monthCbo.getSelectionModel().select(DateUtil.getCurrentMonth() - 1);
+		startMonthCbo.getItems().addAll("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Dec");
+		endMonthCbo.getItems().addAll(startMonthCbo.getItems());
+		int currentMonthIndex = DateUtil.getCurrentMonth() - 1;
+		startMonthCbo.getSelectionModel().select(currentMonthIndex);
+		endMonthCbo.getSelectionModel().select(currentMonthIndex);
 	}
 
 	private AbstractReportStrategy runSelectedReport() {
@@ -76,7 +82,7 @@ public class ReportsController {
 		switch (radio.getId()) {
 		case "monthly.summary":
 			ReportMonthlySummary monthlySummary = new ReportMonthlySummary();
-			monthlySummary.setMonthSelected(monthCbo.getSelectionModel().getSelectedIndex());
+			monthlySummary.setMonthSelected(startMonthCbo.getSelectionModel().getSelectedIndex());
 			reportStrategy = monthlySummary;
 			break;
 		case "food.weight":
@@ -90,7 +96,8 @@ public class ReportsController {
 			break;
 		case "pantry.report":
 			ReportPantrySummary pantrySummaryReport = new ReportPantrySummary();
-			pantrySummaryReport.setMonthSelected(monthCbo.getSelectionModel().getSelectedIndex());
+			pantrySummaryReport.setDateRange(startMonthCbo.getSelectionModel().getSelectedIndex(),
+					endMonthCbo.getSelectionModel().getSelectedIndex());
 			reportStrategy = pantrySummaryReport;
 			break;
 		}

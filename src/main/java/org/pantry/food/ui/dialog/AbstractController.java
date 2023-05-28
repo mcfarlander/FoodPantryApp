@@ -13,6 +13,8 @@ import org.pantry.food.SettingsChangedListener;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.FileChangedListener;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,7 +24,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -39,6 +44,9 @@ public abstract class AbstractController<T, DIT> {
 
 	@FXML
 	protected Button deleteBtn;
+
+	@FXML
+	protected Label recordCountLabel;
 
 	@FXML
 	protected TableView<T> dataTable;
@@ -128,10 +136,23 @@ public abstract class AbstractController<T, DIT> {
 			}
 		});
 
-		// Give the subclass a chance to configure the datatable columns
+		for (TableColumn<?, ?> column : dataTable.getColumns()) {
+			configureColumn(column);
+		}
+
+		// Give the subclass a chance to do any custom startup stuff
 		init();
 
 		dataTable.setItems(data);
+
+		data.addListener(new InvalidationListener() {
+
+			@Override
+			public void invalidated(Observable observable) {
+				// Update the record count label
+				recordCountLabel.setText("Records: " + data.size());
+			}
+		});
 
 		try {
 			refreshTable(dao.read());
@@ -155,11 +176,12 @@ public abstract class AbstractController<T, DIT> {
 
 	protected abstract DIT getEditDialogInput(T entity);
 
-	protected abstract void init();
-
 	protected abstract String getEntityTypeName();
 
 	protected abstract void refreshTable(List<T> entities);
+
+	protected void init() {
+	}
 
 	protected void showAddDialog() {
 		try {
@@ -183,6 +205,17 @@ public abstract class AbstractController<T, DIT> {
 				log.error("Could not edit " + entity.getClass().getName(), e);
 			}
 		}
+	}
+
+	/**
+	 * Override to customize a table column's configuration such as sort comparator,
+	 * cell value factory, etc. By default the column will be configured with a
+	 * {@link PropertyValueFactory} based on the column's ID.
+	 * 
+	 * @param column column to be configured
+	 */
+	protected void configureColumn(TableColumn<?, ?> column) {
+		column.setCellValueFactory(new PropertyValueFactory<>(column.getId()));
 	}
 
 	protected Image getIcon() {
