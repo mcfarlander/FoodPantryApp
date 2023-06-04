@@ -100,8 +100,18 @@ public class CustomersDao extends AbstractCsvDao<Customer> {
 
 	@Override
 	protected String[] getCsvHeader() {
-		return new String[] { Col_CustomerId, Col_HouseholdId, Col_PersonId, Col_Gender, Col_BirthDate, Col_Age,
-				Col_MonthRegistered, Col_NewCustomer, Col_Comments, Col_Active };
+		return new String[] { 
+				Col_CustomerId, 
+				Col_HouseholdId, 
+				Col_PersonId, 
+				Col_Gender, 
+				Col_BirthDate, 
+				Col_Age,
+				Col_MonthRegistered, 
+				Col_NewCustomer, 
+				Col_Comments, 
+				Col_Active 
+				};
 	}
 
 	@Override
