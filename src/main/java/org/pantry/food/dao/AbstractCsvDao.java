@@ -299,30 +299,4 @@ public abstract class AbstractCsvDao<T> implements CsvDao<T> {
 			log.error("Could not start file monitor", e);
 		}
 	}
-	
-	/**
-	 * Stop the file monitor on the data file.
-	 */
-	public void stopFileMonitor() {
-		
-		if (null != fileMonitor) {
-			try {
-				fileMonitor.stop();
-			} catch (Exception e) {
-				e.printStackTrace();
-				log.error("Could not stop file monitor", e);
-			}
-		}
-	}
-	
-	/**
-	 * Restart the file monitor on the data file.
-	 */
-	public void restartFileMonitor() {
-		
-		if (null == fileMonitor) {
-			startFileWatcher(csvFile);
-		}
-		
-	}
 }

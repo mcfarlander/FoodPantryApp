@@ -33,7 +33,6 @@ import org.pantry.food.ui.dialog.IModalDialogController;
 import org.pantry.food.ui.dialog.ModalDialog;
 import org.pantry.food.util.DateUtil;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -87,8 +86,8 @@ public class SettingsController implements IModalDialogController<Void, Void> {
 			@Override
 			public void handle(ActionEvent event) {
 				Alert alert = new Alert(AlertType.CONFIRMATION,
-						"This will update the customer ages based on their birthday. Continue?",
-						ButtonType.YES, ButtonType.NO);
+						"This will update the customer ages based on their birthday. Continue?", ButtonType.YES,
+						ButtonType.NO);
 				Optional<ButtonType> result = alert.showAndWait();
 				if (ButtonType.NO.equals(result.get())) {
 					return;
@@ -98,9 +97,7 @@ public class SettingsController implements IModalDialogController<Void, Void> {
 				boolean allupdated = updateAllAges();
 
 				String message = allupdated ? "All ages updated." : "Not all ages were updated, check dates.";
-				alert = new Alert(AlertType.CONFIRMATION,
-						message,
-						ButtonType.OK);
+				alert = new Alert(AlertType.CONFIRMATION, message, ButtonType.OK);
 				alert.showAndWait();
 
 			}
@@ -119,18 +116,20 @@ public class SettingsController implements IModalDialogController<Void, Void> {
 					return;
 				}
 
-				//				try {
-				//					log.info("Starting archiving");
-				//					// Launch SelectBackupOptionsDialog here
+				// try {
+				// log.info("Starting archiving");
+				// // Launch SelectBackupOptionsDialog here
 				//
-				//					String archiveFile = "";
-				//					log.info("Archive to file {} complete", archiveFile);
+				// String archiveFile = "";
+				// log.info("Archive to file {} complete", archiveFile);
 				//
-				//					new Alert(AlertType.INFORMATION, "Archive created OK. File can be found at:" + archiveFile).show();
-				//				} catch (IOException ex) {
-				//					log.error("Could not archive!", ex);
-				//					new Alert(AlertType.INFORMATION, "Unable to archive files. See log files for details.").show();
-				//				}
+				// new Alert(AlertType.INFORMATION, "Archive created OK. File can be found at:"
+				// + archiveFile).show();
+				// } catch (IOException ex) {
+				// log.error("Could not archive!", ex);
+				// new Alert(AlertType.INFORMATION, "Unable to archive files. See log files for
+				// details.").show();
+				// }
 			}
 
 		});
@@ -174,27 +173,28 @@ public class SettingsController implements IModalDialogController<Void, Void> {
 			ApplicationContext.settingsChanged();
 		}
 	}
-	
+
 	/**
 	 * Read the customer file and update all ages based on the reported birth date.
+	 * 
 	 * @return true if all were updated, false otherwise
 	 */
 	protected boolean updateAllAges() {
 
 		boolean result = true;
-		
+
 		CustomersDao dao = ApplicationContext.getCustomersDao();
 
 		List<Customer> customers = dao.getAll();
 
-		for (Customer customer: customers) {
+		for (Customer customer : customers) {
 
 			try {
 				LocalDate birthdate = DateUtil.toDate(customer.getBirthDate());
 				int age = (int) ChronoUnit.YEARS.between(birthdate, LocalDate.now());
 
 				if (age < 0 || age > 120) {
-					log.debug("Birthdate {} results in age {}", customer.getBirthDate(), age);
+					log.debug("Birthdate {} results in invalid age {}", customer.getBirthDate(), age);
 					// Try to reconcile the date by adding 1900 to the year. If the year is
 					// presented in a 2-digit format, Java assumes it's a 2-digit representation of
 					// a year sub-100 AD. But the user probably means a year within the 20th
@@ -204,31 +204,25 @@ public class SettingsController implements IModalDialogController<Void, Void> {
 					if (age < 0 || age > 120) {
 						log.error("Incorrect birth year - date {} results in age {}", birthdate.toString(), age);
 						result = false;
-					} else {
-						customer.setAge(age);
 					}
-				} else {
+				}
+
+				if (result) {
 					customer.setAge(age);
 				}
-				
-				
 			} catch (ParseException e) {
 				log.error("Invalid birthdate - date {} could not be parsed", customer.getBirthDate(), e);
 				result = false;
 			}
-
 		}
-		
+
 		try {
-			dao.stopFileMonitor();
 			dao.persist();
-			dao.restartFileMonitor();
-		} catch (Exception ioex) {
-			log.error("unable to save customer data", ioex);
+		} catch (IOException e) {
+			log.error("Unable to update customer ages", e);
 			result = false;
 		}
-		
-		
+
 		return result;
 	}
 
