@@ -18,6 +18,7 @@ import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditCustomerDialogInput;
 import org.pantry.food.util.DateUtil;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Alert;
@@ -64,8 +65,10 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 				}
 			}
 
-			data.clear();
-			data.addAll(newCustomers);
+			Platform.runLater(() -> {
+				data.clear();
+				data.addAll(newCustomers);
+			});
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			log.error(ex);
 			Alert alert = new Alert(AlertType.WARNING,
