@@ -51,6 +51,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.util.StringConverter;
@@ -65,7 +66,7 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 	@FXML
 	private ComboBox<String> genderCbo;
 	@FXML
-	private TextField birthdateText;
+	private DatePicker birthdateText;
 	@FXML
 	private TextField ageText;
 	@FXML
@@ -164,7 +165,30 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 		personIdText.textProperty().bindBidirectional(savedCustomer.personIdProperty());
 		householdIdCbo.valueProperty().bindBidirectional(savedCustomer.householdIdProperty());
 		genderCbo.valueProperty().bindBidirectional(savedCustomer.genderProperty());
-		birthdateText.textProperty().bindBidirectional(savedCustomer.birthDateProperty());
+		savedCustomer.birthDateProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (null == newValue || "".equals(newValue.trim())) {
+					birthdateText.setValue(null);
+				} else {
+					try {
+						birthdateText.setValue(DateUtil.toDate(newValue));
+					} catch (ParseException e) {
+						log.error("Could not parse birthdate '" + newValue + "' to a date", e);
+					}
+				}
+			}
+		});
+		birthdateText.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				LocalDate date = birthdateText.getValue();
+				if (null != date) {
+					savedCustomer.setBirthDate(DateUtil.formatDateFourDigitYear(date));
+				}
+			}
+		});
+
 		ageText.textProperty().bindBidirectional(savedCustomer.ageProperty());
 
 		// The Month Registered combobox displays "Jan"/"Feb"/etc but the actual value
@@ -194,42 +218,35 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 		householdIdCbo.getSelectionModel().selectedItemProperty().addListener(comboValidator);
 
 		// Birthdate must comply with typical date format
-		textValidator = new TextInputFocusValidator(birthdateText).add(new DateValidator());
+		textValidator = new TextInputFocusValidator(birthdateText.getEditor()).add(new DateValidator());
 		birthdateText.focusedProperty().addListener(textValidator);
 		// Calculate the person's age when the birthdate changes
 		birthdateText.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean wasFocused, Boolean isFocused) {
-				if (wasFocused && !isFocused && DateUtil.isDate(birthdateText.getText())) {
-					String birthdateStr = birthdateText.getText();
-					log.trace("Birthdate text focus lost, input is {}", birthdateStr);
+				if (wasFocused && !isFocused && null != birthdateText.getValue()) {
+					LocalDate birthdate = birthdateText.getValue();
+					log.trace("Birthdate text focus lost, input is {}", birthdate);
 
-					try {
-						LocalDate birthdate = DateUtil.toDate(birthdateStr);
-						int age = calculateAge(birthdate);
+					int age = calculateAge(birthdate);
 
+					if (age < 0 || age > 120) {
+						log.debug("Birthdate {} results in age {}", birthdate, age);
+						// Try to reconcile the date by adding 1900 to the year. If the year is
+						// presented in a 2-digit format, Java assumes it's a 2-digit representation of
+						// a year sub-100 AD. But the user probably means a year within the 20th
+						// century.
+						birthdate = birthdate.plusYears(1900);
+						age = calculateAge(birthdate);
 						if (age < 0 || age > 120) {
-							log.debug("Birthdate {} results in age {}", birthdateStr, age);
-							// Try to reconcile the date by adding 1900 to the year. If the year is
-							// presented in a 2-digit format, Java assumes it's a 2-digit representation of
-							// a year sub-100 AD. But the user probably means a year within the 20th
-							// century.
-							birthdate = birthdate.plusYears(1900);
-							age = calculateAge(birthdate);
-							if (age < 0 || age > 120) {
-								log.error("Incorrect birth year - date {} results in age {}", birthdate.toString(),
-										age);
-								new Alert(AlertType.WARNING, "Incorrect birth year").show();
-							} else {
-								ageText.setText(String.valueOf(age));
-							}
+							log.error("Incorrect birth year - date {} results in age {}", birthdate.toString(), age);
+							new Alert(AlertType.WARNING, "Incorrect birth year").show();
 						} else {
 							ageText.setText(String.valueOf(age));
 						}
-					} catch (ParseException e) {
-						log.error("Invalid birthdate - date {} could not be parsed", birthdateStr, e);
-						new Alert(AlertType.WARNING, "Invalid birthdate").show();
+					} else {
+						ageText.setText(String.valueOf(age));
 					}
 				}
 			}
@@ -238,43 +255,58 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 				return (int) ChronoUnit.YEARS.between(birthdate, LocalDate.now());
 			}
 		});
+		birthdateText.setConverter(new StringConverter<LocalDate>() {
+			@Override
+			public String toString(LocalDate localDate) {
+				if (localDate == null) {
+					return "";
+				}
+				return DateUtil.formatDateFourDigitYear(localDate);
+			}
 
+			@Override
+			public LocalDate fromString(String dateString) {
+				if (dateString == null || dateString.trim().isEmpty()) {
+					return null;
+				}
+				try {
+					return DateUtil.toDate(dateString);
+				} catch (ParseException e) {
+					log.error("Could not parse date", e);
+					return LocalDate.now();
+				}
+			}
+		});
 		ageText.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean wasFocused, Boolean isFocused) {
-				String birthdateStr = birthdateText.getText();
+				LocalDate birthdate = birthdateText.getValue();
 				// We only want to calculate the birthdate from age if focus is lost and the
 				// birthdate hasn't been manually entered yet, or if the entered birthdate is
 				// January 1st
-				if (wasFocused && !isFocused && (null == birthdateStr || birthdateStr.isBlank())) {
+				if (wasFocused && !isFocused) {
 					String ageStr = ageText.getText();
 					if (StringUtils.isBlank(ageStr)) {
 						return;
 					}
 
-					// Determine if birthdate is January 1st
-					if (DateUtil.isDate(birthdateStr)) {
-						try {
-							LocalDate date = DateUtil.toDate(birthdateStr);
-							if (date.getMonthValue() == 1 && date.getDayOfMonth() == 1) {
-								// Entered birthdate is January 1, so user wants a generic birthdate and no age
-								return;
-							}
-						} catch (ParseException e) {
-							log.error("Invalid birthdate - {} could not be parsed as date", birthdateStr, e);
-							birthdateText.setText("");
+					if (null != birthdate) {
+						// Determine if birthdate is January 1st
+						if (birthdate.getMonthValue() == 1 && birthdate.getDayOfMonth() == 1) {
+							// Entered birthdate is January 1, so user wants a generic birthdate and no age
+							return;
 						}
-					}
-
-					try {
-						int age = Integer.valueOf(ageStr);
-						LocalDate birthdate = LocalDate.now().minusYears(age);
-						birthdateText.setText(DateUtil.formatDateFourDigitYear(birthdate));
-						validStatusTracker.checkAll();
-					} catch (NumberFormatException e) {
-						log.error("Invalid age - {} could not be parsed as integer", ageStr, e);
-						new Alert(AlertType.WARNING, "Cannot calculate birthdate from age " + ageStr).show();
+					} else {
+						try {
+							int age = Integer.valueOf(ageStr);
+							birthdate = LocalDate.now().minusYears(age);
+							birthdateText.setValue(birthdate);
+							validStatusTracker.checkAll();
+						} catch (NumberFormatException e) {
+							log.error("Invalid age - {} could not be parsed as integer", ageStr, e);
+							new Alert(AlertType.WARNING, "Cannot calculate birthdate from age " + ageStr).show();
+						}
 					}
 				}
 			}
@@ -301,7 +333,7 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 			// Pre-populate the person ID input - increment highest-known ID by one - when
 			// the household ID combo changes
 			householdIdCbo.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-				if (null == newValue) {
+				if (null == newValue || "".equals(newValue.trim())) {
 					return;
 				}
 				Map<Integer, List<Integer>> householdToPersonMap = input.getHouseholdToPersonMap();
