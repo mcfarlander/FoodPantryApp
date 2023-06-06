@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -78,7 +79,7 @@
                      </rowConstraints>
                      <children>
                         <Label text="Birthdate" />
-                        <TextField fx:id="birthdateText" GridPane.columnIndex="1" />
+                        <DatePicker fx:id="birthdateText" prefWidth="150.0" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                   <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -104,7 +105,7 @@
                      </rowConstraints>
                      <children>
                         <Label text="Month Registered" />
-                        <ComboBox id="monthRegistered" fx:id="monthRegisteredCbo" prefWidth="158.0" promptText="Select..." GridPane.columnIndex="1" />
+                        <ComboBox id="monthRegistered" fx:id="monthRegisteredCbo" prefWidth="150.0" promptText="Select..." GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                   <GridPane GridPane.columnIndex="1" GridPane.rowIndex="3">
