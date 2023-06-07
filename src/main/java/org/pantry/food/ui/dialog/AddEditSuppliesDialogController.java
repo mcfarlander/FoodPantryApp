@@ -306,7 +306,7 @@ public class AddEditSuppliesDialogController implements IModalDialogController<A
 		if (null != input.getSupplies()) {
 			type = "Edit";
 		}
-		return type + " Donor";
+		return type + " Supplies";
 	}
 
 	@Override
