@@ -29,12 +29,15 @@ public class AboutDialog implements IModalDialogController<Void, Void> {
 	private Label imageLabel;
 	@FXML
 	private Label versionLabel;
+	@FXML
+	private Label inMemoryOfLabel;
 
 	@FXML
 	private void initialize() {
 		Resources resources = ApplicationContext.getResources();
 		versionLabel.setText(resources.getString("application.version"));
 		imageLabel.setGraphic(Images.getImageView("about.png"));
+		inMemoryOfLabel.setText(resources.getString("in.memory.of"));
 	}
 
 	@Override

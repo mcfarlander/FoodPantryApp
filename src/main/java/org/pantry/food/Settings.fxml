@@ -21,6 +21,11 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </CheckBox>
+            <Button fx:id="updateAgesBtn" mnemonicParsing="false" styleClass="settings-input" text="Update Customer Ages">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </Button>
             <Label styleClass="settings-heading" text="Visits">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
