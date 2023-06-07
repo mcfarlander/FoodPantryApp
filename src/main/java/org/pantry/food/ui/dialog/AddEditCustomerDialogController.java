@@ -350,6 +350,12 @@ public class AddEditCustomerDialogController implements IModalDialogController<A
 					savedCustomer.setPersonId(lastId + 1);
 				}
 			});
+		} else {
+			// The birthdate datepicker doesn't populate unless the saved customer's
+			// birthdate property changes, so we need to trigger the change manually on load
+			String birthday = savedCustomer.getBirthDate();
+			savedCustomer.setBirthDate(null);
+			savedCustomer.setBirthDate(birthday);
 		}
 	}
 
