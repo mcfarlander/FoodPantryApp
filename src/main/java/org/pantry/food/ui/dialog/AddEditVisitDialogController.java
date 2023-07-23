@@ -19,13 +19,17 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationContext;
 import org.pantry.food.Images;
+import org.pantry.food.dao.CustomersDao;
 import org.pantry.food.dao.VisitsDao;
+import org.pantry.food.model.Customer;
+import org.pantry.food.model.HouseholdMakeup;
 import org.pantry.food.model.Visit;
 import org.pantry.food.ui.validation.ComboInputValidator;
 import org.pantry.food.ui.validation.DateValidator;
@@ -49,27 +53,25 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 
 public class AddEditVisitDialogController implements IModalDialogController<AddEditVisitDialogInput, Visit> {
+	
 	private static final Logger log = LogManager.getLogger(AddEditVisitDialogController.class.getName());
 
 	@FXML
 	private ComboBox<String> householdIdCbo;
 	@FXML
 	private CheckBox newChk;
-
 	@FXML
 	private TextField numAdultsText;
 	@FXML
 	private TextField numKidsText;
 	@FXML
 	private TextField numSeniorsText;
-
 	@FXML
 	private CheckBox workingIncomeChk;
 	@FXML
 	private CheckBox noIncomeChk;
 	@FXML
 	private CheckBox otherIncomeChk;
-
 	@FXML
 	private TextField visitDateText;
 	@FXML
@@ -256,6 +258,45 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 			log.error("Invalid visit date - date {} could not be parsed", dateStr, e);
 			new Alert(AlertType.WARNING, "Invalid visit date").show();
 		}
+	}
+	
+	/**
+	 * From the household id, get the number of kids, adults and seniors. Auto-populate
+	 * the UI controls from this information.
+	 * 
+	 * @param householdId the house to look up
+	 */
+	private void getHouseholdMakeup(int householdId) {
+		
+		HouseholdMakeup house = new HouseholdMakeup();
+		
+		CustomersDao dao = ApplicationContext.getCustomersDao();
+		List<Customer> customers = dao.getAll();
+		
+		for (Customer customer : customers) {
+			
+			// TODO: any other checks need to be made here?
+			
+			if (customer.getHouseholdId() == householdId && customer.getAge() > -1) {
+				
+				if (customer.getAge() < HouseholdMakeup.AGE_ADULT) {
+					house.addChild();
+					
+				} else if (customer.getAge() < HouseholdMakeup.AGE_SENIOR) {
+					house.addAdult();
+					
+				} else {
+					house.addSenior();
+				}
+				
+			}
+			
+		}
+		
+		// set the UI text controls for number kids, adults and seniors from this information
+		this.numKidsText.setText(Integer.toString(house.getNumberChildren()));
+		this.numAdultsText.setText(Integer.toString(house.getNumberAdults()));
+		this.numSeniorsText.setText(Integer.toString(house.getNumberSeniors()));
 	}
 
 }
