@@ -24,7 +24,7 @@ public class HouseholdMakeup {
 	}
 	
 	public void addChild() {
-		this.numberChildren = this.numberChildren++;
+		this.numberChildren++;
 	}
 	
 	public int getNumberAdults() {
@@ -36,7 +36,7 @@ public class HouseholdMakeup {
 	}
 	
 	public void addAdult() {
-		this.numberAdults = this.numberAdults++;
+		this.numberAdults++;
 	}
 	
 	public int getNumberSeniors() {
@@ -48,7 +48,7 @@ public class HouseholdMakeup {
 	}
 	
 	public void addSenior() {
-		this.numberSeniors = this.numberSeniors++;
+		this.numberSeniors++;
 	}
 	
 

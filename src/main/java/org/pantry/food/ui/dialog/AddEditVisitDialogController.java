@@ -87,6 +87,8 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 
 	@FXML
 	private void initialize() {
+		
+		// Save button handler
 		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -128,6 +130,7 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 
 		});
 
+		// Cancel button handler
 		cancelBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -137,6 +140,20 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 				parent.close();
 			}
 
+		});
+		
+		// Household combobox change event handler
+		householdIdCbo.valueProperty().addListener((ChangeListener<String>) (ov, previousValue, newValue) -> { 
+			if (newValue != null) {
+				try {
+					   int num = Integer.parseInt(newValue);
+					   getHouseholdMakeup(num);
+					}
+					catch (NumberFormatException e) {
+					   log.debug("Household isn't a number");
+					}
+				
+			}
 		});
 
 		validStatusTracker = new ValidStatusTracker();
