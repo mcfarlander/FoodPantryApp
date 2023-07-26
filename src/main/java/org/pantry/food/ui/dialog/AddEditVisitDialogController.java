@@ -202,9 +202,14 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 		});
 
 		// If this is a visit add, pre-select the New and Visit Date values
+		// Note: for most visits, the customers have used the pantry before. Setting new to false.
+		// Note: until the user selects a household (which will populate #kids, #adults, #seniors, set the values to 0.
 		if (isNew) {
-			newChk.setSelected(true);
+			newChk.setSelected(false);
 			visitDateText.setText(DateUtil.getCurrentDateStringFourDigitYear());
+			numAdultsText.setText("0");
+			numKidsText.setText("0");
+			numSeniorsText.setText("0");
 		}
 
 		validStatusTracker.add(householdIdCbo, newChk, numAdultsText, numKidsText, numSeniorsText, visitDateText);
