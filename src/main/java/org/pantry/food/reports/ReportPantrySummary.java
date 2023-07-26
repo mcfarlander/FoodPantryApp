@@ -64,7 +64,7 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 
 	@Override
 	public String getTitle() {
-		return "MCFP Pantry Summary";
+		return "MCFP Pantry Summary " + org.pantry.food.util.DateUtil.getMonthName(startMonth + 1) + " to " + org.pantry.food.util.DateUtil.getMonthName(endMonth + 1);
 	}
 
 	@Override
