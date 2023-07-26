@@ -87,12 +87,13 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 	}
 
 	private List<ReportRow> addCustomerData() {
-		int numberCustomers = 0;
+		
+		int numberCustomers = 0;	// all customers, both active and inactive
 		int numberNewAdults = 0;
 		int numberNewSeniors = 0;
 		int numberNewKids = 0;
 
-		int numberMonthCustomers = 0;
+		int numberMonthCustomers = 0; // all customers this report period who are active
 		int numberMonthAdults = 0;
 		int numberMonthSeniors = 0;
 		int numberMonthKids = 0;
@@ -104,7 +105,8 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 
 		boolean isFromMonth = false;
 		List<Customer> customers = ApplicationContext.getCustomersDao().getAll();
-		numberCustomers = customers.size();
+		numberCustomers = customers.size(); // all customers, both active and inactive
+		
 		for (Customer cust : customers) {
 			final int registeredMonthId = cust.getMonthRegistered() - 1;
 			isFromMonth = registeredMonthId >= startMonth && registeredMonthId <= endMonth;
@@ -177,12 +179,16 @@ public class ReportPantrySummary extends AbstractReportStrategy {
 
 		}
 
-		rows.add(new ReportRow().addColumn("New Customers Month").addColumn(String.valueOf(numberMonthCustomers))
+		rows.add(new ReportRow()
+				.addColumn("Customers Entered This Period")
+				.addColumn(String.valueOf(numberMonthCustomers))
 				.addColumn("Adults: " + numberMonthAdults + " Seniors: " + numberMonthSeniors + " Children: "
 						+ numberMonthKids + " Households: " + distinctHouseholdsMonth.size()));
-		rows.add(new ReportRow().addColumn("New Customers YTD").addColumn(String.valueOf(numberCustomers))
-				.addColumn("Adults: " + numberNewAdults + " Seniors: " + numberNewSeniors + " Children: "
-						+ numberNewKids + " Households: " + distinctHouseholdsYtd.size()));
+		
+		rows.add(new ReportRow()
+				.addColumn("Customers Entered YTD")
+				.addColumn(String.valueOf(numberCustomers))
+				.addColumn(""));
 		return rows;
 	}
 
