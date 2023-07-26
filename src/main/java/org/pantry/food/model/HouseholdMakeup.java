@@ -9,7 +9,7 @@ public class HouseholdMakeup {
 	/** The age a person in the household is considered an adult. */
 	public static int AGE_ADULT = 18;
 	/** The age a person in the household is considered a senior. */
-	public static int AGE_SENIOR = 50;
+	public static int AGE_SENIOR = 59;
 	
 	private int numberChildren = 0;
 	private int numberAdults = 0;
