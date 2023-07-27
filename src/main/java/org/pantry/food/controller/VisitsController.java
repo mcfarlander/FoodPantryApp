@@ -17,6 +17,7 @@ import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditVisitDialogInput;
 import org.pantry.food.util.DateUtil;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -47,6 +48,9 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 				LocalDate visitDate;
 				try {
 					visitDate = DateUtil.toDate(visit.getDate());
+					if (now.getYear() - visitDate.getYear() > 10) {
+						throw new IllegalArgumentException("Invalid date " + visit.getDate());
+					}
 
 					if (visit.isActive() && now.getYear() == visitDate.getYear()
 							&& now.getMonthValue() == visitDate.getMonthValue()) {
@@ -63,9 +67,18 @@ public class VisitsController extends AbstractController<Visit, AddEditVisitDial
 					}
 				} catch (ParseException e) {
 					log.error("Could not parse date " + visit.getDate(), e);
-					Alert alert = new Alert(AlertType.ERROR,
-							"Could not parse date for visit ID " + visit.getId() + ", skipping");
-					alert.show();
+					Platform.runLater(() -> {
+						Alert alert = new Alert(AlertType.ERROR,
+								"Could not parse date for visit ID " + visit.getId() + ", skipping");
+						alert.show();
+					});
+				} catch (IllegalArgumentException e) {
+					log.error(e);
+					Platform.runLater(() -> {
+						Alert alert = new Alert(AlertType.ERROR, "Could not parse date '" + visit.getDate()
+								+ "' for visit ID " + visit.getId() + ", skipping");
+						alert.show();
+					});
 				}
 
 				if (canAdd) {
