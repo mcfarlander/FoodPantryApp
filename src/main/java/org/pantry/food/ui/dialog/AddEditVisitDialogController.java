@@ -53,7 +53,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 
 public class AddEditVisitDialogController implements IModalDialogController<AddEditVisitDialogInput, Visit> {
-	
+
 	private static final Logger log = LogManager.getLogger(AddEditVisitDialogController.class.getName());
 
 	@FXML
@@ -87,7 +87,7 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 
 	@FXML
 	private void initialize() {
-		
+
 		// Save button handler
 		saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -141,18 +141,17 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 			}
 
 		});
-		
+
 		// Household combobox change event handler
-		householdIdCbo.valueProperty().addListener((ChangeListener<String>) (ov, previousValue, newValue) -> { 
+		householdIdCbo.valueProperty().addListener((ChangeListener<String>) (ov, previousValue, newValue) -> {
 			if (newValue != null) {
 				try {
-					   int num = Integer.parseInt(newValue);
-					   getHouseholdMakeup(num);
-					}
-					catch (NumberFormatException e) {
-					   log.debug("Household isn't a number");
-					}
-				
+					int num = Integer.parseInt(newValue);
+					getHouseholdMakeup(num);
+				} catch (NumberFormatException e) {
+					log.debug("Household isn't a number");
+				}
+
 			}
 		});
 
@@ -219,14 +218,16 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 		});
 
 		// If this is a visit add, pre-select the New and Visit Date values
-		// Note: for most visits, the customers have used the pantry before. Setting new to false.
-		// Note: until the user selects a household (which will populate #kids, #adults, #seniors, set the values to 0.
+		// Note: for most visits, the customers have used the pantry before. Setting new
+		// to false.
+		// Note: until the user selects a household (which will populate #kids, #adults,
+		// #seniors, set the values to 0.
 		if (isNew) {
 			newChk.setSelected(false);
 			visitDateText.setText(DateUtil.getCurrentDateStringFourDigitYear());
-			numAdultsText.setText("0");
-			numKidsText.setText("0");
-			numSeniorsText.setText("0");
+			savedVisit.setNumberAdults(0);
+			savedVisit.setNumberKids(0);
+			savedVisit.setNumberSeniors(0);
 		}
 
 		validStatusTracker.add(householdIdCbo, newChk, numAdultsText, numKidsText, numSeniorsText, visitDateText);
@@ -281,44 +282,45 @@ public class AddEditVisitDialogController implements IModalDialogController<AddE
 			new Alert(AlertType.WARNING, "Invalid visit date").show();
 		}
 	}
-	
+
 	/**
-	 * From the household id, get the number of kids, adults and seniors. Auto-populate
-	 * the UI controls from this information.
+	 * From the household id, get the number of kids, adults and seniors.
+	 * Auto-populate the UI controls from this information.
 	 * 
 	 * @param householdId the house to look up
 	 */
 	private void getHouseholdMakeup(int householdId) {
-		
+
 		HouseholdMakeup house = new HouseholdMakeup();
-		
+
 		CustomersDao dao = ApplicationContext.getCustomersDao();
 		List<Customer> customers = dao.getAll();
-		
+
 		for (Customer customer : customers) {
-			
+
 			// TODO: any other checks need to be made here?
-			
+
 			if (customer.getHouseholdId() == householdId && customer.getAge() > -1) {
-				
+
 				if (customer.getAge() < HouseholdMakeup.AGE_ADULT) {
 					house.addChild();
-					
+
 				} else if (customer.getAge() < HouseholdMakeup.AGE_SENIOR) {
 					house.addAdult();
-					
+
 				} else {
 					house.addSenior();
 				}
-				
+
 			}
-			
+
 		}
-		
-		// set the UI text controls for number kids, adults and seniors from this information
-		this.numKidsText.setText(Integer.toString(house.getNumberChildren()));
-		this.numAdultsText.setText(Integer.toString(house.getNumberAdults()));
-		this.numSeniorsText.setText(Integer.toString(house.getNumberSeniors()));
+
+		// set the UI text controls for number kids, adults and seniors from this
+		// information
+		savedVisit.setNumberAdults(house.getNumberAdults());
+		savedVisit.setNumberKids(house.getNumberChildren());
+		savedVisit.setNumberSeniors(house.getNumberSeniors());
 	}
 
 }
