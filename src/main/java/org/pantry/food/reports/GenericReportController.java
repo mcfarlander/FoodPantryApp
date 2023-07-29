@@ -8,8 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ui.dialog.IModalDialogController;
 import org.pantry.food.ui.dialog.ModalDialog;
+import org.pantry.food.util.CsvExporter;
 import org.pantry.food.util.DateUtil;
-import org.pantry.food.util.ExcelExporter;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -63,9 +63,9 @@ public class GenericReportController implements IModalDialogController<AbstractR
 			public void handle(ActionEvent event) {
 				try {
 					File outputFile = new File(
-							strategy.getTitle().replaceAll(" ", "-") + "_" + DateUtil.getDatestamp() + ".xlsx");
-					log.info("Exporting report '{}' to Excel at path '{}'", getTitle(), outputFile.getAbsolutePath());
-					new ExcelExporter<ReportRow>().export(primaryTable, outputFile, null);
+							strategy.getTitle().replaceAll(" ", "-") + "_" + DateUtil.getDatestamp() + ".csv");
+					log.info("Exporting report '{}' to CSV at path '{}'", getTitle(), outputFile.getAbsolutePath());
+					new CsvExporter<ReportRow>().export(primaryTable, outputFile);
 					log.info("Export complete");
 					Desktop.getDesktop().open(outputFile);
 				} catch (IOException e) {
