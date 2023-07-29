@@ -17,6 +17,7 @@ package org.pantry.food.ui.dialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +27,7 @@ import org.pantry.food.Images;
 import org.pantry.food.dao.VolunteerEventsDao;
 import org.pantry.food.model.Volunteer;
 import org.pantry.food.model.VolunteerEvent;
+import org.pantry.food.ui.common.AutoCompleteComboBoxListener;
 import org.pantry.food.ui.validation.ComboFocusValidator;
 import org.pantry.food.ui.validation.DateValidator;
 import org.pantry.food.ui.validation.NotBlankValidator;
@@ -144,7 +146,10 @@ public class AddEditVolunteerEventDialogController
 			for (Volunteer volunteer : input.getVolunteers()) {
 				volunteers.add(volunteer.getName());
 			}
+			// Sort by last name (volunteer names are in the form Lastname, Firstname)
+			Collections.sort(volunteers);
 			volunteerCbo.getItems().addAll(volunteers);
+			new AutoCompleteComboBoxListener<String>(volunteerCbo);
 		}
 		volunteerCbo.getSelectionModel().select(0);
 
