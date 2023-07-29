@@ -13,6 +13,7 @@ import org.pantry.food.SettingsChangedListener;
 import org.pantry.food.dao.CsvDao;
 import org.pantry.food.dao.FileChangedListener;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -150,7 +151,9 @@ public abstract class AbstractController<T, DIT> {
 			@Override
 			public void invalidated(Observable observable) {
 				// Update the record count label
-				recordCountLabel.setText("Records: " + data.size());
+				Platform.runLater(() -> {
+					recordCountLabel.setText("Records: " + data.size());
+				});
 			}
 		});
 

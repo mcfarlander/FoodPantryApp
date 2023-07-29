@@ -2,6 +2,7 @@ package org.pantry.food.controller;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.pantry.food.ui.dialog.AbstractController;
 import org.pantry.food.ui.dialog.AddEditVolunteerEventDialogInput;
 import org.pantry.food.util.DateUtil;
 
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn;
@@ -49,8 +51,13 @@ public class VolunteerEventsController extends AbstractController<VolunteerEvent
 							&& now.getYear() == eventDate.getYear())) {
 						newEvents.add(event);
 					}
-				} catch (ParseException e) {
+				} catch (ParseException | DateTimeParseException e) {
 					e.printStackTrace();
+					Platform.runLater(() -> {
+						Alert alert = new Alert(AlertType.ERROR,
+								"Could not parse date for event ID " + event.getVolunteerEventId() + ", skipping");
+						alert.show();
+					});
 				}
 			}
 
