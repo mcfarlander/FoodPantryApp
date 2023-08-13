@@ -533,6 +533,7 @@ public class Supplies {
 		setMilk(getMilk() + record.getMilk());
 		setPantryProduce(getPantryProduce() + record.getPantryProduce());
 		setProduce(getProduce() + record.getProduce());
+		setPantryNonFood(getPantryNonFood() + record.getPantryNonFood());
 
 		if (!StringUtils.isBlank(record.getComment())) {
 			String comment = getComment();
