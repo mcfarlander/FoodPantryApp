@@ -27,6 +27,7 @@ import java.util.zip.ZipOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ui.common.DataFiles;
+import org.pantry.food.util.DateUtil;
 
 /**
  * Performs a backup of all data files to a backup directory.
@@ -61,7 +62,7 @@ public class Backup {
 	}
 
 	/**
-	 * Creates a zip archive for the current month (jan starts with 0)
+	 * Creates a zip archive for the current month name and year.
 	 * 
 	 * @throws IOException
 	 */
@@ -69,8 +70,10 @@ public class Backup {
 		log.info("Starting month backup");
 		String startDirPrime = new java.io.File(".").getCanonicalPath();
 		String startDir = createBackupFolder();
+		
 		Calendar cal = Calendar.getInstance();
-		String archiveFile = startDir + "/" + "PantryBackup_" + Integer.toString(cal.get(Calendar.MONTH)) + ".zip";
+		String monthName = DateUtil.getMonthName(DateUtil.getCurrentMonth()) + "_" + String.valueOf(cal.get(Calendar.YEAR));
+		String archiveFile = startDir + "/" + "PantryBackup_" + monthName + ".zip";
 
 		archiveFiles(startDirPrime, archiveFile, false);
 		log.info("Month backup completed successfully");
@@ -113,16 +116,19 @@ public class Backup {
 		for (BackupKey key : backupKeys) {
 			if (BackupKey.CUSTOMERS.equals(key)) {
 				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileCustomers()), zos, deleteOld);
+				
 			} else if (BackupKey.DONATIONS.equals(key)) {
 				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileFoodRecord()), zos, deleteOld);
+				
 			} else if (BackupKey.LEGACY_VOLUNTEERS.equals(key)) {
-				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerHours()), zos,
-						deleteOld);
+				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerHours()), zos, deleteOld);
+				
 			} else if (BackupKey.VISITS.equals(key)) {
 				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVisits()), zos, deleteOld);
+				
 			} else if (BackupKey.VOLUNTEER_EVENTS.equals(key)) {
-				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerEvents()), zos,
-						deleteOld);
+				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteerEvents()), zos, deleteOld);
+				
 			} else if (BackupKey.VOLUNTEERS.equals(key)) {
 				archiveFile(new File(startDir + "/" + DataFiles.getInstance().getCsvFileVolunteers()), zos, deleteOld);
 			}
