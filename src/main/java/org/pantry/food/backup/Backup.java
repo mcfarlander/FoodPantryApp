@@ -72,8 +72,8 @@ public class Backup {
 		String startDir = createBackupFolder();
 		
 		Calendar cal = Calendar.getInstance();
-		String monthName = DateUtil.getMonthName(DateUtil.getCurrentMonth()) + "_" + String.valueOf(cal.get(Calendar.YEAR));
-		String archiveFile = startDir + "/" + "PantryBackup_" + monthName + ".zip";
+		String monthYearName = DateUtil.getMonthName(DateUtil.getCurrentMonth()) + "_" + String.valueOf(cal.get(Calendar.YEAR));
+		String archiveFile = startDir + "/" + "PantryBackup_" + monthYearName + ".zip";
 
 		archiveFiles(startDirPrime, archiveFile, false);
 		log.info("Month backup completed successfully");
