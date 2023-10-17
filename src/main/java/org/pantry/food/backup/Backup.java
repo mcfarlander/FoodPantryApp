@@ -19,6 +19,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -60,6 +68,52 @@ public class Backup {
 
 		return startDir;
 	}
+	
+	/**
+	 * Determine if the backup file is current: exists and file date same as current date.
+	 * @return true if backup meets criteria, false otherwise
+	 * @throws IOException
+	 */
+	public boolean isBackupCurrent() {
+		
+		String startDir;
+		try {
+			startDir = createBackupFolder();
+		
+		
+			Calendar cal = Calendar.getInstance();
+			String monthYearName = DateUtil.getMonthName(DateUtil.getCurrentMonth()) + "_" + String.valueOf(cal.get(Calendar.YEAR));
+			String archiveFile = startDir + "/" + "PantryBackup_" + monthYearName + ".zip";
+			
+			File backup = new File(archiveFile);
+			
+			if (!backup.exists()) {
+				return false;  // backup for this month doesn't exist
+			}
+			
+			// Long, convoluted java date nonsense.
+			
+			Path archivePath = Paths.get(archiveFile);
+		    BasicFileAttributes attr = Files.getFileAttributeView(archivePath, BasicFileAttributeView.class).readAttributes();
+		    
+		    long date = attr.creationTime().toMillis();
+	        Instant fileInstant = Instant.ofEpochMilli(date);
+	        LocalDateTime fileDate = LocalDateTime.ofInstant(fileInstant, ZoneId.systemDefault());
+	        
+	        Instant nowInstant = Instant.now();
+	        LocalDateTime nowDate = LocalDateTime.ofInstant(nowInstant, ZoneId.systemDefault());
+	        
+	        return (fileDate.getDayOfYear() != nowDate.getDayOfYear());  // simply compare day of year
+        
+		} catch (IOException e) {
+			// handle the error and return false
+			log.info("Unable to determine backup file date.");
+			return false;
+		}
+
+		
+	}
+	
 
 	/**
 	 * Creates a zip archive for the current month name and year.
@@ -76,7 +130,7 @@ public class Backup {
 		String archiveFile = startDir + "/" + "PantryBackup_" + monthYearName + ".zip";
 
 		archiveFiles(startDirPrime, archiveFile, false);
-		log.info("Month backup completed successfully");
+		log.info("Month backup completed successfully for " + monthYearName);
 	}
 
 	/**
