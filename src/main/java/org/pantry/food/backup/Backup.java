@@ -90,7 +90,7 @@ public class Backup {
 			if (!backup.exists()) {
 				return false;  // backup for this month doesn't exist
 			}
-			
+
 			// Long, convoluted java date nonsense.
 			
 			Path archivePath = Paths.get(archiveFile);
@@ -103,7 +103,7 @@ public class Backup {
 	        Instant nowInstant = Instant.now();
 	        LocalDateTime nowDate = LocalDateTime.ofInstant(nowInstant, ZoneId.systemDefault());
 	        
-	        return (fileDate.getDayOfYear() != nowDate.getDayOfYear());  // simply compare day of year
+	        return (fileDate.getDayOfYear() == nowDate.getDayOfYear());  // simply compare day of year
         
 		} catch (IOException e) {
 			// handle the error and return false

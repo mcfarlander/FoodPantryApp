@@ -18,6 +18,8 @@ package org.pantry.food;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.pantry.food.actions.AboutMenuItem;
 import org.pantry.food.actions.CustomersMenuItem;
 import org.pantry.food.actions.FoodsMenuItem;
@@ -53,6 +55,8 @@ import javafx.stage.Stage;
  *
  */
 public class JfxApplication extends Application {
+	
+	private final static Logger log = LogManager.getLogger(JfxApplication.class.getName());
 
 	@FXML
 	private MenuBar mnuBar;
@@ -106,6 +110,7 @@ public class JfxApplication extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
+				checkAndCreateBackup();
 				MenuActions.get(CustomersMenuItem.ACTION_ID).getOnAction().handle(new ActionEvent());
 			}
 
@@ -115,6 +120,7 @@ public class JfxApplication extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
+				checkAndCreateBackup();
 				MenuActions.get(VisitsMenuItem.ACTION_ID).getOnAction().handle(new ActionEvent());
 			}
 
@@ -124,6 +130,7 @@ public class JfxApplication extends Application {
 
 			@Override
 			public void handle(ActionEvent event) {
+				checkAndCreateBackup();
 				MenuActions.get(FoodsMenuItem.ACTION_ID).getOnAction().handle(new ActionEvent());
 			}
 
@@ -151,6 +158,7 @@ public class JfxApplication extends Application {
 				e.printStackTrace();
 			}
 		});
+		
 	}
 
 	protected void createMenuItems(UiMainContext context) {
@@ -191,6 +199,27 @@ public class JfxApplication extends Application {
 
 	void switchContext(Node newContext) {
 		scrollPane.setContent(newContext);
+	}
+	
+	/**
+	 * Check if the backuip is current and if not, backup immediately.
+	 */
+	private void checkAndCreateBackup() {
+		
+		try {
+			log.debug("checking backup");
+			Backup backup = new Backup(Arrays.asList(BackupKey.values()));
+			
+			if (!backup.isBackupCurrent() ){
+				log.debug("backup isn't current");
+				backup.createBackupForCurrentMonth();
+				
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }
