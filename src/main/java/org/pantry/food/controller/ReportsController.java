@@ -64,7 +64,7 @@ public class ReportsController {
 			}
 		});
 
-		startMonthCbo.getItems().addAll("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Dec");
+		startMonthCbo.getItems().addAll("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
 		endMonthCbo.getItems().addAll(startMonthCbo.getItems());
 		int currentMonthIndex = DateUtil.getCurrentMonth() - 1;
 		startMonthCbo.getSelectionModel().select(currentMonthIndex);
