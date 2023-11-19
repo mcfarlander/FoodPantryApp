@@ -33,20 +33,6 @@ public class CustomersController extends AbstractController<Customer, AddEditCus
 	private CustomersDao customerDao = ApplicationContext.getCustomersDao();
 	private Resources resources = ApplicationContext.getResources();
 
-	public void init() {
-		try {
-			refreshTable(customerDao.read());
-		} catch (ArrayIndexOutOfBoundsException | FileNotFoundException ex) {
-			log.error(ex);
-			Alert alert = new Alert(AlertType.NONE,
-					"Customer file found, but it is incorrect or missing\n" + ex.getMessage());
-			alert.show();
-		} catch (IOException ex) {
-			log.error(ex);
-			Alert alert = new Alert(AlertType.NONE, "Problem opening file\n" + ex.getMessage());
-			alert.show();
-		}
-	}
 
 	/**
 	 * Replaces the current customer list display with <code>customers</code>. This
