@@ -58,7 +58,18 @@ Version 1.3.11
 	the Windows environment. This sucks. If the variable is not defined, 
 	the build will use the host operating system.
 	
+Version 1.3.13
+	Data file backups are now made after every major button click to ensure
+	that even if data files are overwritten, the most loss is one day's work.
+	Moved log files to logs folder.
 	
+Version 1.4.1
+	Major milestone. Added read and write file locks when reading and writing
+	data files to prevent unintentional overwrites by external programs. Added
+	check to prevent writing to a file if there are no entities to write
+	(hopefully eliminating 0-byte files by accident). Changed file write
+	mechanism to use temp file and then copy in order to avoid accidental file
+	deletes that are not followed up by a file creation.
 	
 	
 	
