@@ -3,8 +3,13 @@ package org.pantry.food.dao;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.io.Writer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,6 +18,7 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.apache.commons.io.output.LockableFileWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ApplicationCloseListener;
@@ -73,34 +79,44 @@ public abstract class AbstractCsvDao<T> implements CsvDao<T> {
 		log.info("CSV file found: {}", csvFile.getName());
 		// Read the whole file into a list
 		List<T> entityList = new ArrayList<>();
-		CSVReader reader = new CSVReader(new FileReader(csvFile));
 
-		String[] nextLine;
-		boolean firstLine = true;
-		while ((nextLine = reader.readNext()) != null) {
-			// nextLine[] is an array of values from the line
-			if (!firstLine) {
-				T entity = rowMapper.map(nextLine);
-				int id = getId(entity);
-				if (id > lastId.get()) {
-					lastId.set(id);
+		FileLock lock = null;
+		RandomAccessFile fileReader = new RandomAccessFile(csvFile.getAbsolutePath(), "r");
+		try (FileChannel channel = fileReader.getChannel()) {
+			lock = channel.lock(0, Long.MAX_VALUE, true);
+
+			CSVReader reader = new CSVReader(new FileReader(csvFile));
+
+			String[] nextLine;
+			boolean firstLine = true;
+			while ((nextLine = reader.readNext()) != null) {
+				// nextLine[] is an array of values from the line
+				if (!firstLine) {
+					T entity = rowMapper.map(nextLine);
+					int id = getId(entity);
+					if (id > lastId.get()) {
+						lastId.set(id);
+					}
+					entityList.add(entity);
+					// Give subclass a chance to do further per-entity processing (e.g household
+					// IDs)
+					afterLineRead(entity);
+				} else {
+					firstLine = !firstLine;
 				}
-				entityList.add(entity);
-				// Give subclass a chance to do further per-entity processing (e.g household
-				// IDs)
-				afterLineRead(entity);
-			} else {
-				firstLine = !firstLine;
+			}
+
+			reader.close();
+
+			entities = entityList;
+
+			// Give subclass a chance to do further post-processing (e.g. household IDs)
+			afterRead(entities);
+		} finally {
+			if (null != lock && lock.isValid()) {
+				lock.release();
 			}
 		}
-
-		reader.close();
-
-		entities = entityList;
-
-		// Give subclass a chance to do further post-processing (e.g. household IDs)
-		afterRead(entities);
-
 		return entities;
 	}
 
@@ -125,22 +141,37 @@ public abstract class AbstractCsvDao<T> implements CsvDao<T> {
 	@Override
 	public void persist() throws IOException {
 		log.info("Persisting");
-
-		if (csvFile.exists()) {
-			csvFile.delete();
+		if (entities.isEmpty()) {
+			log.info("No entities found to persist");
+			return;
 		}
 
-		FileWriter fw = new FileWriter(csvFile);
-		CSVWriter writer = new CSVWriter(fw);
+		try {
+			// Create a temp file to store the new records instead of overwriting an
+			// existing file
+			Path tempFile = Files.createTempFile("efood", null);
+			Writer fw = new LockableFileWriter(new File(tempFile.toString()));
+			CSVWriter writer = new CSVWriter(fw);
 
-		// add the column titles
-		writer.writeNext(getCsvHeader());
-		List<T> entities = getAll();
-		for (T entity : entities) {
-			writer.writeNext(rowMapper.toCsvRow(entity));
+			// Add the column titles
+			writer.writeNext(getCsvHeader());
+			List<T> entities = getAll();
+			for (T entity : entities) {
+				writer.writeNext(rowMapper.toCsvRow(entity));
+			}
+
+			writer.close();
+
+			// Now that the temp file has been written successfully, replace the original
+			// file with the temp file
+			if (csvFile.exists()) {
+				csvFile.delete();
+			}
+			Files.copy(tempFile, csvFile.toPath());
+		} catch (Throwable e) {
+			log.error("Could not write entities to file " + csvFile.getAbsolutePath(), e);
+			throw e;
 		}
-
-		writer.close();
 	}
 
 	/**
