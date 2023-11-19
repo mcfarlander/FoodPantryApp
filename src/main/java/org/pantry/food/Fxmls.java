@@ -4,11 +4,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.pantry.food.dao.AbstractCsvDao;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 
 public class Fxmls {
 	private static final Map<String, Node> cache = new HashMap<>();
+	private static final Logger log = LogManager.getLogger(Fxmls.class);
 
 	public static FXMLLoader getLoader(String fxmlFileName) {
 		return new FXMLLoader(JfxApplication.class.getResource(fxmlFileName));
@@ -21,6 +26,7 @@ public class Fxmls {
 		} catch (IOException e) {
 			System.out.println("Could not load FXML file " + fxmlFileName);
 			e.printStackTrace();
+			log.debug(e.getStackTrace());
 		}
 		return null;
 	}
