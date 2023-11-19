@@ -70,6 +70,7 @@ Version 1.4.1
 	(hopefully eliminating 0-byte files by accident). Changed file write
 	mechanism to use temp file and then copy in order to avoid accidental file
 	deletes that are not followed up by a file creation.
+
 	
 	
 	

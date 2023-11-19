@@ -1,8 +1,12 @@
 package org.pantry.food.backup;
 
 public enum BackupKey {
-	CUSTOMERS("customers"), VISITS("visits"), DONATIONS("donations"), LEGACY_VOLUNTEERS("legacyVolunteers"),
-	VOLUNTEERS("volunteers"), VOLUNTEER_EVENTS("volunteerEvents");
+	CUSTOMERS("customers"), 
+	VISITS("visits"), 
+	DONATIONS("donations"), 
+	LEGACY_VOLUNTEERS("legacyVolunteers"),
+	VOLUNTEERS("volunteers"), 
+	VOLUNTEER_EVENTS("volunteerEvents");
 
 	String key;
 
