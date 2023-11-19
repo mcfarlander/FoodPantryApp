@@ -27,6 +27,7 @@ import java.util.zip.ZipOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pantry.food.ui.common.DataFiles;
+import org.pantry.food.util.DateUtil;
 
 /**
  * Performs a backup of all data files to a backup directory.
@@ -70,7 +71,8 @@ public class Backup {
 		String startDirPrime = new java.io.File(".").getCanonicalPath();
 		String startDir = createBackupFolder();
 		Calendar cal = Calendar.getInstance();
-		String archiveFile = startDir + "/" + "PantryBackup_" + Integer.toString(cal.get(Calendar.MONTH)) + ".zip";
+		String monthName = DateUtil.getMonthName(cal.get(Calendar.MONTH) + 1);
+		String archiveFile = startDir + "/" + "PantryBackup_" + monthName + ".zip";
 
 		archiveFiles(startDirPrime, archiveFile, false);
 		log.info("Month backup completed successfully");
